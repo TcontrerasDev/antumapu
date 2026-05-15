@@ -1,0 +1,54 @@
+---
+import CardPresentacion from '../cards/CardPresentacion.astro';
+
+const presentaciones = [
+  {
+    dia: '20',
+    mes: 'May',
+    titulo: 'Gala astística 55°',
+    obra: 'Virgen Del Milagro - Chiloé, archipiélago mágico',
+    lugar: 'TEATRO UNIVERSIDAD DE CHILE',
+    direccion: 'Providencia 43, Santiago',
+    hora: '19:00'
+  },
+  {
+    dia: '20',
+    mes: 'May',
+    titulo: 'Gala astística 55°',
+    obra: 'Virgen Del Milagro - Chiloé, archipiélago mágico',
+    lugar: 'TEATRO UNIVERSIDAD DE CHILE',
+    direccion: 'Providencia 43, Santiago',
+    hora: '19:00'
+  },
+  {
+    dia: '20',
+    mes: 'May',
+    titulo: 'Gala astística 55°',
+    obra: 'Virgen Del Milagro - Chiloé, archipiélago mágico',
+    lugar: 'TEATRO UNIVERSIDAD DE CHILE',
+    direccion: 'Providencia 43, Santiago',
+    hora: '19:00'
+  }
+]
+---
+
+<section class="padding-section bg-sand-100">
+  <div class="wrapper flex flex-col">
+    <div class="py-8 border-b border-navy-950">
+      <h2 class="text-navy-950 h2-heading lg:w-lg">Próximas Presentaciones</h2>
+    </div>
+    <div class="flex flex-col justify-center">
+      {presentaciones.map((presentacion) => (
+        <CardPresentacion
+          dia={presentacion.dia}
+          mes={presentacion.mes}
+          titulo={presentacion.titulo}
+          obra={presentacion.obra}
+          lugar={presentacion.lugar}
+          direccion={presentacion.direccion}
+          hora={presentacion.hora}
+        />
+      ))}
+    </div>
+  </div>
+</section>

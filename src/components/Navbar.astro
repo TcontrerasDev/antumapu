@@ -1,0 +1,52 @@
+---
+import Logo from "../assets/logo-light.png";
+---
+
+<nav class="w-full flex justify-center">
+  <div class="wrapper flex justify-between py-4 items-center">
+    <a href="/" class="w-32">
+      <img src={Logo.src} alt="Logo" class="w-full" />
+    </a>
+    <button class="block xl:hidden">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="35"
+        height="35"
+        viewBox="0 0 24 24"
+        fill="#ffffff"
+        stroke="#ffffff"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="icon icon-tabler icons-tabler-outline icon-tabler-menu-deep"
+      >
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+        <path d="M4 6h16"></path>
+        <path d="M7 12h13"></path>
+        <path d="M10 18h10"></path>
+      </svg>
+    </button>
+    <ul
+      class="hidden xl:flex gap-8 text-white-soft items-center font-heading-2"
+    >
+      <li>
+        <a class="uppercase text-[16px] tracking-[1.4px] hover:text-gold-500 transition-colors" href="/">Home</a>
+      </li>
+      <li>
+        <a class="uppercase text-[16px] tracking-[1.4px] hover:text-gold-500 transition-colors" href="/historia"
+          >Historia</a
+        >
+      </li>
+      <li>
+        <a class="uppercase text-[16px] tracking-[1.4px] hover:text-gold-500 transition-colors" href="/presentaciones"
+          >Presentaciones</a
+        >
+      </li>
+      <li>
+        <a class="uppercase text-[16px] tracking-[1.4px] hover:text-gold-500 transition-colors" href="/noticias"
+          >Noticias</a
+        >
+      </li>
+    </ul>
+  </div>
+</nav>

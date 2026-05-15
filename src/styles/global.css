@@ -1,1 +1,57 @@
 @import "tailwindcss";
+
+@theme {
+  /* Colors */
+  --color-navy-950: #050a1f;
+  --color-navy-800: #22345a;
+  --color-navy-700: #26457e;
+  --color-navy-600: #265091;
+  --color-navy-500: #28559e;
+
+  --color-gold-500: #e0b24a;
+  --color-gold-700: #997931;
+
+  --color-sand-100: #f5f1e8;
+  --color-white-soft: #C3C6D3;
+
+  /* Typography */
+  --font-heading-1: "Italiana", serif;
+  --font-heading-2: "Oswald", sans-serif;
+  --font-body: "Fraunces", serif;
+
+  --text-h-especial: 128px;
+  --text-h1: 96px;
+  --text-h2: 48px;
+  --text-h3: 36px;
+  --text-base: 16px;
+
+  /* Gradients */
+  --background-image-hero-gradient: linear-gradient(
+    180deg,
+    #22345a 0%,
+    #050a1f 100%
+  );
+}
+
+@layer utilities {
+  .wrapper {
+    @apply container px-5 sm:mx-auto;
+  }
+
+  .padding-section{
+    @apply py-[75px];
+  }
+
+  .h2-heading{
+    @apply text-h2 uppercase font-bold;
+  }
+}
+
+
+p{
+    font-family: 'Fraunces', serif;
+}
+
+h2,h3{
+    font-family: 'Oswald', sans-serif;
+}

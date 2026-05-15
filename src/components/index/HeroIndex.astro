@@ -1,3 +1,55 @@
-<section class="h-screen pt-30 bg-linear-to-b from-[#22345A] to-[#050A1F];">
-    <h1 class="text-center text-white text-[128px] font-[Italiana]">ANTUMAPU</h1>
+---
+import { Image } from "astro:assets";
+import HeroImage from "../../assets/bg-image.png";
+import ButtonBg from "../buttons/ButtonBg.astro";
+import ButtonTransparent from "../buttons/ButtonTransparent.astro";
+---
+
+<section
+  class="h-screen w-full flex items-center bg-hero-gradient relative overflow-clip"
+>
+  <Image
+    src={HeroImage}
+    alt=" "
+    class="absolute top-0 left-0 w-full h-full object-cover opacity-5 z -0"
+  />
+  <div class="wrapper relative z-10 flex flex-col items-start gap-7">
+    <div class="flex items-center gap-2">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="w-2"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#e0b24a"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="icon icon-tabler icons-tabler-outline icon-tabler-circle"
+      >
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+        <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+      </svg>
+      <p
+        class="text-gold-500 text-[14px] uppercase text-base font-body font-light tracking-[0.8px]"
+      >
+        55 AÑOS DE CREATIVIDAD Y PASIÓN
+      </p>
+    </div>
+    <h1
+      class="text-white font-heading-1 max-sm:text-[40px] sm:text-[70px] lg:text-h-especial"
+    >
+      ANTUMAPU
+    </h1>
+    <p class="max-w-3xl text-white font-light max-sm:text[16px] sm:text-[18px]">
+      Más de 50 años de legado artístico desde la Universidad de Chile,
+      dedicados a revitalizar el patrimonio y la identidad cultural del país con
+      rigor, creatividad y un profundo sentido de pertenencia.
+    </p>
+    <div
+      class="flex flex-col md:flex-row items-start justify-center gap-4"
+    >
+      <ButtonBg href="/presentaciones">Próximas Presentaciones</ButtonBg>
+      <ButtonTransparent href="/historia">Nuestra Historia</ButtonTransparent>
+    </div>
+  </div>
 </section>

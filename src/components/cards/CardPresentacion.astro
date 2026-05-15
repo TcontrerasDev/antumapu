@@ -1,0 +1,63 @@
+---
+interface Props {
+	dia: string | number;
+    mes: string;
+    titulo: string;
+    obra: string;
+    lugar: string;
+    direccion: string;
+    hora: string;
+}
+
+const { dia, mes, titulo, obra, lugar, direccion, hora } = Astro.props;
+---
+
+<article
+  class="flex flex-col justify-start p-4 border-b border-navy-950 gap-5 md:gap-30 md:flex-row lg:gap-50"
+>
+  <div class="flex flex-col justify-between w-full md:w-1/2 md:flex-row md:gap-5 lg:gap-30">
+    <div class="flex flex-col justify-center">
+      <p class="text-[64px] text-navy-950 font-heading-1!">{dia}</p>
+      <span class="text-gold-700 uppercase font-heading-2">{mes}</span>
+    </div>
+    <div class="flex flex-col justify-center">
+      <h3 class="text-[24px] text-navy-950 font-semibold">
+        {titulo}
+      </h3>
+      <span class="text-navy-800 font-body italic"
+        >{obra}</span
+      >
+    </div>
+  </div>
+  <div class="flex justify-between items-center w-full md:w-1/2">
+    <div class="flex flex-col justify-center">
+      <h3
+        class="text-base text-navy-950 font-heading-2 tracking-[1.4px] font-bold"
+      >
+        {lugar}
+      </h3>
+      <span class="text-navy-800 font-body">{direccion}</span>
+    </div>
+    <div class="flex justify-center gap-5">
+      <h3 class="text-[16px] text-navy-950">{hora}</h3>
+      <span
+        ><svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-6"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#997931"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-right"
+        >
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+          <path d="M5 12l14 0"></path>
+          <path d="M13 18l6 -6"></path>
+          <path d="M13 6l6 6"></path>
+        </svg>
+      </span>
+    </div>
+  </div>
+</article>

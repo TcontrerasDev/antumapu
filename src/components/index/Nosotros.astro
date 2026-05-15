@@ -1,0 +1,45 @@
+---
+import { Image } from "astro:assets";
+import ImgHistoria from "../../assets/img-historia.png";
+import ButtonTransparent from "../buttons/ButtonTransparent.astro";
+---
+
+<section class="padding-section bg-navy-950">
+  <div class="wrapper grid grid-cols-1 items-start lg:grid-cols-2 lg:items-center gap-5">
+    <div class="flex flex-col gap-7">
+      <h2 class="text-white h2-heading">Nosotros</h2>
+      <div>
+        <p class="text-white-soft mb-4">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+          aliquip ex ea commodo consequat. Duis aute irure dolor in
+          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+          culpa qui officia deserunt mollit anim id est laborum.
+        </p>
+        <p class="text-white-soft">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+          minim veniam.
+        </p>
+      </div>
+        <ButtonTransparent href="/historia">Conocer más</ButtonTransparent>
+    </div>
+    <Image src={ImgHistoria} alt="Imagen de historia" class="w-full" />
+    <div class="flex flex-col justify-center items-center gap-16 md:flex-row border-t border-b border-gold-700 py-22 md:gap-48 lg:col-span-2">
+        <div class="flex flex-col items-center justify-center gap-2">
+            <p class="text-gold-500 text-5xl font-heading-2!">55</p>
+            <p class="text-center font-heading-2! uppercase tracking-[1.4px] text-white-soft">Años de Trayectoria</p>
+        </div>
+        <div class="flex flex-col items-center justify-center gap-2">
+            <p class="text-gold-500 text-5xl font-heading-2!">12</p>
+            <p class="text-center font-heading-2! uppercase tracking-[1.4px] text-white-soft">Obras Estrenadas</p>
+        </div>
+        <div class="flex flex-col items-center justify-center gap-2">
+            <p class="text-gold-500 text-5xl font-heading-2!">23</p>
+            <p class="text-center font-heading-2! uppercase tracking-[1.4px] text-white-soft">Países visitados</p>
+        </div>
+    </div>
+  </div>
+</section>

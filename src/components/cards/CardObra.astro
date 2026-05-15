@@ -1,0 +1,56 @@
+---
+interface Props{
+    url: URL | string;
+    imgSrc: string;
+    titulo: string;
+    descripcion: string;
+}
+
+const { url, imgSrc, titulo, descripcion } = Astro.props;
+---
+
+<article class="h-130 border border-amber-50 rounded">
+  <a
+    href={url}
+    class="group bg-hero-gradient flex h-full w-full rounded overflow-hidden"
+  >
+    <figure class="relative h-full w-full">
+      <img
+        src={imgSrc}
+        alt="Chiliche gente de Chile"
+        class="w-full h-full object-cover rounded opacity-70"
+      />
+      <figcaption
+        class="absolute bottom-0 left-0 w-full xl:translate-y-[calc(100%-60px)] group-hover:translate-y-0 transition-transform duration-500 ease-in-out group-focus:translate-y-0"
+      >
+        <h2 class="uppercase text-white text-3xl p-4">
+          {titulo}
+        </h2>
+        <div class="backdrop-brightness-30 p-4 flex flex-col gap-4">
+          <p class="text-base text-white-soft">
+            {descripcion}
+          </p>
+          <span
+            class="text-gold-500 uppercase font-heading-2 flex gap-1 items-center font-semibold tracking-[1.4px]"
+            >Leer más
+            <svg
+              class="w-5 stroke-gold-500"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="arrow-icon"
+            >
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+              <path d="M5 12l14 0"></path>
+              <path d="M13 18l6 -6"></path>
+              <path d="M13 6l6 6"></path>
+            </svg>
+          </span>
+        </div>
+      </figcaption>
+    </figure>
+  </a>
+</article>

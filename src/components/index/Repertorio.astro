@@ -1,14 +1,47 @@
 ---
+import CardObra from '../cards/CardObra.astro';
+import ImgChiliche from '../../assets/chiliche.webp';
 
+const obras = [
+  {
+    url: new URL('https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu'),
+    imgSrc: ImgChiliche.src,
+    titulo: 'Virgen Del Milagro',
+    descripcion: 'Chiloé, archipiélago mágico'
+  },
+  {
+    url: new URL('https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu'),
+    imgSrc: ImgChiliche.src,
+    titulo: 'Virgen Del Milagro',
+    descripcion: 'Chiloé, archipiélago mágico'
+  },
+  {
+    url: new URL('https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu'),
+    imgSrc: ImgChiliche.src,
+    titulo: 'Virgen Del Milagro',
+    descripcion: 'Chiloé, archipiélago mágico'
+  },
+  {
+    url: new URL('https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu'),
+    imgSrc: ImgChiliche.src,
+    titulo: 'Virgen Del Milagro',
+    descripcion: 'Chiloé, archipiélago mágico'
+  }
+]
 ---
 
 <section class="bg-navy-950 padding-section">
   <div class="wrapper">
     <h2 class="text-white h2-heading mb-8">Repertorio</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-        <article class="bg-hero-gradient border border-amber-50 h-107.5 relative">
-            
-        </article>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+      {obras.map((obra) => (
+        <CardObra
+          url={obra.url}
+          imgSrc={obra.imgSrc}
+          titulo={obra.titulo}
+          descripcion={obra.descripcion}
+        />
+      ))}
     </div>
   </div>
 </section>

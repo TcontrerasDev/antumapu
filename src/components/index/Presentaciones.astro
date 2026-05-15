@@ -3,6 +3,7 @@ import CardPresentacion from '../cards/CardPresentacion.astro';
 
 const presentaciones = [
   {
+    url: new URL('https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu'),
     dia: '20',
     mes: 'May',
     titulo: 'Gala astística 55°',
@@ -12,6 +13,7 @@ const presentaciones = [
     hora: '19:00'
   },
   {
+    url: new URL('https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu'),
     dia: '20',
     mes: 'May',
     titulo: 'Gala astística 55°',
@@ -21,6 +23,7 @@ const presentaciones = [
     hora: '19:00'
   },
   {
+    url: new URL('https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu'),
     dia: '20',
     mes: 'May',
     titulo: 'Gala astística 55°',
@@ -40,6 +43,7 @@ const presentaciones = [
     <div class="flex flex-col justify-center">
       {presentaciones.map((presentacion) => (
         <CardPresentacion
+          url={presentacion.url}
           dia={presentacion.dia}
           mes={presentacion.mes}
           titulo={presentacion.titulo}

@@ -1,63 +1,148 @@
 ---
 interface Props {
-	dia: string | number;
-    mes: string;
-    titulo: string;
-    obra: string;
-    lugar: string;
-    direccion: string;
-    hora: string;
+  url: URL;
+  dia: string | number;
+  mes: string;
+  titulo: string;
+  obra: string;
+  lugar: string;
+  direccion: string;
+  hora: string;
 }
 
-const { dia, mes, titulo, obra, lugar, direccion, hora } = Astro.props;
+const { url, dia, mes, titulo, obra, lugar, direccion, hora } = Astro.props;
 ---
 
-<article
-  class="flex flex-col justify-start p-4 border-b border-navy-950 gap-5 md:gap-30 md:flex-row lg:gap-50"
->
-  <div class="flex flex-col justify-between w-full md:w-1/2 md:flex-row md:gap-5 lg:gap-30">
-    <div class="flex flex-col justify-center">
-      <p class="text-[64px] text-navy-950 font-heading-1!">{dia}</p>
-      <span class="text-gold-700 uppercase font-heading-2">{mes}</span>
+<article>
+  <a href={url} target="_blank" class="card-presentacion">
+    <div class="info-main">
+      <div class="flex flex-col justify-center">
+        <p class="dia">{dia}</p>
+        <span class="mes">{mes}</span>
+      </div>
+      <div class="flex flex-col justify-center">
+        <h3 class="titulo">{titulo}</h3>
+        <span class="obra">{obra}</span>
+      </div>
     </div>
-    <div class="flex flex-col justify-center">
-      <h3 class="text-[24px] text-navy-950 font-semibold">
-        {titulo}
-      </h3>
-      <span class="text-navy-800 font-body italic"
-        >{obra}</span
-      >
+
+    <div class="info-details">
+      <div class="flex flex-col justify-center">
+        <p class="lugar">{lugar}</p>
+        <span class="direccion">{direccion}</span>
+      </div>
+      <div class="flex justify-center gap-5">
+        <h3 class="hora">{hora}</h3>
+        <span class="icon-wrapper">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="arrow-icon"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+            <path d="M5 12l14 0"></path>
+            <path d="M13 18l6 -6"></path>
+            <path d="M13 6l6 6"></path>
+          </svg>
+        </span>
+      </div>
     </div>
-  </div>
-  <div class="flex justify-between items-center w-full md:w-1/2">
-    <div class="flex flex-col justify-center">
-      <h3
-        class="text-base text-navy-950 font-heading-2 tracking-[1.4px] font-bold"
-      >
-        {lugar}
-      </h3>
-      <span class="text-navy-800 font-body">{direccion}</span>
-    </div>
-    <div class="flex justify-center gap-5">
-      <h3 class="text-[16px] text-navy-950">{hora}</h3>
-      <span
-        ><svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-6"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="#997931"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-right"
-        >
-          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-          <path d="M5 12l14 0"></path>
-          <path d="M13 18l6 -6"></path>
-          <path d="M13 6l6 6"></path>
-        </svg>
-      </span>
-    </div>
-  </div>
+  </a>
 </article>
+
+<style>
+  @reference "../../styles/global.css";
+
+  .card-presentacion {
+    @apply flex flex-col justify-start p-4 border-b border-navy-950 gap-5 transition-all duration-300;
+    @apply md:flex-row md:gap-30 lg:gap-50;
+  }
+
+  .card-presentacion:hover {
+    @apply bg-navy-950;
+  }
+  
+  .card-presentacion:focus {
+    @apply bg-navy-950;
+  }
+
+  .info-main {
+    @apply flex flex-col justify-between w-full md:w-1/2 md:flex-row md:gap-5 lg:gap-30;
+  }
+
+  .info-details {
+    @apply flex justify-between items-center w-full md:w-1/2;
+  }
+
+  /* Estilos de Tipografía */
+  .dia {
+    @apply text-[64px] text-navy-950 font-heading-1! transition-colors duration-300;
+  }
+
+  .mes {
+    @apply text-gold-700 uppercase font-heading-2 transition-colors duration-300;
+  }
+
+  .titulo {
+    @apply text-[24px] text-navy-950 font-semibold transition-colors duration-300;
+  }
+
+  .obra {
+    @apply text-navy-800 font-body italic transition-colors duration-300;
+  }
+
+  .lugar {
+    @apply text-base text-navy-950 font-heading-2! tracking-[1.4px] font-bold transition-colors duration-300;
+  }
+
+  .direccion {
+    @apply text-navy-800 font-body transition-colors duration-300;
+  }
+
+  .hora {
+    @apply text-[16px] text-navy-950 transition-colors duration-300;
+  }
+
+  .arrow-icon {
+    @apply w-6 stroke-gold-700 transition-all duration-300;
+  }
+
+  /* Efectos al hacer Hover en la Card */
+  .card-presentacion:hover .dia,
+  .card-presentacion:hover .titulo,
+  .card-presentacion:hover .lugar,
+  .card-presentacion:hover .hora {
+    @apply text-white;
+  }
+
+  .card-presentacion:hover .mes,
+  .card-presentacion:hover .obra,
+  .card-presentacion:hover .direccion {
+    @apply text-gold-500;
+  }
+
+  .card-presentacion:hover .arrow-icon {
+    @apply stroke-gold-500 rotate-[-30deg];
+  }
+
+  .card-presentacion:focus .dia,
+  .card-presentacion:focus .titulo,
+  .card-presentacion:focus .lugar,
+  .card-presentacion:focus .hora {
+    @apply text-white;
+  }
+
+  .card-presentacion:focus .mes,
+  .card-presentacion:focus .obra,
+  .card-presentacion:focus .direccion {
+    @apply text-gold-500;
+  }
+
+  .card-presentacion:focus .arrow-icon {
+    @apply stroke-gold-500 rotate-[-30deg];
+  }
+</style>

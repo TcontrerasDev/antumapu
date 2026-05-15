@@ -1,0 +1,38 @@
+---
+import { Image } from "astro:assets";
+import Logo from "../assets/logo-light.png";
+import ColFooter from "./layout/ColFooter.astro";
+---
+
+<footer class="padding-section bg-navy-950">
+    <div class="wrapper grid grid-cols-12 gap-5">
+        <ColFooter title="">
+            <div class="flex w-full max-md:justify-center mb-5">
+                <Image src={Logo} alt="Logo del Ballet Antumapu" class="w-[55%] lg:w-1/2" />
+            </div>
+            <p class="text-base text-white-soft">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi
+            </p>
+        </ColFooter>
+        <ColFooter title="Redes Sociales">
+            <ul class="flex flex-col gap-3">
+                <li><a href="/" target="_blank" class="text-white-soft font-body text-[20px]">Youtube</a></li>
+                <li><a href="/" target="_blank" class="text-white-soft font-body text-[20px]">Instagram</a></li>
+                <li><a href="/" target="_blank" class="text-white-soft font-body text-[20px]">Facebook</a></li>
+                <li><a href="/" target="_blank" class="text-white-soft font-body text-[20px]">Twitter</a></li>
+            </ul>
+        </ColFooter>
+        <ColFooter title="Contacto">
+             <ul class="flex flex-col gap-3">
+                <li><a href="mailto:atumapu@udechile.cl" class="text-white-soft font-body text-[20px]">atumapu@udechile.cl</a></li>
+                <li><a href="tel:+56912345678" class="text-white-soft font-body text-[20px]">+56 9 1234 5678</a></li>
+            </ul>
+        </ColFooter>
+        <div class="col-span-12 border-t border-gold-500/10 pt-5 mt-8">
+            <p class="text-white-soft font-heading-2! text-center">© 2026 BALLET FOLKLÓRICO ANTUMAPU · UNIVERSIDAD DE CHILE</p>
+        </div>
+    </div>
+</footer>

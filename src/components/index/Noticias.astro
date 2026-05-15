@@ -1,0 +1,93 @@
+---
+import { url } from "astro:schema";
+import ImgNoticia from "../../assets/chiliche.webp";
+import CardNoticia from "../cards/CardNoticia.astro";
+import CardDestacada from "../cards/CardNoticiaDestacada.astro";
+
+const noticias = [
+    {
+        url: new URL('https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu'),
+        imgSrc: ImgNoticia.src,
+        fecha: '20 mayo 2026',
+        titulo: 'Noticia 1',
+        descripcion: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt'
+    },
+    {
+        url: new URL('https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu'),
+        imgSrc: ImgNoticia.src,
+        fecha: '20 mayo 2026',
+        titulo: 'Noticia 1',
+        descripcion: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt'
+    },
+    {
+        url: new URL('https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu'),
+        imgSrc: ImgNoticia.src,
+        fecha: '20 mayo 2026',
+        titulo: 'Noticia 1',
+        descripcion: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt'
+    },
+    {
+        url: new URL('https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu'),
+        imgSrc: ImgNoticia.src,
+        fecha: '20 mayo 2026',
+        titulo: 'Noticia 1',
+        descripcion: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt'
+    },
+    {
+        url: new URL('https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu'),
+        imgSrc: ImgNoticia.src,
+        fecha: '20 mayo 2026',
+        titulo: 'Noticia 1',
+        descripcion: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt'
+    }, 
+]
+---
+
+<section class="padding-section bg-sand-100">
+    <div class="wrapper">
+        <h2 class="h2-heading text-navy-950 pb-8">Noticias</h2>
+        <div class="grid gap-5 lg:grid-cols-12 items-baseline pb-8">
+            {noticias.map((noticias, index) => {
+                if(index === 0 ) {
+                    return (
+                        <CardDestacada
+                            url={noticias.url}
+                            imgSrc={noticias.imgSrc}
+                            fecha={noticias.fecha}
+                            titulo={noticias.titulo}
+                            descripcion={noticias.descripcion}
+                        />
+                    )
+                }
+            })}
+            {noticias.map((noticias, index) => {
+                if(index === 1 ) {
+                    return (
+                        <CardNoticia
+                            url={noticias.url}
+                            imgSrc={noticias.imgSrc}
+                            fecha={noticias.fecha}
+                            titulo={noticias.titulo}
+                            descripcion={noticias.descripcion}
+                        />
+                    )
+                }
+            })}
+        </div>
+        <div class="grid gap-5 lg:grid-cols-12">
+            {noticias.map((noticia, index) => {
+                if(index !== 0 && index !== 1) {
+                    return (
+                        <CardNoticia
+                            url={noticia.url}
+                            imgSrc={noticia.imgSrc}
+                            fecha={noticia.fecha}
+                            titulo={noticia.titulo}
+                            descripcion={noticia.descripcion}
+                        />
+                    )
+                }
+            })}
+        </div>
+    </div>
+</section>

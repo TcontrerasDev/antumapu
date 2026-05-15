@@ -1,0 +1,24 @@
+---
+import { Image } from "astro:assets";
+import HeroImage from "../assets/bg-image.png";
+interface Props {
+    title: string;
+    bajada: string;
+}
+
+const { title, bajada } = Astro.props;
+---
+
+<section class="h-screen gap-12 bg-hero-gradient relative overflow-clip">
+    <Image
+    src={HeroImage}
+    alt=" "
+    class="absolute top-0 left-0 w-full h-full object-cover opacity-5 z-0"
+    transition:name="img-hero"
+  />
+    <div class="wrapper flex flex-col gap-12 h-full pt-30 relative z-10">
+        <span class="text-gold-500 font-heading-2 tracking-[1.4px]"><a href="/" class="text-white-soft!">Inicio</a> / Historia</span>
+        <h1 class="font-heading-2 text-white text-[64px] lg:text-h1 lg:w-3/5 ">{title}</h1>
+        <p class="text-[20px] text-white">{bajada}</p>
+    </div>
+</section>

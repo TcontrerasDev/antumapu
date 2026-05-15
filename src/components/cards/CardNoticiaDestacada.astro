@@ -1,0 +1,28 @@
+---
+interface Props {
+    url: URL | string;
+    imgSrc: string;
+    fecha: string;
+    titulo: string;
+    descripcion: string;
+}
+
+const { url, imgSrc, fecha, titulo, descripcion } = Astro.props;
+---
+
+<article class="col-span-full lg:col-span-8 hover:[&_h3]:underline">
+    <a href={url} target="_blank" class="flex flex-col gap-5">
+        <div>
+            <img src={imgSrc} alt={titulo} class="w-full h-full object-cover" />
+        </div>
+        <div class="flex flex-col gap-1">
+            <span class="uppercase text-gold-700 text-base font-heading-2"
+                >{fecha}</span
+            >
+            <h3 class="text-h3">{titulo}</h3>
+            <p class="text-base text-navy-950">
+                {descripcion}
+            </p>
+        </div>
+    </a>
+</article>

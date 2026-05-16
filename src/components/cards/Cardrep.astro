@@ -1,0 +1,127 @@
+---
+interface Props {
+  url: URL | string;
+  numeracion: number;
+  ano: string | number;
+  iniTitulo: string;
+  termTitulo: string;
+  description: string;
+}
+
+const { url, numeracion, ano, iniTitulo, termTitulo, description } =
+  Astro.props;
+---
+
+<article>
+  <a href={url} target="_blank" class="card-presentacion">
+    <div class="info-main">
+      <div class="flex flex-col justify-center">
+        <p class="ano">{numeracion} - {ano}</p>
+      </div>
+      <div class="flex flex-col justify-center">
+        <h3 class="iniTitulo">{iniTitulo}</h3>
+        <span class="termTitulo">{termTitulo}</span>
+      </div>
+    </div>
+
+    <div class="info-details">
+      <div class="flex flex-col justify-center w-1/2">
+        <p class="description">{description}</p>
+      </div>
+      <div class="flex justify-center gap-5">
+        <span class="icon-wrapper">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="arrow-icon"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+            <path d="M5 12l14 0"></path>
+            <path d="M13 18l6 -6"></path>
+            <path d="M13 6l6 6"></path>
+          </svg>
+        </span>
+      </div>
+    </div>
+  </a>
+</article>
+
+<style>
+  @reference "../../styles/global.css";
+
+  .card-presentacion {
+    @apply flex flex-col justify-start p-4 border-b-[.1px] border-t-[.1px] border-gold-500/20 gap-5 transition-all duration-300;
+    @apply md:flex-row md:gap-30 lg:gap-50;
+  }
+
+  .card-presentacion:hover {
+    @apply bg-sand-100;
+  }
+
+  .card-presentacion:focus {
+    @apply bg-sand-100;
+  }
+
+  .info-main {
+    @apply flex flex-col justify-between w-full md:w-1/2 md:flex-row md:gap-5 lg:gap-30;
+  }
+
+  .info-details {
+    @apply flex justify-between items-center w-full md:w-1/2;
+  }
+
+  /* Estilos de Tipografía */
+  .ano {
+    @apply text-base text-gold-500 font-heading-2! transition-colors duration-300;
+  }
+
+  .iniTitulo {
+    @apply text-h2 text-white font-semibold transition-colors duration-300;
+  }
+
+  .termTitulo {
+    @apply text-base text-gold-500 font-body italic transition-colors duration-300;
+  }
+
+  .description {
+    @apply text-base text-white transition-colors duration-300;
+  }
+  .arrow-icon {
+    @apply w-6 stroke-gold-500 transition-all duration-300;
+  }
+
+  /* Efectos al hacer Hover en la Card */
+  .card-presentacion:hover .iniTitulo,
+  .card-presentacion:hover .description {
+    @apply text-navy-950;
+  }
+
+  .card-presentacion:hover .termTitulo {
+    @apply text-navy-800;
+  }
+  .card-presentacion:hover .ano {
+    @apply text-gold-700!;
+  }
+  .card-presentacion:hover .arrow-icon {
+    @apply stroke-gold-700 rotate-[-30deg];
+  }
+
+  .card-presentacion:focus .iniTitulo,
+  .card-presentacion:focus .description {
+    @apply text-navy-950;
+  }
+
+  .card-presentacion:focus .termTitulo {
+    @apply text-navy-800;
+  }
+  .card-presentacion:focus .ano {
+    @apply text-gold-700!;
+  }
+  .card-presentacion:focus .arrow-icon {
+    @apply stroke-gold-700 rotate-[-30deg];
+  }
+</style>

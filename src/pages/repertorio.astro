@@ -1,0 +1,19 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import RepObras from "../components/repertorio/RepObras.astro"
+import Footer from "../components/Footer.astro"
+---
+
+<Layout title="Repertorio">
+  <Header />
+  <main>
+    <Hero
+      title="Repertorio"
+      bajada="Un viaje coreográfico por el territorio nacional. Descubre nuestro repertorio de gran formato, donde cada obra nace de una rigurosa investigación de campo para reflejar fielmente la esencia de su gente."
+    />
+    <RepObras />
+  </main>
+  <Footer />
+</Layout>

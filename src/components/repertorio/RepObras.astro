@@ -1,0 +1,54 @@
+---
+import Cardrep from "../cards/Cardrep.astro";
+
+const repertorio = [
+  {
+    url: "/",
+    ano: 1999,
+    aniTitulo: "Chiliche",
+    termTitulo: "Gente de Chile",
+    description:
+      "Un vibrante recorrido por la diversidad cultural de cinco zonas de nuestro país.",
+  },
+  {
+    url: "/",
+    ano: 1999,
+    aniTitulo: "Chiliche",
+    termTitulo: "Gente de Chile",
+    description:
+      "Un vibrante recorrido por la diversidad cultural de cinco zonas de nuestro país.",
+  },
+  {
+    url: "/",
+    ano: 1999,
+    aniTitulo: "Chiliche",
+    termTitulo: "Gente de Chile",
+    description:
+      "Un vibrante recorrido por la diversidad cultural de cinco zonas de nuestro país.",
+  },
+  {
+    url: "/",
+    ano: 1999,
+    aniTitulo: "Chiliche",
+    termTitulo: "Gente de Chile",
+    description:
+      "Un vibrante recorrido por la diversidad cultural de cinco zonas de nuestro país.",
+  },
+];
+---
+
+<section class="bg-navy-950 pb-18.75">
+  <div class="wrapper flex flex-col justify-center ">
+    {repertorio.map((obra, index)=>(
+        <Cardrep
+            url={obra.url}
+            numeracion={index + 1}
+            ano={obra.ano}
+            iniTitulo={obra.aniTitulo}
+            termTitulo={obra.termTitulo}
+            description={obra.description}
+
+        />
+    ))}
+  </div>
+</section>

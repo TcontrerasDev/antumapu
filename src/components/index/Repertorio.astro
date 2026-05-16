@@ -2,6 +2,13 @@
 import CardObra from '../cards/CardObra.astro';
 import ImgChiliche from '../../assets/chiliche.webp';
 
+interface Props {
+  title: string;
+  bajada: string;
+}
+
+const { title, bajada } = Astro.props;
+
 const obras = [
   {
     url: new URL('https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu'),
@@ -32,7 +39,10 @@ const obras = [
 
 <section class="bg-navy-950 padding-section">
   <div class="wrapper">
-    <h2 class="text-white h2-heading mb-8">Repertorio</h2>
+    <div class="mb-8 flex flex-col gap-4">
+      <h2 class="text-white h2-heading">{title}</h2>
+      <p class="text-white-soft max-w-2xl">{bajada}</p>
+    </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
       {obras.map((obra) => (
         <CardObra

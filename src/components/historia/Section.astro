@@ -1,0 +1,11 @@
+---
+interface Props {
+  background: string;
+}
+
+const { background } = Astro.props;
+---
+
+<section class:list={["padding-section", background]}>
+  <slot />
+</section>

@@ -1,6 +1,13 @@
 ---
 import CardPresentacion from '../cards/CardPresentacion.astro';
 
+interface Props {
+  title: string;
+  bajada: string;
+}
+
+const { title, bajada } = Astro.props;
+
 const presentaciones = [
   {
     url: new URL('https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu'),
@@ -37,8 +44,9 @@ const presentaciones = [
 
 <section class="padding-section bg-sand-100">
   <div class="wrapper flex flex-col">
-    <div class="py-8 border-b border-navy-950">
-      <h2 class="text-navy-950 h2-heading lg:w-lg">Próximas Presentaciones</h2>
+    <div class="pb-8 border-b border-navy-950 flex flex-col gap-4">
+      <h2 class="text-navy-950 uppercase font-bold text-h2 max-sm:text-[40px] lg:w-lg">{title}</h2>
+      <p class="text-navy-950/80 max-w-2xl">{bajada}</p>
     </div>
     <div class="flex flex-col justify-center">
       {presentaciones.map((presentacion) => (

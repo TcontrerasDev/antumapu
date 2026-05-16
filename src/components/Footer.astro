@@ -4,7 +4,7 @@ import Logo from "../assets/logo-light.png";
 import ColFooter from "./layout/ColFooter.astro";
 ---
 
-<footer class="padding-section bg-navy-950">
+<footer class="pt-18.75 bg-navy-950 relative overflow-clip border-t border-gold-700/20">
     <div class="wrapper grid grid-cols-12 gap-5">
         <ColFooter title="">
             <div class="flex w-full max-md:justify-center mb-5">
@@ -19,20 +19,21 @@ import ColFooter from "./layout/ColFooter.astro";
         </ColFooter>
         <ColFooter title="Redes Sociales">
             <ul class="flex flex-col gap-3">
-                <li><a href="/" target="_blank" class="text-white-soft font-body text-[20px]">Youtube</a></li>
-                <li><a href="/" target="_blank" class="text-white-soft font-body text-[20px]">Instagram</a></li>
-                <li><a href="/" target="_blank" class="text-white-soft font-body text-[20px]">Facebook</a></li>
-                <li><a href="/" target="_blank" class="text-white-soft font-body text-[20px]">Twitter</a></li>
+                <li class="flex w-max"><a href="/" target="_blank" class="text-white-soft font-body text-[20px] hover:text-gold-500 transition-colors ease-in">Youtube</a></li>
+                <li class="flex w-max"><a href="/" target="_blank" class="text-white-soft font-body text-[20px] hover:text-gold-500 transition-colors ease-in">Facebook</a></li>
+                <li class="flex w-max"><a href="/" target="_blank" class="text-white-soft font-body text-[20px] hover:text-gold-500 transition-colors ease-in">Twitter</a></li>
+                <li class="flex w-max"><a href="/" target="_blank" class="text-white-soft font-body text-[20px] hover:text-gold-500 transition-colors ease-in">Instagram</a></li>
             </ul>
         </ColFooter>
         <ColFooter title="Contacto">
              <ul class="flex flex-col gap-3">
-                <li><a href="mailto:atumapu@udechile.cl" class="text-white-soft font-body text-[20px]">atumapu@udechile.cl</a></li>
-                <li><a href="tel:+56912345678" class="text-white-soft font-body text-[20px]">+56 9 1234 5678</a></li>
+                <li class="flex w-max"><a href="mailto:atumapu@udechile.cl" class="text-white-soft font-body text-[20px] hover:text-gold-500 transition-colors ease-in">atumapu@udechile.cl</a></li>
+                <li class="flex w-max"><a href="tel:+56912345678" class="text-white-soft font-body text-[20px] hover:text-gold-500 transition-colors ease-in">+56 9 1234 5678</a></li>
             </ul>
         </ColFooter>
-        <div class="col-span-12 border-t border-gold-500/10 pt-5 mt-8">
-            <p class="text-white-soft font-heading-2! text-center">© 2026 BALLET FOLKLÓRICO ANTUMAPU · UNIVERSIDAD DE CHILE</p>
+        <div class="col-span-12 border-t border-gold-500/10 py-5 mt-8">
+            <p class="text-white-soft font-heading-2! text-center tracking-[1.4px]">© 2026 BALLET FOLKLÓRICO ANTUMAPU · UNIVERSIDAD DE CHILE</p>
         </div>
     </div>
+    <div class="w-full h-120 absolute -bottom-120 rounded-[1486px] bg-gold-700 blur-[150px] opacity-50 aspect-square"></div>
 </footer>

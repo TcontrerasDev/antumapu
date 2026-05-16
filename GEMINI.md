@@ -13,16 +13,24 @@
 ---
 
 ## Project Structure
-The project follows a standard Astro directory layout:
+The project follows a standard Astro directory layout with organized component subdirectories:
 
 - `src/`: Core source code.
-    - `assets/`: Static assets like images (`bg-image.png`, `logo-light.png`).
-    - `components/`: Reusable Astro components (e.g., `Header.astro`, `Navbar.astro`).
+    - `assets/`: Static assets like images (`bg-image.png`, `logo-light.png`, `chiliche.webp`).
+    - `components/`: Reusable Astro components.
+        - `buttons/`: Interactive button components (`ButtonBg.astro`, `ButtonTransparent.astro`).
+        - `cards/`: UI cards for news, works, and presentations (`CardNoticia.astro`, `CardObra.astro`, etc.).
+        - `historia/`: Components specifically for the "Historia" page.
+        - `index/`: Components specifically for the "Home" page (`HeroIndex.astro`, `Nosotros.astro`, etc.).
+        - `layout/`: Layout-specific components like `ColFooter.astro`.
+        - `Header.astro`, `Navbar.astro`, `Footer.astro`: Main navigation and layout elements.
     - `layouts/`: Page layouts (e.g., `Layout.astro`).
-    - `pages/`: Site pages and routing (e.g., `index.astro`).
+    - `pages/`: Site pages and routing:
+        - `index.astro`: Homepage.
+        - `historia.astro`: History page.
     - `styles/`: Global CSS files (`global.css`).
-- `public/`: Static files served directly (e.g., `favicon.ico`).
-- `astro.config.mjs`: Astro configuration and integration settings.
+- `public/`: Static files served directly.
+- `astro.config.mjs`: Astro configuration and integration settings (Tailwind v4 Vite plugin).
 - `package.json`: Project metadata, dependencies, and scripts.
 - `tsconfig.json`: TypeScript configuration.
 
@@ -62,11 +70,13 @@ pnpm astro [command]
 
 ### Component Organization
 - Place reusable components in `src/components/`.
-- For page-specific components, consider subdirectories within `src/components/` (e.g., `src/components/index/`).
+- Use specific subdirectories for better organization (e.g., `src/components/cards/`, `src/components/index/`).
+- Follow the naming convention `ComponentName.astro`.
 
 ### Styling
-- Use Tailwind CSS utility classes directly in Astro components.
-- Global styles and Tailwind imports are located in `src/styles/global.css`.
+- **Tailwind CSS v4:** Use utility classes directly in Astro components.
+- **Global Styles:** Located in `src/styles/global.css`. It includes theme variables for colors (navy, gold, sand), typography (Italiana, Oswald, Fraunces), and custom utilities.
+- **Theme Variables:** Custom colors and fonts are defined in the `@theme` block of `global.css`.
 
 ### Layouts
 - Use the `Layout.astro` component in `src/layouts/` to wrap page content and ensure consistent structure (head tags, fonts, etc.).
@@ -76,5 +86,6 @@ pnpm astro [command]
 ## Key Files
 - `src/layouts/Layout.astro`: The main layout wrapper for all pages.
 - `src/pages/index.astro`: The homepage of the application.
-- `astro.config.mjs`: Configuration for Astro and its plugins (like Tailwind).
-- `src/styles/global.css`: Entry point for global CSS and Tailwind directives.
+- `src/pages/historia.astro`: The history page.
+- `src/styles/global.css`: Entry point for global CSS, Tailwind directives, and theme configuration.
+- `astro.config.mjs`: Configuration for Astro and its plugins.

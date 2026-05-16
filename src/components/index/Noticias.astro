@@ -4,6 +4,13 @@ import ImgNoticia from "../../assets/chiliche.webp";
 import CardNoticia from "../cards/CardNoticia.astro";
 import CardDestacada from "../cards/CardNoticiaDestacada.astro";
 
+interface Props {
+    title: string;
+    bajada: string;
+}
+
+const { title, bajada } = Astro.props;
+
 const noticias = [
     {
         url: new URL('https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu'),
@@ -45,7 +52,10 @@ const noticias = [
 
 <section class="padding-section bg-sand-100">
     <div class="wrapper">
-        <h2 class="h2-heading text-navy-950 pb-8">Noticias</h2>
+        <div class="pb-8 flex flex-col gap-4">
+            <h2 class="h2-heading text-navy-950">{title}</h2>
+            <p class="text-navy-950/80 max-w-2xl">{bajada}</p>
+        </div>
         <div class="grid gap-5 lg:grid-cols-12 items-baseline pb-8">
             {noticias.map((noticias, index) => {
                 if(index === 0 ) {

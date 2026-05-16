@@ -1,0 +1,20 @@
+---
+import Section from "./Section.astro";
+
+interface Props {
+  text: string;
+  img: string;
+  Imgalt: string;
+}
+
+const { text, img, Imgalt } = Astro.props;
+---
+
+<Section background="bg-navy-950">
+  <div class="wrapper flex flex-col gap-8">
+    <p class="font-heading-2! text-2xl text-white">{text}</p>
+    <div class="w-full h-[50vh]">
+        <img src={img} alt={Imgalt} class="w-full h-full object-cover object-top"/>
+    </div>
+  </div>
+</Section>

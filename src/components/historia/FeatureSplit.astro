@@ -1,0 +1,25 @@
+---
+import Section from "./Section.astro";
+
+interface Props {
+    title: string;
+    content: string;
+    img: string;
+    alt: string;
+    imageLeft?: boolean;
+}
+
+const { title, content, img, alt, imageLeft = false } = Astro.props;
+---
+
+<Section background="bg-navy-950">
+    <div class="wrapper grid grid-cols-4 md:grid-cols-12 gap-5 items-start">
+        <div class:list={["col-span-full lg:col-span-6 flex flex-col gap-6", imageLeft ? "lg:order-2" : "lg:order-1"]}>
+            <h2 class="uppercase font-bold text-h2 max-sm:text-[40px] text-white">{title}</h2>
+            <p class="text-white-soft text-body prose">{content}</p>
+        </div>
+        <div class:list={["col-span-full lg:col-span-6", imageLeft ? "lg:order-1" : "lg:order-2"]}>
+            <img src={img} alt={alt} class="w-full h-full object-cover">
+        </div>
+    </div>
+</Section>

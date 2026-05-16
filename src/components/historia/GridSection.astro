@@ -1,0 +1,23 @@
+---
+import Section from "./Section.astro";
+import CardInfo from "../cards/CardInfo.astro";
+
+interface Props {
+  title: string;
+  content: string;
+}
+
+const { title, content } = Astro.props;
+---
+
+<Section background="bg-sand-100">
+  <div class="wrapper">
+    <div class="mb-17.5 flex flex-col gap-6">
+      <h2 class="uppercase font-bold text-h2 max-sm:text-[40px] text-navy-950">{title}</h2>
+      <p class="text-navy-950 text-body">{content}</p>
+    </div>
+    <div class="grid grid-cols-4 lg:grid-cols-12">
+      <slot />
+    </div>
+  </div>
+</Section>

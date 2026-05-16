@@ -1,17 +1,80 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Header from '../components/Header.astro';
-import Hero from '../components/Hero.astro';
-import Footer from '../components/Footer.astro';
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import FeatureSplit from "../components/historia/FeatureSplit.astro";
+import GridSection from "../components/historia/GridSection.astro";
+import CardInfo from "../components/cards/CardInfo.astro";
+import Conclusion from "../components/historia/Conclusion.astro";
+import Footer from "../components/Footer.astro";
+
+const cardsInfo = [
+  {
+    title: "Chiliche, Gente de Chile",
+    description:
+      "Un vibrante recorrido por la diversidad cultural de cinco zonas de nuestro país.",
+    img: "../src/assets/chiliche.webp",
+  },
+  {
+    title: "Chiliche, Gente de Chile",
+    description:
+      "Un vibrante recorrido por la diversidad cultural de cinco zonas de nuestro país.",
+    img: "../src/assets/chiliche.webp",
+  },
+  {
+    title: "Chiliche, Gente de Chile",
+    description:
+      "Un vibrante recorrido por la diversidad cultural de cinco zonas de nuestro país.",
+    img: "../src/assets/chiliche.webp",
+  },
+  {
+    title: "Chiliche, Gente de Chile",
+    description:
+      "Un vibrante recorrido por la diversidad cultural de cinco zonas de nuestro país.",
+    img: "../src/assets/chiliche.webp",
+  },
+];
 ---
 
 <Layout title="Historia">
-    <Header />
-    <main>
-        <Hero 
-            title='55 años entrelazando mística, respeto y pasión'
-            bajada='Descubre nuestra historia de 55 años de tradición y excelencia.'
-        />
-    </main>
-    <Footer />
+  <Header />
+  <main>
+    <Hero
+      title="55 años entrelazando mística, respeto y pasión"
+      bajada="Descubre nuestra historia de 55 años de tradición y excelencia."
+    />
+    <FeatureSplit
+      title="Semillas de mística en la aulas"
+      content="La historia del Ballet Folklórico Antumapu es mucho más que un registro de fechas y escenarios; es un viaje de más de medio siglo hacia el corazón de la identidad chilena. Lo que nació como la inquietud de un grupo de jóvenes universitarios, hoy late con fuerza como el referente folclórico más emblemático de la Universidad de Chile y un verdadero embajador de nuestra cultura en el mundo. Todo comenzó en 1971 , cuando estudiantes y profesores de la Facultad de Ciencias Agrarias y Forestales sintieron que a su formación académica le faltaba algo vital: el arte. Así nació Antumapu (que en lengua mapuche significa 'Tierra del Sol'). Bajo la guía de su director fundador, Óscar Ramírez Arriagada , esta agrupación se forjó sobre un pacto inquebrantable: rescatar, respetar y proyectar el patrimonio nacional con el rigor de la academia y la pasión de la juventud."
+      img="../src/assets/chiliche.webp"
+      alt="Historia de Antumapu"
+    />
+    <GridSection
+      title="La investigación: El alma detrás de cada paso"
+      content="Si hay algo que define a Antumapu, es que no bailan simplemente una coreografía; interpretan una historia documentada. Antes de pisar el escenario, el equipo se sumerge en una profunda investigación de campo. Viajan, observan y comparten con las comunidades para asegurar que el habitante que inspiró la obra se sienta genuinamente reflejado en ella. Este profundo respeto ha dado vida a 14 obras de gran formato, entre las que destacan:"
+    >
+      {
+        cardsInfo.map((card) => (
+          <CardInfo
+            title={card.title}
+            description={card.description}
+            img={card.img}
+          />
+        ))
+      }
+    </GridSection>
+    <FeatureSplit
+      title="De Chile para los escenarios del mundo"
+      content='A lo largo de sus 54 años , estos embajadores culturales han llevado el nombre de Chile a los públicos más exigentes de América y Europa. Con más de 3.000 presentaciones en su historia, 35 giras internacionales y un promedio de 60 funciones anuales, Antumapu ha cosechado aplausos imborrables. Entre sus hitos brillan el premio a la "Mejor Coreografía" en el prestigioso Festival de Dijon (Francia, 1982) y la anhelada Antorcha de Plata en el Festival de Viña del Mar (1988).'
+      img="../src/assets/chiliche.webp"
+      alt="Historia de Antumapu"
+      imageLeft={true}
+    />
+    <Conclusion
+      text='Hoy, impulsados por su lema "Creatividad y Pasión", el Ballet Folklórico Antumapu mantiene sus puertas abiertas. Siguen siendo ese espacio donde los estudiantes de la "Casa de Bello" se encuentran para mantener vivo el fuego de la tradición, abrazando su historia con una mirada moderna, universal y profundamente humana'
+      img="../src/assets/chiliche.webp"
+      Imgalt="Chiliche"
+    />
+  </main>
+  <Footer />
 </Layout>

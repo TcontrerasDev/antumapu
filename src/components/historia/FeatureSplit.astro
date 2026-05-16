@@ -1,10 +1,11 @@
 ---
 import Section from "./Section.astro";
+import { Image } from "astro:assets";
 
 interface Props {
     title: string;
     content: string;
-    img: string;
+    img: any;
     alt: string;
     imageLeft?: boolean;
 }
@@ -19,7 +20,7 @@ const { title, content, img, alt, imageLeft = false } = Astro.props;
             <p class="text-white-soft text-body prose">{content}</p>
         </div>
         <div class:list={["col-span-full lg:col-span-6", imageLeft ? "lg:order-1" : "lg:order-2"]}>
-            <img src={img} alt={alt} class="w-full h-full object-cover">
+            <Image src={img} alt={alt} class="w-full h-full object-cover" />
         </div>
     </div>
 </Section>

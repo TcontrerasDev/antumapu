@@ -1,9 +1,10 @@
 ---
 import Section from "./Section.astro";
+import { Image } from "astro:assets";
 
 interface Props {
   text: string;
-  img: string;
+  img: any;
   Imgalt: string;
 }
 
@@ -14,7 +15,7 @@ const { text, img, Imgalt } = Astro.props;
   <div class="wrapper flex flex-col gap-8">
     <p class="font-heading-2! text-2xl text-white">{text}</p>
     <div class="w-full h-[50vh]">
-        <img src={img} alt={Imgalt} class="w-full h-full object-cover object-top"/>
+        <Image src={img} alt={Imgalt} class="w-full h-full object-cover object-top"/>
     </div>
   </div>
 </Section>

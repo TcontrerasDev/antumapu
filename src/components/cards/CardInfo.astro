@@ -1,8 +1,10 @@
 ---
+import { Image } from "astro:assets";
+
 interface Props {
     title: string;
     description: string;
-    img: string;
+    img: any;
 }
 
 const { title, description, img } = Astro.props;
@@ -14,6 +16,6 @@ const { title, description, img } = Astro.props;
         <p class="text-body text-navy-950">{description}</p>
     </div>
     <div class="w-full">
-        <img src={img} alt={title} class="w-full h-full object-cover">
+        <Image src={img} alt={title} class="w-full h-full object-cover" />
     </div>
 </article>

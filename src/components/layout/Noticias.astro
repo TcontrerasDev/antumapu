@@ -7,9 +7,10 @@ import CardDestacada from "../cards/CardNoticiaDestacada.astro";
 interface Props {
     title: string;
     bajada: string;
+    theme?: "light" | "dark";
 }
 
-const { title, bajada } = Astro.props;
+const { title, bajada, theme = "light" } = Astro.props;
 
 const noticias = [
     {
@@ -50,11 +51,39 @@ const noticias = [
 ]
 ---
 
-<section class="padding-section bg-sand-100">
+<section
+    class:list={[
+        "padding-section",
+        {
+            "bg-sand-100": theme === "light",
+            "bg-navy-950": theme === "dark",
+        },
+    ]}
+>
     <div class="wrapper">
         <div class="pb-8 flex flex-col gap-4">
-            <h2 class="h2-heading text-navy-950">{title}</h2>
-            <p class="text-navy-950/80 max-w-2xl">{bajada}</p>
+            <h2
+                class:list={[
+                    "h2-heading",
+                    {
+                        "text-navy-950": theme === "light",
+                        "text-sand-100": theme === "dark",
+                    },
+                ]}
+            >
+                {title}
+            </h2>
+            <p
+                class:list={[
+                    {
+                        "text-navy-950/80": theme === "light",
+                        "text-white-soft/80": theme === "dark",
+                    },
+                    "max-w-2xl",
+                ]}
+            >
+                {bajada}
+            </p>
         </div>
         <div class="grid gap-5 lg:grid-cols-12 items-baseline pb-8">
             {noticias.map((noticias, index) => {
@@ -66,6 +95,7 @@ const noticias = [
                             fecha={noticias.fecha}
                             titulo={noticias.titulo}
                             descripcion={noticias.descripcion}
+                            theme={theme}
                         />
                     )
                 }
@@ -79,6 +109,7 @@ const noticias = [
                             fecha={noticias.fecha}
                             titulo={noticias.titulo}
                             descripcion={noticias.descripcion}
+                            theme={theme}
                         />
                     )
                 }
@@ -94,6 +125,7 @@ const noticias = [
                             fecha={noticia.fecha}
                             titulo={noticia.titulo}
                             descripcion={noticia.descripcion}
+                            theme={theme}
                         />
                     )
                 }

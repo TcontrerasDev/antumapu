@@ -1,0 +1,23 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import Footer from "../components/Footer.astro";
+import Noticia from "../components/layout/Noticias.astro";
+---
+
+<Layout title="Noticias">
+  <Header />
+  <main>
+    <Hero 
+        title="Noticias"
+        bajada="Entérate de nuestras últimas novedades y proyectos. Un espacio dedicado a compartir las historias, hitos y logros que marcan el día a día de nuestra agrupación."
+    />
+    <Noticia 
+        title =" "
+        bajada=" "
+        theme="dark"
+    />
+  </main>
+  <Footer />
+</Layout>

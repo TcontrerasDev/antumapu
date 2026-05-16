@@ -5,9 +5,10 @@ interface Props {
     fecha: string;
     titulo: string;
     descripcion: string;
+    theme?: "light" | "dark";
 }
 
-const { url, imgSrc, fecha, titulo, descripcion } = Astro.props;
+const { url, imgSrc, fecha, titulo, descripcion, theme = "light" } = Astro.props;
 ---
 
 <article class="col-span-full lg:col-span-4 hover:[&_h3]:underline">
@@ -19,8 +20,26 @@ const { url, imgSrc, fecha, titulo, descripcion } = Astro.props;
             <span class="uppercase text-gold-700 text-base font-heading-2"
                 >{fecha}</span
             >
-            <h3 class="text-h3">{titulo}</h3>
-            <p class="text-base text-navy-950">
+            <h3
+                class:list={[
+                    "text-h3",
+                    {
+                        "text-navy-950": theme === "light",
+                        "text-sand-100": theme === "dark",
+                    },
+                ]}
+            >
+                {titulo}
+            </h3>
+            <p
+                class:list={[
+                    "text-base",
+                    {
+                        "text-navy-950": theme === "light",
+                        "text-white-soft": theme === "dark",
+                    },
+                ]}
+            >
                 {descripcion}
             </p>
         </div>

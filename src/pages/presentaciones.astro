@@ -1,0 +1,20 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import Footer from "../components/Footer.astro";
+import GridPrestaciones from "../components/presentaciones/GridPrestaciones.astro";
+---
+
+<Layout title="Presentaciones">
+  <Header theme="light" />
+  <main>
+    <Hero
+      title="Póximas presentaciones"
+      bajada="Vive la mística de Antumapu en el escenario. Revisa nuestra cartelera oficial, descubre dónde estaremos próximamente y acompáñanos a celebrar la riqueza de nuestras raíces en directo."
+      theme="light"
+    />
+    <GridPrestaciones />
+  </main>
+  <Footer />
+</Layout>

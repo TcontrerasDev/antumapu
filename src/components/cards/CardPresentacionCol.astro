@@ -1,0 +1,80 @@
+---
+interface Props {
+  url: URL;
+  dia: string | number;
+  mes: string;
+  titulo: string;
+  obra: string;
+  lugar: string;
+  direccion: string;
+  hora: string;
+}
+
+const { url, dia, mes, titulo, obra, lugar, direccion, hora } = Astro.props;
+---
+
+<article class="col-span-full md:col-span-6 lg:col-span-4">
+  <a
+    href={url}
+    target="_blank"
+    class="relative p-5 flex flex-col gap-5 group hover:bg-navy-950 focus:bg-navy-950 transition-all ease-in"
+  >
+    <div class="flex flex-col">
+      <span
+        class="text-[64px] text-navy-950 font-heading-2 group-hover:text-white group-focus:text-white transition-colors ease-in"
+        >{dia}</span
+      >
+      <span
+        class="uppercase text-[16px] text-gold-700 font-heading-2 group-hover:text-gold-500 group-focus:text-gold-500 transition-colors ease-in"
+        >{mes}</span
+      >
+    </div>
+    <div class="flex flex-col gap-4">
+      <h2
+        class="text-[38px] text-navy-950 group-hover:text-white group-focus:text-white"
+      >
+        {titulo}
+      </h2>
+      <p
+        class="text-base text-navy-800 italic group-hover:text-gold-500 group-focus:text-gold-500"
+      >
+        {obra}
+      </p>
+    </div>
+    <div class="flex flex-col gap-2">
+      <p
+        class="text-[20px] font-heading-2! text-navy-950 group-hover:text-white group-focus:text-white"
+      >
+        {lugar}
+      </p>
+      <p
+        class="text-[20px] font-light font-heading-2! text-navy-800 group-hover:text-gold-500 group-focus:text-gold-500"
+      >
+        {direccion}
+      </p>
+    </div>
+    <div>
+      <p
+        class="text-[20px] font-heading-2! text-navy-950 group-hover:text-white group-focus:text-white"
+      >
+        {hora}
+      </p>
+    </div>
+    <span>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="stroke-gold-700 absolute bottom-0 right-0 w-6 m-5 group-hover:stroke-gold-500 group-hover:rotate-320 group-focus:stroke-gold-500 group-focus:rotate-320"
+      >
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+        <path d="M5 12l14 0"></path>
+        <path d="M13 18l6 -6"></path>
+        <path d="M13 6l6 6"></path>
+      </svg>
+    </span>
+  </a>
+</article>

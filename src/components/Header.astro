@@ -1,8 +1,22 @@
 ---
 import Navbar from "./Navbar.astro";
+
+interface Props {
+    theme?: "light" | "dark";
+}
+
+const { theme = "dark" } = Astro.props;
 ---
 
-<header id="main-header" class="w-full fixed top-0 z-50 transition-all duration-300">
+<header
+    id="main-header"
+    class:list={[
+        "w-full fixed top-0 z-50 transition-all duration-300",
+        {
+            "bg-navy-800": theme === "light",
+        },
+    ]}
+>
     <Navbar />
 </header>
 
@@ -12,9 +26,9 @@ import Navbar from "./Navbar.astro";
 
         const handleScroll = () => {
             if (window.scrollY > 50) {
-                header?.classList.add('bg-navy-950/70', 'backdrop-blur-md', 'border-white/5');
+                header?.classList.add('bg-navy-950/70!', 'backdrop-blur-md', 'border-white/5');
             } else {
-                header?.classList.remove('bg-navy-950/70', 'backdrop-blur-md', 'border-white/5');
+                header?.classList.remove('bg-navy-950/70!', 'backdrop-blur-md', 'border-white/5');
             }
         };
 

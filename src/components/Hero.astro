@@ -1,68 +1,72 @@
 ---
 interface Props {
-    title: string;
-    bajada: string;
-    theme?: "light" | "dark";
+  title: string;
+  bajada: string;
+  theme?: "light" | "dark";
 }
 
 const { title, bajada, theme = "dark" } = Astro.props;
 
 const pathname = Astro.url.pathname;
-const pageName = pathname.split('/').filter(Boolean).pop() || '';
+const pageName = pathname.split("/").filter(Boolean).pop() || "";
 const formattedPageName = pageName.charAt(0).toUpperCase() + pageName.slice(1);
 ---
 
 <section
-    class:list={[
-        "h-max relative py-36",
-        {
-            "bg-hero-gradient": theme === "dark",
-            "bg-sand-100": theme === "light",
-        },
-    ]}
+  class:list={[
+    "h-max relative py-36",
+    {
+      "bg-hero-gradient": theme === "dark",
+      "bg-sand-100": theme === "light",
+    },
+  ]}
 >
-    <div class="w-56 h-56 aspect-square absolute right-0 lg:right-80 top-42.75 rounded-[274px] bg-gold-500 blur-[175px]"></div>
-    <div class="wrapper flex flex-col justify-center gap-7 h-full relative z-10">
-        <span class="text-gold-500 font-heading-2 tracking-[1.4px]">
-            <a
-                href="/"
-                class:list={[
-                    {
-                        "text-white-soft!": theme === "dark",
-                        "text-navy-950": theme === "light",
-                    },
-                ]}
-            >Inicio / </a>
-            <span
-                class:list={[
-                    {
-                        "text-white": theme === "dark",
-                        "text-gold-500": theme === "light",
-                    },
-                ]}
-            > {formattedPageName}</span>
-        </span>
-        <h1
-            class:list={[
-                "font-heading-2 text-[64px] max-sm:text-h2 2xl:text-h1 lg:w-[70%]",
-                {
-                    "text-white": theme === "dark",
-                    "text-navy-950": theme === "light",
-                },
-            ]}
-        >
-            {title}
-        </h1>
-        <p
-            class:list={[
-                "text-[20px] w-3/5",
-                {
-                    "text-white": theme === "dark",
-                    "text-navy-950": theme === "light",
-                },
-            ]}
-        >
-            {bajada}
-        </p>
-    </div>
+  <div
+    class="w-56 h-56 aspect-square absolute right-0 lg:right-80 top-42.75 rounded-[274px] bg-gold-500 blur-[175px]"
+  >
+  </div>
+  <div class="wrapper flex flex-col justify-center gap-7 h-full relative z-10">
+    <span class="text-gold-500 font-heading-2 tracking-[1.4px]">
+      <a
+        href="/"
+        class:list={[
+          {
+            "text-white-soft!": theme === "dark",
+            "text-navy-950": theme === "light",
+          },
+        ]}
+        >Inicio /
+      </a>
+      <span
+        class:list={[
+          {
+            "text-gold-500": theme === "dark",
+            "text-gold-700": theme === "light",
+          },
+        ]}
+      >
+        {formattedPageName}</span
+      >
+    </span>
+    <h1
+      class:list={[
+        "font-heading-2 text-[64px] max-sm:text-h2 2xl:text-h1 lg:w-[70%]",
+        {
+          "text-white": theme === "dark",
+          "text-navy-950": theme === "light",
+        },
+      ]}
+      set:html={title}
+    />
+    <div
+      class:list={[
+        "text-[20px] w-3/5",
+        {
+          "text-white": theme === "dark",
+          "text-navy-950": theme === "light",
+        },
+      ]}
+      set:html={bajada}
+    />
+  </div>
 </section>

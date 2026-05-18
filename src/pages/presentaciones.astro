@@ -4,6 +4,20 @@ import Header from "../components/Header.astro";
 import Hero from "../components/Hero.astro";
 import Footer from "../components/Footer.astro";
 import GridPrestaciones from "../components/presentaciones/GridPrestaciones.astro";
+import CardPresentacionCol from "../components/cards/CardPresentacionCol.astro";
+import { wpApi } from "../lib/wp";
+
+const dataPresentaciones: {
+  title: { rendered: string };
+  acf: {
+    url: string;
+    fecha_source: { formatted_value: string };
+    obra: string;
+    lugar: string;
+    direccion: string;
+    hora_source: { formatted_value: string };
+  };
+}[] = await wpApi.getPresentaciones();
 ---
 
 <Layout title="Presentaciones">
@@ -14,7 +28,21 @@ import GridPrestaciones from "../components/presentaciones/GridPrestaciones.astr
       bajada="Vive la mística de Antumapu en el escenario. Revisa nuestra cartelera oficial, descubre dónde estaremos próximamente y acompáñanos a celebrar la riqueza de nuestras raíces en directo."
       theme="light"
     />
-    <GridPrestaciones />
+    <GridPrestaciones>
+      {
+        dataPresentaciones.map((presentacion) => (
+          <CardPresentacionCol
+            url={presentacion.acf.url}
+            fecha={presentacion.acf.fecha_source.formatted_value}
+            titulo={presentacion.title.rendered}
+            obra={presentacion.acf.obra}
+            lugar={presentacion.acf.lugar}
+            direccion={presentacion.acf.direccion}
+            hora={presentacion.acf.hora_source.formatted_value}
+          />
+        ))
+      }
+    </GridPrestaciones>
   </main>
   <Footer />
 </Layout>

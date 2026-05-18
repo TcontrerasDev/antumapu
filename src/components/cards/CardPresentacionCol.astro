@@ -1,8 +1,7 @@
 ---
 interface Props {
-  url: URL;
-  dia: string | number;
-  mes: string;
+  url: string;
+  fecha: string;
   titulo: string;
   obra: string;
   lugar: string;
@@ -10,7 +9,12 @@ interface Props {
   hora: string;
 }
 
-const { url, dia, mes, titulo, obra, lugar, direccion, hora } = Astro.props;
+const { url, fecha, titulo, obra, lugar, direccion, hora } = Astro.props;
+
+// Separar fecha
+const dateParts = fecha.split(" ");
+const dia = dateParts.find((p) => /\d/.test(p)) || "";
+const mes = dateParts.find((p) => !/\d/.test(p)) || "";
 ---
 
 <article class="col-span-full md:col-span-6 lg:col-span-4">
@@ -32,14 +36,12 @@ const { url, dia, mes, titulo, obra, lugar, direccion, hora } = Astro.props;
     <div class="flex flex-col gap-4">
       <h2
         class="text-[38px] text-navy-950 group-hover:text-white group-focus:text-white"
-      >
-        {titulo}
-      </h2>
+        set:html={titulo}
+      />
       <p
         class="text-base text-navy-800 italic group-hover:text-gold-500 group-focus:text-gold-500"
-      >
-        {obra}
-      </p>
+        set:html={obra}
+      />
     </div>
     <div class="flex flex-col gap-2">
       <p

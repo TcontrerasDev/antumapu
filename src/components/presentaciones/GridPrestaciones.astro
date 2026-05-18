@@ -1,80 +1,5 @@
 ---
-import CardPresentacionCol from "../cards/CardPresentacionCol.astro";
 
-const presentaciones = [
-  {
-    url: new URL(
-      "https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu",
-    ),
-    dia: "20",
-    mes: "May",
-    titulo: "Gala astística 55°",
-    obra: "Virgen Del Milagro - Chiloé, archipiélago mágico",
-    lugar: "TEATRO UNIVERSIDAD DE CHILE",
-    direccion: "Providencia 43, Santiago",
-    hora: "19:00",
-  },
-  {
-    url: new URL(
-      "https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu",
-    ),
-    dia: "20",
-    mes: "May",
-    titulo: "Gala astística 55°",
-    obra: "Virgen Del Milagro - Chiloé, archipiélago mágico",
-    lugar: "TEATRO UNIVERSIDAD DE CHILE",
-    direccion: "Providencia 43, Santiago",
-    hora: "19:00",
-  },
-  {
-    url: new URL(
-      "https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu",
-    ),
-    dia: "20",
-    mes: "May",
-    titulo: "Gala astística 55°",
-    obra: "Virgen Del Milagro - Chiloé, archipiélago mágico",
-    lugar: "TEATRO UNIVERSIDAD DE CHILE",
-    direccion: "Providencia 43, Santiago",
-    hora: "19:00",
-  },
-  {
-    url: new URL(
-      "https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu",
-    ),
-    dia: "20",
-    mes: "May",
-    titulo: "Gala astística 55°",
-    obra: "Virgen Del Milagro - Chiloé, archipiélago mágico",
-    lugar: "TEATRO UNIVERSIDAD DE CHILE",
-    direccion: "Providencia 43, Santiago",
-    hora: "19:00",
-  },
-  {
-    url: new URL(
-      "https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu",
-    ),
-    dia: "20",
-    mes: "May",
-    titulo: "Gala astística 55°",
-    obra: "Virgen Del Milagro - Chiloé, archipiélago mágico",
-    lugar: "TEATRO UNIVERSIDAD DE CHILE",
-    direccion: "Providencia 43, Santiago",
-    hora: "19:00",
-  },
-  {
-    url: new URL(
-      "https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu",
-    ),
-    dia: "20",
-    mes: "May",
-    titulo: "Gala astística 55°",
-    obra: "Virgen Del Milagro - Chiloé, archipiélago mágico",
-    lugar: "TEATRO UNIVERSIDAD DE CHILE",
-    direccion: "Providencia 43, Santiago",
-    hora: "19:00",
-  },
-];
 ---
 
 <section class="pb-18.75 bg-sand-100">
@@ -82,20 +7,7 @@ const presentaciones = [
     <div
       class="grid grid-cols-12 py-7 border-t border-b border-navy-950 max-sm:py-5"
     >
-      {
-        presentaciones.map((presentacion) => (
-          <CardPresentacionCol
-            url={presentacion.url}
-            dia={presentacion.dia}
-            mes={presentacion.mes}
-            titulo={presentacion.titulo}
-            obra={presentacion.obra}
-            lugar={presentacion.lugar}
-            direccion={presentacion.direccion}
-            hora={presentacion.hora}
-          />
-        ))
-      }
+     <slot />
     </div>
   </div>
 </section>

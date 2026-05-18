@@ -1,0 +1,77 @@
+---
+import ButtonTransparent from "../buttons/ButtonTransparent.astro";
+
+interface Props {
+  title: string;
+  resumen: string;
+  img: string;
+  alt: string;
+  statText1: string;
+  statNumber1: string;
+  statText2: string;
+  statNumber2: string;
+  statText3: string;
+  statNumber3: string;
+}
+
+const {
+  title,
+  resumen,
+  img,
+  alt,
+  statText1,
+  statText2,
+  statText3,
+  statNumber1,
+  statNumber2,
+  statNumber3,
+} = Astro.props;
+---
+
+<section class="padding-section bg-navy-950">
+  <div
+    class="wrapper grid grid-cols-1 items-start lg:grid-cols-2 lg:items-center gap-5"
+  >
+    <div class="flex flex-col gap-7">
+      <h2 class="text-white h2-heading">{title}</h2>
+      <div>
+        <p
+          class="text-white-soft mb-4 whitespace-pre-line"
+          set:html={resumen}
+        />
+      </div>
+      <ButtonTransparent href="/historia">Conocer más</ButtonTransparent>
+    </div>
+    <div>
+      <img src={img} alt={alt} class="w-full h-full object-cover" />
+    </div>
+    <div
+      class="flex flex-col mt-10 justify-center items-center gap-16 md:flex-row border-t border-b border-gold-700 py-22 md:gap-48 lg:col-span-2"
+    >
+      <div class="flex flex-col items-center justify-center gap-2">
+        <p class="text-gold-500 text-5xl font-heading-2!">{statNumber1}</p>
+        <p
+          class="text-center font-heading-2! uppercase tracking-[1.4px] text-white-soft"
+        >
+          {statText1}
+        </p>
+      </div>
+      <div class="flex flex-col items-center justify-center gap-2">
+        <p class="text-gold-500 text-5xl font-heading-2!">{statNumber2}</p>
+        <p
+          class="text-center font-heading-2! uppercase tracking-[1.4px] text-white-soft"
+        >
+          {statText2}
+        </p>
+      </div>
+      <div class="flex flex-col items-center justify-center gap-2">
+        <p class="text-gold-500 text-5xl font-heading-2!">{statNumber3}</p>
+        <p
+          class="text-center font-heading-2! uppercase tracking-[1.4px] text-white-soft"
+        >
+          {statText3}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

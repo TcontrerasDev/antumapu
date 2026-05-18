@@ -1,0 +1,69 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import RepObras from "../components/repertorio/RepObras.astro";
+import Cardrep from "../components/cards/Cardrep.astro";
+import Footer from "../components/Footer.astro";
+
+const repertorio = [
+  {
+    url: "/",
+    ano: 1999,
+    aniTitulo: "Chiliche",
+    termTitulo: "Gente de Chile",
+    description:
+      "Un vibrante recorrido por la diversidad cultural de cinco zonas de nuestro país.",
+  },
+  {
+    url: "/",
+    ano: 1999,
+    aniTitulo: "Chiliche",
+    termTitulo: "Gente de Chile",
+    description:
+      "Un vibrante recorrido por la diversidad cultural de cinco zonas de nuestro país.",
+  },
+  {
+    url: "/",
+    ano: 1999,
+    aniTitulo: "Chiliche",
+    termTitulo: "Gente de Chile",
+    description:
+      "Un vibrante recorrido por la diversidad cultural de cinco zonas de nuestro país.",
+  },
+  {
+    url: "/",
+    ano: 1999,
+    aniTitulo: "Chiliche",
+    termTitulo: "Gente de Chile",
+    description:
+      "Un vibrante recorrido por la diversidad cultural de cinco zonas de nuestro país.",
+  },
+];
+---
+
+<Layout title="Repertorio">
+  <Header theme="dark" />
+  <main>
+    <Hero
+      title="Repertorio"
+      bajada="Un viaje coreográfico por el territorio nacional. Descubre nuestro repertorio de gran formato, donde cada obra nace de una rigurosa investigación de campo para reflejar fielmente la esencia de su gente."
+      theme="dark"
+    />
+    <RepObras>
+      {
+        repertorio.map((obra, index) => (
+          <Cardrep
+            url={obra.url}
+            numeracion={index + 1}
+            ano={obra.ano}
+            iniTitulo={obra.aniTitulo}
+            termTitulo={obra.termTitulo}
+            description={obra.description}
+          />
+        ))
+      }
+    </RepObras>
+  </main>
+  <Footer />
+</Layout>

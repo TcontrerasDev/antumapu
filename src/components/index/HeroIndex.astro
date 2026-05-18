@@ -1,22 +1,26 @@
 ---
-import { Image } from "astro:assets";
-import HeroImage from "../../assets/bg-image.png";
 import ButtonBg from "../buttons/ButtonBg.astro";
 import ButtonTransparent from "../buttons/ButtonTransparent.astro";
 
 interface Props {
+  antetitulo: string;
   title: string;
   bajada: string;
+  txtBtn1: string;
+  linkBtn1: string;
+  linkBtn2: string;
+  txtBtn2: string;
+  imgBack: string;
 }
 
-const { title, bajada } = Astro.props;
+const { antetitulo ,title, bajada, txtBtn1, linkBtn1, txtBtn2, linkBtn2, imgBack } = Astro.props;
 ---
 
 <section
   class="h-screen w-full flex items-center bg-hero-gradient relative overflow-clip"
 >
-  <Image
-    src={HeroImage}
+  <img
+    src={imgBack}
     alt=" "
     class="absolute top-0 left-0 w-full h-full object-cover opacity-5 z-0"
   />
@@ -39,22 +43,20 @@ const { title, bajada } = Astro.props;
       <p
         class="text-gold-500 text-[14px] uppercase text-base font-body font-light tracking-[0.8px]"
       >
-        55 AÑOS DE CREATIVIDAD Y PASIÓN
+        {antetitulo}
       </p>
     </div>
     <h1
-      class="text-white font-heading-1 max-sm:text-[40px] sm:text-[70px] lg:text-h-especial"
+      class="text-white font-heading-1 max-sm:text-[40px] sm:text-[70px] 2xl:text-h-especial"
     >
       {title}
     </h1>
-    <p class="max-w-3xl text-white font-light max-sm:text[16px] sm:text-[18px]">
-      {bajada}
-    </p>
+    <div class="max-w-3xl text-white font-light max-sm:text[16px] sm:text-[18px]" set:html={bajada} />
     <div
       class="flex flex-col md:flex-row items-start justify-center gap-4"
     >
-      <ButtonBg href="/presentaciones">Próximas Presentaciones</ButtonBg>
-      <ButtonTransparent href="/historia">Nuestra Historia</ButtonTransparent>
+      <ButtonBg href={linkBtn1}>{txtBtn1}</ButtonBg>
+      <ButtonTransparent href={linkBtn2}>{txtBtn2}</ButtonTransparent>
     </div>
   </div>
 </section>

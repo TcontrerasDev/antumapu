@@ -11,66 +11,68 @@ import Footer from "../components/Footer.astro";
 import { wpApi } from "../lib/wp";
 
 const page = await wpApi.getPageBySlug("antumapu");
-const dataPresentaciones: {
-  title: { rendered: string };
-  acf: {
-    url: string;
-    fecha_source: { formatted_value: string };
-    obra: string;
-    lugar: string;
-    direccion: string;
-    hora_source: { formatted_value: string };
-  };
-}[] = await wpApi.getPresentaciones();
+const dataPresentaciones: any[] = await wpApi.getPresentaciones();
+
+// Si la página no existe, usamos un objeto vacío para evitar errores de lectura
+const p = page || { 
+  title: { rendered: "Cargando..." }, 
+  content: { rendered: "" },
+  acf: { 
+    antetitulo: "", 
+    botones: {}, 
+    estadisticas: {}, 
+    imagen_seccion: {} 
+  } 
+};
 ---
 
 <Layout title="Antumapu">
   <Header theme="dark" />
   <main>
     <HeroIndex
-      antetitulo={page.acf.antetitulo}
-      title={page.title.rendered}
-      bajada={page.content.rendered}
-      txtBtn1={page.acf.botones.text_boton}
-      linkBtn1={page.acf.botones.pagina}
-      txtBtn2={page.acf.botones.text_boton_2}
-      linkBtn2={page.acf.botones.pagina_2}
-      imgBack={page._embedded?.["wp:featuredmedia"]?.[0]?.source_url}
+      antetitulo={p.acf?.antetitulo}
+      title={p.title?.rendered}
+      bajada={p.content?.rendered}
+      txtBtn1={p.acf?.botones?.text_boton}
+      linkBtn1={p.acf?.botones?.pagina}
+      txtBtn2={p.acf?.botones?.text_boton_2}
+      linkBtn2={p.acf?.botones?.pagina_2}
+      imgBack={p._embedded?.["wp:featuredmedia"]?.[0]?.source_url}
     />
     <Historia
-      title={page.acf.titulo_historia}
-      resumen={page.acf.resumen}
-      img={page.acf.imagen_seccion.url}
-      alt={page.acf.imagen_seccion.alt}
-      statText1={page.acf.estadisticas.titulo_estadistica}
-      statText2={page.acf.estadisticas.titulo_estadistica_2}
-      statText3={page.acf.estadisticas.titulo_estadistica_3}
-      statNumber1={page.acf.estadisticas.numero_estadistica}
-      statNumber2={page.acf.estadisticas.numero_estadistica_2}
-      statNumber3={page.acf.estadisticas.numero_estadistica_3}
+      title={p.acf?.titulo_historia}
+      resumen={p.acf?.resumen}
+      img={p.acf?.imagen_seccion?.url}
+      alt={p.acf?.imagen_seccion?.alt}
+      statText1={p.acf?.estadisticas?.titulo_estadistica}
+      statText2={p.acf?.estadisticas?.titulo_estadistica_2}
+      statText3={p.acf?.estadisticas?.titulo_estadistica_3}
+      statNumber1={p.acf?.estadisticas?.numero_estadistica}
+      statNumber2={p.acf?.estadisticas?.numero_estadistica_2}
+      statNumber3={p.acf?.estadisticas?.numero_estadistica_3}
     />
     <Presentaciones
-      title={page.acf.titulo_presentaciones}
-      bajada={page.acf.bajada_presentaciones}
+      title={p.acf?.titulo_presentaciones}
+      bajada={p.acf?.bajada_presentaciones}
     >
       {
         dataPresentaciones.map((presentacion) => (
           <CardPresentacion
-            url={presentacion.acf.url}
-            fecha={presentacion.acf.fecha_source.formatted_value}
-            titulo={presentacion.title.rendered}
-            obra={presentacion.acf.obra}
-            lugar={presentacion.acf.lugar}
-            direccion={presentacion.acf.direccion}
-            hora={presentacion.acf.hora_source.formatted_value}
+            url={presentacion.acf?.url}
+            fecha={presentacion.acf?.fecha_source?.formatted_value}
+            titulo={presentacion.title?.rendered}
+            obra={presentacion.acf?.obra}
+            lugar={presentacion.acf?.lugar}
+            direccion={presentacion.acf?.direccion}
+            hora={presentacion.acf?.hora_source?.formatted_value}
           />
         ))
       }
     </Presentaciones>
-    <Repertorio title={page.acf.titulo_obras} bajada={page.acf.bajada_obras} />
+    <Repertorio title={p.acf?.titulo_obras} bajada={p.acf?.bajada_obras} />
     <Noticias
-      title={page.acf.titulo_noticias}
-      bajada={page.acf.bajada_noticias}
+      title={p.acf?.titulo_noticias}
+      bajada={p.acf?.bajada_noticias}
       theme="light"
     />
   </main>

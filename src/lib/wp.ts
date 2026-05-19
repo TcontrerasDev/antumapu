@@ -1,11 +1,20 @@
 const WP_DOMAIN = import.meta.env.WP_DOMAIN;
 
 async function wpFetch(endpoint: string): Promise<any> {
-  const response = await fetch(`${WP_DOMAIN}${endpoint}`);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch ${endpoint}: ${response.statusText}`);
+  const url = `${WP_DOMAIN}${endpoint}`;
+  console.log(`Fetching: ${url}`); // Esto aparecerá en los logs de Vercel
+  
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      console.error(`Error en respuesta (${response.status}): ${response.statusText}`);
+      return null;
+    }
+    return response.json();
+  } catch (error) {
+    console.error(`Error crítico haciendo fetch a ${url}:`, error);
+    return null;
   }
-  return response.json();
 }
 
 export const wpApi = {

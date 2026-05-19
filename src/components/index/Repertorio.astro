@@ -15,8 +15,8 @@ const obras = await wpApi.getObras();
 <section class="bg-navy-950 padding-section">
   <div class="wrapper">
     <div class="mb-8 flex flex-col gap-4">
-      <h2 class="text-white h2-heading">{title}</h2>
-      <p class="text-white-soft max-w-2xl">{bajada}</p>
+      <h2 class="text-white h2-heading reveal-text">{title}</h2>
+      <p class="text-white-soft max-w-2xl reveal-text">{bajada}</p>
     </div>
     <div 
       class="flex overflow-x-auto gap-5 snap-x snap-mandatory pb-4 custom-scrollbar"
@@ -47,16 +47,45 @@ const obras = await wpApi.getObras();
 </section>
 
 <script>
-  const slider = document.querySelector('.custom-scrollbar');
+  const slider = document.querySelector('.custom-scrollbar') as HTMLElement;
   const indicator = document.querySelector('.scroll-indicator');
 
-  if (slider && indicator) {
-    slider.addEventListener('scroll', () => {
-      if (slider.scrollLeft > 20) {
-        indicator.classList.add('opacity-0', 'transition-opacity', 'duration-500');
-        setTimeout(() => indicator.remove(), 500);
+  if (slider) {
+    // Manejo del indicador
+    if (indicator) {
+      slider.addEventListener('scroll', () => {
+        if (slider.scrollLeft > 20) {
+          indicator.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+          setTimeout(() => indicator.remove(), 500);
+        }
+      }, { once: true });
+    }
+
+    // Lógica de Scroll: SHIFT para horizontal, sin SHIFT para vertical (Lenis)
+    slider.addEventListener('wheel', (e) => {
+      if (e.shiftKey) {
+        // Si presiona SHIFT, forzamos el scroll horizontal y evitamos el vertical
+        e.preventDefault();
+        slider.setAttribute('data-lenis-prevent', '');
+        
+        // Usamos scrollBy para mayor compatibilidad
+        // Cuando SHIFT está presionado, algunos navegadores pasan el valor en deltaX y otros en deltaY
+        const scrollAmount = e.deltaY || e.deltaX;
+        
+        slider.scrollBy({
+          left: scrollAmount,
+          behavior: 'smooth'
+        });
+      } else {
+        // Si NO presiona SHIFT, quitamos la prevención para que Lenis haga el scroll vertical de la página
+        slider.removeAttribute('data-lenis-prevent');
       }
-    }, { once: true });
+    }, { passive: false });
+
+    // Asegurarnos de restaurar el atributo al salir para evitar conflictos
+    slider.addEventListener('mouseleave', () => {
+      slider.setAttribute('data-lenis-prevent', '');
+    });
   }
 </script>
 

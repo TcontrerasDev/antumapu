@@ -28,25 +28,27 @@ const {
 } = Astro.props;
 ---
 
-<section class="padding-section bg-navy-950">
+<section class="padding-section bg-navy-950 overflow-hidden">
   <div
     class="wrapper grid grid-cols-1 items-start lg:grid-cols-2 lg:items-center gap-5"
   >
     <div class="flex flex-col gap-7">
-      <h2 class="text-white h2-heading">{title}</h2>
-      <div>
+      <h2 class="text-white h2-heading reveal-text">{title}</h2>
+      <div class="reveal-text">
         <p
           class="text-white-soft mb-4 whitespace-pre-line"
           set:html={resumen}
         />
       </div>
-      <ButtonTransparent href="/historia">Conocer más</ButtonTransparent>
+      <div class="reveal-text">
+        <ButtonTransparent href="/historia">Conocer más</ButtonTransparent>
+      </div>
     </div>
-    <div>
-      <img src={img} alt={alt} class="w-full h-full object-cover" />
+    <div class="overflow-hidden rounded-sm aspect-[4/5] lg:aspect-square">
+      <img src={img} alt={alt} class="w-full h-[120%] object-cover parallax-img scale-110" />
     </div>
     <div
-      class="flex flex-col mt-10 justify-center items-center gap-16 md:flex-row border-t border-b border-gold-700 py-22 md:gap-48 lg:col-span-2"
+      class="flex flex-col mt-10 justify-center items-center gap-16 md:flex-row border-t border-b border-gold-700 py-22 md:gap-48 lg:col-span-2 reveal-text"
     >
       <div class="flex flex-col items-center justify-center gap-2">
         <p class="text-gold-500 text-5xl font-heading-2!">{statNumber1}</p>

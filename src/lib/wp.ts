@@ -9,6 +9,16 @@ async function wpFetch(endpoint: string): Promise<any> {
 }
 
 export const wpApi = {
+  getNav: async (nav: string): Promise<any> => {
+    const data = await wpFetch(`menu/${nav}`);
+    return data
+  },
+
+  getWidget: async (widget: string): Promise<any> => {
+    const data = await wpFetch(`widget-area/${widget}`);
+    return data
+  },
+
   getPageBySlug: async (slug: string): Promise<any> => {
     const data = await wpFetch(`pages?slug=${slug}&_embed`);
     return data?.[0] || null;

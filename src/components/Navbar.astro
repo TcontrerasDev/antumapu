@@ -1,5 +1,9 @@
 ---
+import { url } from "astro:schema";
 import Logo from "../assets/logo-light.png";
+import { wpApi } from "../lib/wp";
+
+const nav: {title: string, url: string}[] = await wpApi.getNav("menu-primary")
 ---
 
 <nav class="w-full flex justify-center">
@@ -29,29 +33,11 @@ import Logo from "../assets/logo-light.png";
     <ul
       class="hidden xl:flex gap-8 text-white-soft items-center font-heading-2"
     >
-      <li>
-        <a class="uppercase text-[16px] tracking-[1.4px] hover:text-gold-500 transition-colors" href="/">Home</a>
-      </li>
-      <li>
-        <a class="uppercase text-[16px] tracking-[1.4px] hover:text-gold-500 transition-colors" href="/historia"
-          >Historia</a
-        >
-      </li>
-      <li>
-        <a class="uppercase text-[16px] tracking-[1.4px] hover:text-gold-500 transition-colors" href="/obras"
-          >Obras</a
-        >
-      </li>
-      <li>
-        <a class="uppercase text-[16px] tracking-[1.4px] hover:text-gold-500 transition-colors" href="/presentaciones"
-          >Presentaciones</a
-        >
-      </li>
-      <li>
-        <a class="uppercase text-[16px] tracking-[1.4px] hover:text-gold-500 transition-colors" href="/noticias"
-          >Noticias</a
-        >
-      </li>
+      {nav.map((item) => (
+        <li>
+          <a class="uppercase text-[16px] tracking-[1.4px] hover:text-gold-500 transition-colors" href={item.url}>{item.title}</a>
+        </li>
+      ))}
     </ul>
   </div>
 </nav>

@@ -1,65 +1,35 @@
 ---
+import type { GetStaticPaths } from "astro";
 import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
 import Hero from "../components/Hero.astro";
 import RepObras from "../components/repertorio/RepObras.astro";
 import Cardrep from "../components/cards/Cardrep.astro";
 import Footer from "../components/Footer.astro";
+import { wpApi } from "../lib/wp";
 
-const repertorio = [
-  {
-    url: "/",
-    ano: 1999,
-    aniTitulo: "Chiliche",
-    termTitulo: "Gente de Chile",
-    description:
-      "Un vibrante recorrido por la diversidad cultural de cinco zonas de nuestro país.",
-  },
-  {
-    url: "/",
-    ano: 1999,
-    aniTitulo: "Chiliche",
-    termTitulo: "Gente de Chile",
-    description:
-      "Un vibrante recorrido por la diversidad cultural de cinco zonas de nuestro país.",
-  },
-  {
-    url: "/",
-    ano: 1999,
-    aniTitulo: "Chiliche",
-    termTitulo: "Gente de Chile",
-    description:
-      "Un vibrante recorrido por la diversidad cultural de cinco zonas de nuestro país.",
-  },
-  {
-    url: "/",
-    ano: 1999,
-    aniTitulo: "Chiliche",
-    termTitulo: "Gente de Chile",
-    description:
-      "Un vibrante recorrido por la diversidad cultural de cinco zonas de nuestro país.",
-  },
-];
+const pageObras = await wpApi.getPageBySlug("obras")
+const obras = await wpApi.getObras();
+
 ---
 
-<Layout title="Repertorio">
+<Layout title="Obras">
   <Header theme="dark" />
   <main>
     <Hero
-      title="Repertorio"
-      bajada="Un viaje coreográfico por el territorio nacional. Descubre nuestro repertorio de gran formato, donde cada obra nace de una rigurosa investigación de campo para reflejar fielmente la esencia de su gente."
+      title={pageObras.title.rendered}
+      bajada={pageObras.content.rendered}
       theme="dark"
     />
     <RepObras>
       {
-        repertorio.map((obra, index) => (
+        obras.map((obra, index) => (
           <Cardrep
-            url={obra.url}
+            url={obra.slug}
             numeracion={index + 1}
-            ano={obra.ano}
-            iniTitulo={obra.aniTitulo}
-            termTitulo={obra.termTitulo}
-            description={obra.description}
+            ano={obra.acf.fecha_estreno_source.formatted_value}
+            titulo={obra.title.rendered}
+            description={obra.excerpt.rendered}
           />
         ))
       }

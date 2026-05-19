@@ -13,9 +13,23 @@ export const wpApi = {
     const data = await wpFetch(`pages?slug=${slug}&_embed`);
     return data?.[0] || null;
   },
+
+  getObras: async (): Promise<any[]> => {
+    return wpFetch("obras");
+  },
+
+  getObraBySlug: async (slug: string): Promise<any> => {
+    const data = await wpFetch(`obras?slug=${slug}&_embed`);
+    return data?.[0] || null;
+  },
+
+  getSlugObras: async (): Promise<string[]> => {
+    const data = await wpFetch("obras?_fields=slug");
+    return data.map((obra: any) => obra.slug);
+  },
+
   getPresentaciones: async (): Promise<any[]> => {
     const data = await wpFetch("presentaciones");
-    // Ordenar por el campo 'fecha' de ACF (asumiendo formato YYYYMMDD o similar)
     return data.sort((a: any, b: any) => {
       const fechaA = a.acf?.fecha || "";
       const fechaB = b.acf?.fecha || "";

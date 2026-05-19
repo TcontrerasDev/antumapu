@@ -2,31 +2,37 @@
 interface Props {
   url: URL | string;
   numeracion: number;
-  ano: string | number;
-  iniTitulo: string;
-  termTitulo: string;
+  ano: string;
+  titulo: string;
   description: string;
 }
 
-const { url, numeracion, ano, iniTitulo, termTitulo, description } =
-  Astro.props;
+const { url, numeracion, ano, titulo, description } = Astro.props;
+
+// Separar el título: primera palabra y el resto
+const words = titulo.trim().split(/\s+/);
+const firstWord = words[0];
+const restOfTitle = words.slice(1).join(' ');
+
+// Extraer solo el año: busca cualquier grupo de 4 números seguidos
+const yearMatch = ano.match(/\d{4}/);
+const yearOnly = yearMatch ? yearMatch[0] : ano;
 ---
 
 <article>
-  <a href={url} target="_blank" class="card-presentacion">
+  <a href={`/obras/${url}`} class="card-presentacion">
     <div class="info-main">
       <div class="flex flex-col justify-center">
-        <p class="ano">{numeracion} - {ano}</p>
+        <p class="ano">{numeracion} - {yearOnly}</p>
       </div>
       <div class="flex flex-col justify-center">
-        <h3 class="iniTitulo">{iniTitulo}</h3>
-        <span class="termTitulo">{termTitulo}</span>
+        <h3 class="iniTitulo" set:html={firstWord} ></h3>
+        <span class="termTitulo" set:html={restOfTitle}></span>
       </div>
     </div>
 
     <div class="info-details">
-      <div class="flex flex-col justify-center w-1/2">
-        <p class="description">{description}</p>
+      <div class="flex flex-col justify-center w-1/2 description" set:html={description}>
       </div>
       <div class="flex justify-center gap-5">
         <span class="icon-wrapper">

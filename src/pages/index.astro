@@ -50,8 +50,8 @@ const dataPresentaciones: {
       statNumber3={page.acf.estadisticas.numero_estadistica_3}
     />
     <Presentaciones
-      title="Próximas Presentaciones"
-      bajada="Explora nuestros próximos eventos y acompáñanos en nuestras presentaciones en vivo."
+      title={page.acf.titulo_presentaciones}
+      bajada={page.acf.bajada_presentaciones}
     >
       {
         dataPresentaciones.map((presentacion) => (

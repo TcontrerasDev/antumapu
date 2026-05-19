@@ -8,8 +8,24 @@ interface Props {
 const { title, bajada, theme = "dark" } = Astro.props;
 
 const pathname = Astro.url.pathname;
-const pageName = pathname.split("/").filter(Boolean).pop() || "";
-const formattedPageName = pageName.charAt(0).toUpperCase() + pageName.slice(1);
+const segments = pathname.split("/").filter(Boolean);
+
+// Función para formatear nombres (guiones a espacios y capitalizar)
+const formatName = (name: string) => {
+  const withSpaces = name.replace(/-/g, ' ');
+  return withSpaces.charAt(0).toUpperCase() + withSpaces.slice(1);
+};
+
+const breadcrumbs = segments.map((segment, index) => {
+  const url = `/${segments.slice(0, index + 1).join("/")}`;
+  return {
+    name: formatName(segment),
+    url,
+    isLast: index === segments.length - 1
+  };
+});
+
+const isObrasSubpage = segments[0] === "obras" && segments.length > 1;
 ---
 
 <section
@@ -37,16 +53,34 @@ const formattedPageName = pageName.charAt(0).toUpperCase() + pageName.slice(1);
         ]}
         >Inicio /
       </a>
-      <span
-        class:list={[
-          {
-            "text-gold-500": theme === "dark",
-            "text-gold-700": theme === "light",
-          },
-        ]}
-      >
-        {formattedPageName}</span
-      >
+      {
+        breadcrumbs.map((bc) => (
+          bc.isLast ? (
+            <span
+              class:list={[
+                {
+                  "text-gold-500": theme === "dark",
+                  "text-gold-700": theme === "light",
+                },
+              ]}
+            >
+              {" "}{bc.name}
+            </span>
+          ) : (
+            <a
+              href={bc.url}
+              class:list={[
+                {
+                  "text-white-soft!": theme === "dark",
+                  "text-navy-950": theme === "light",
+                },
+              ]}
+            >
+              {" "}{bc.name} /
+            </a>
+          )
+        ))
+      }
     </span>
     <h1
       class:list={[
@@ -68,5 +102,6 @@ const formattedPageName = pageName.charAt(0).toUpperCase() + pageName.slice(1);
       ]}
       set:html={bajada}
     />
+    <slot />
   </div>
 </section>

@@ -3,6 +3,9 @@ import { url } from "astro:schema";
 import ImgNoticia from "../../assets/chiliche.webp";
 import CardNoticia from "../cards/CardNoticia.astro";
 import CardDestacada from "../cards/CardNoticiaDestacada.astro";
+import { wpApi } from "../../lib/wp";
+
+const noticias = await wpApi.getNoticias()
 
 interface Props {
     title: string;
@@ -12,43 +15,14 @@ interface Props {
 
 const { title, bajada, theme = "light" } = Astro.props;
 
-const noticias = [
-    {
-        url: new URL('https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu'),
-        imgSrc: ImgNoticia.src,
-        fecha: '20 mayo 2026',
-        titulo: 'Noticia 1',
-        descripcion: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt'
-    },
-    {
-        url: new URL('https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu'),
-        imgSrc: ImgNoticia.src,
-        fecha: '20 mayo 2026',
-        titulo: 'Noticia 1',
-        descripcion: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt'
-    },
-    {
-        url: new URL('https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu'),
-        imgSrc: ImgNoticia.src,
-        fecha: '20 mayo 2026',
-        titulo: 'Noticia 1',
-        descripcion: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt'
-    },
-    {
-        url: new URL('https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu'),
-        imgSrc: ImgNoticia.src,
-        fecha: '20 mayo 2026',
-        titulo: 'Noticia 1',
-        descripcion: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt'
-    },
-    {
-        url: new URL('https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu'),
-        imgSrc: ImgNoticia.src,
-        fecha: '20 mayo 2026',
-        titulo: 'Noticia 1',
-        descripcion: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt'
-    }, 
-]
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
 ---
 
 <section
@@ -90,11 +64,11 @@ const noticias = [
                 if(index === 0 ) {
                     return (
                         <CardDestacada
-                            url={noticias.url}
-                            imgSrc={noticias.imgSrc}
-                            fecha={noticias.fecha}
-                            titulo={noticias.titulo}
-                            descripcion={noticias.descripcion}
+                            url={noticias.slug}
+                            imgSrc={noticias._embedded?.["wp:featuredmedia"]?.[0]?.source_url}
+                            fecha={formatDate(noticias.date)}
+                            titulo={noticias.title.rendered}
+                            descripcion={noticias.excerpt.rendered}
                             theme={theme}
                         />
                     )
@@ -104,11 +78,11 @@ const noticias = [
                 if(index === 1 ) {
                     return (
                         <CardNoticia
-                            url={noticias.url}
-                            imgSrc={noticias.imgSrc}
-                            fecha={noticias.fecha}
-                            titulo={noticias.titulo}
-                            descripcion={noticias.descripcion}
+                            url={noticias.slug}
+                            imgSrc={noticias._embedded?.["wp:featuredmedia"]?.[0]?.source_url}
+                            fecha={formatDate(noticias.date)}
+                            titulo={noticias.title.rendered}
+                            descripcion={noticias.excerpt.rendered}
                             theme={theme}
                         />
                     )
@@ -120,11 +94,11 @@ const noticias = [
                 if(index !== 0 && index !== 1) {
                     return (
                         <CardNoticia
-                            url={noticia.url}
-                            imgSrc={noticia.imgSrc}
-                            fecha={noticia.fecha}
-                            titulo={noticia.titulo}
-                            descripcion={noticia.descripcion}
+                            url={noticia.slug}
+                            imgSrc={noticia._embedded?.["wp:featuredmedia"]?.[0]?.source_url}
+                            fecha={formatDate(noticia.date)}
+                            titulo={noticia.title.rendered}
+                            descripcion={noticia.excerpt.rendered}
                             theme={theme}
                         />
                     )

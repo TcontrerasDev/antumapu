@@ -1,4 +1,6 @@
 ---
+import { getBreadcrumbs } from "../lib/utils";
+
 interface Props {
   title: string;
   bajada: string;
@@ -7,25 +9,7 @@ interface Props {
 
 const { title, bajada, theme = "dark" } = Astro.props;
 
-const pathname = Astro.url.pathname;
-const segments = pathname.split("/").filter(Boolean);
-
-// Función para formatear nombres (guiones a espacios y capitalizar)
-const formatName = (name: string) => {
-  const withSpaces = name.replace(/-/g, ' ');
-  return withSpaces.charAt(0).toUpperCase() + withSpaces.slice(1);
-};
-
-const breadcrumbs = segments.map((segment, index) => {
-  const url = `/${segments.slice(0, index + 1).join("/")}`;
-  return {
-    name: formatName(segment),
-    url,
-    isLast: index === segments.length - 1
-  };
-});
-
-const isObrasSubpage = segments[0] === "obras" && segments.length > 1;
+const breadcrumbs = getBreadcrumbs(Astro.url.pathname);
 ---
 
 <section

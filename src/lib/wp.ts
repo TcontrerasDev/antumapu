@@ -36,4 +36,13 @@ export const wpApi = {
       return fechaA.localeCompare(fechaB);
     });
   },
+
+  getNoticias: async (): Promise<any[]> => {
+    return wpFetch("noticias?_embed");
+  },
+
+  getNoticiaBySlug: async (slug: string): Promise<any> => {
+    const data = await wpFetch(`noticias?slug=${slug}&_embed`);
+    return data?.[0] || null;
+  },
 };

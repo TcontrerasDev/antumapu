@@ -17,11 +17,11 @@ const obra = await wpApi.getObraBySlug(slug);
 if (!obra) return Astro.redirect("/404");
 
 // Formatear fecha: Capitalizar primera letra y cambiar espacios por " - "
-const rawFecha = obra.acf.fecha_estreno_source.formatted_value || "";
+const rawFecha = obra.acf.fecha_estreno_source?.formatted_value || "";
 const formattedFecha =
   rawFecha.charAt(0).toUpperCase() + rawFecha.slice(1).replace(/\s+/g, " - ");
 
-const repertorio: { nombre: string }[] = obra.acf.repertorio;
+const repertorio: { nombre: string }[] = obra.acf.repertorio || [];
 ---
 
 <Layout title={obra.title.rendered}>
@@ -51,7 +51,7 @@ const repertorio: { nombre: string }[] = obra.acf.repertorio;
       <div class="wrapper grid grid-cols-12">
         <Descripcion
           texto={obra.acf.descripcion_obra}
-          video={obra.acf.video_source.formatted_value}
+          video={obra.acf.video_source?.formatted_value}
         />
         <div class="col-span-full lg:col-span-4 lg:col-start-9 xl:col-span-3 xl:col-start-10 bg-navy-950 px-5 h-max max-lg:mt-10">
           <h3 class="uppercase text-h3 text-white py-3 flex flex-col">
@@ -61,10 +61,10 @@ const repertorio: { nombre: string }[] = obra.acf.repertorio;
             class="*:border-t *:border-dashed *:border-white"
           >
             {
-              repertorio.map((baile) => (
+              repertorio.map((baile, index) => (
                 <li class="py-5">
                   <p class="text-white font-heading-2! uppercase text-[20px]">
-                    <span class="text-gold-500">01</span> - {baile.nombre}
+                    <span class="text-gold-500">{(index + 1).toString().padStart(2, '0')}</span> - {baile.nombre}
                   </p>
                 </li>
               ))

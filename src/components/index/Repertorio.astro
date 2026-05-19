@@ -1,6 +1,6 @@
 ---
-import CardObra from '../cards/CardObra.astro';
-import ImgChiliche from '../../assets/chiliche.webp';
+import CardObra from "../cards/CardObra.astro";
+import { wpApi } from "../../lib/wp";
 
 interface Props {
   title: string;
@@ -9,32 +9,7 @@ interface Props {
 
 const { title, bajada } = Astro.props;
 
-const obras = [
-  {
-    url: new URL('https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu'),
-    imgSrc: ImgChiliche.src,
-    titulo: 'Virgen Del Milagro',
-    descripcion: 'Chiloé, archipiélago mágico'
-  },
-  {
-    url: new URL('https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu'),
-    imgSrc: ImgChiliche.src,
-    titulo: 'Virgen Del Milagro',
-    descripcion: 'Chiloé, archipiélago mágico'
-  },
-  {
-    url: new URL('https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu'),
-    imgSrc: ImgChiliche.src,
-    titulo: 'Virgen Del Milagro',
-    descripcion: 'Chiloé, archipiélago mágico'
-  },
-  {
-    url: new URL('https://ceacuchile.ticketplus.cl/events/aniversario-55-anos-ballet-antumapu'),
-    imgSrc: ImgChiliche.src,
-    titulo: 'Virgen Del Milagro',
-    descripcion: 'Chiloé, archipiélago mágico'
-  }
-]
+const obras = await wpApi.getObras();
 ---
 
 <section class="bg-navy-950 padding-section">
@@ -43,15 +18,77 @@ const obras = [
       <h2 class="text-white h2-heading">{title}</h2>
       <p class="text-white-soft max-w-2xl">{bajada}</p>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+    <div 
+      class="flex overflow-x-auto gap-5 snap-x snap-mandatory pb-4 custom-scrollbar"
+      data-lenis-prevent
+    >
       {obras.map((obra) => (
-        <CardObra
-          url={obra.url}
-          imgSrc={obra.imgSrc}
-          titulo={obra.titulo}
-          descripcion={obra.descripcion}
-        />
+        <div class="w-full shrink-0 md:w-[calc(50%-10px)] lg:w-[calc(33.333%-14px)] xl:w-[calc(25%-15px)] snap-start">
+          <CardObra
+            url={obra.slug}
+            imgSrc={obra._embedded?.["wp:featuredmedia"]?.[0]?.source_url}
+            titulo={obra.title.rendered}
+            descripcion={obra.excerpt.rendered}
+          />
+        </div>
       ))}
+    </div>
+    
+    <div class="mt-4 flex justify-end lg:hidden">
+      <div class="flex items-center gap-2 text-gold-500 animate-pulse scroll-indicator">
+        <span class="text-sm font-heading-2 uppercase tracking-widest">Desliza</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-bounce-x">
+          <path d="M5 12h14"></path>
+          <path d="m12 5 7 7-7 7"></path>
+        </svg>
+      </div>
     </div>
   </div>
 </section>
+
+<script>
+  const slider = document.querySelector('.custom-scrollbar');
+  const indicator = document.querySelector('.scroll-indicator');
+
+  if (slider && indicator) {
+    slider.addEventListener('scroll', () => {
+      if (slider.scrollLeft > 20) {
+        indicator.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+        setTimeout(() => indicator.remove(), 500);
+      }
+    }, { once: true });
+  }
+</script>
+
+<style>
+  @keyframes bounce-x {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(5px); }
+  }
+  .animate-bounce-x {
+    animation: bounce-x 1s infinite;
+  }
+  /* Personalización de la barra de desplazamiento */
+  .custom-scrollbar {
+    scrollbar-color: #cda14d transparent; /* Firefox: thumb / track */
+    scrollbar-width: thin;
+  }
+
+  /* Chrome, Edge, y Safari */
+  .custom-scrollbar::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #cda14d; /* gold-500 */
+    border-radius: 20px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: #b38a3d; /* Un tono un poco más oscuro para el hover */
+  }
+</style>

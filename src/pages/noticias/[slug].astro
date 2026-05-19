@@ -105,7 +105,7 @@ const formatDate = (dateString: string) => {
             <h3 class="text-[24px] text-gold-500 tracking-[15%]">Autor</h3>
             <p
               class="text-white text-base"
-              set:html={noticia.acf.autor}
+              set:html={noticia.acf?.autor || "Antumapu"}
             />
           </div>
           <div>

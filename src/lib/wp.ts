@@ -15,7 +15,7 @@ export const wpApi = {
   },
 
   getObras: async (): Promise<any[]> => {
-    return wpFetch("obras");
+    return wpFetch("obras?_embed&per_page=100&orderby=date&order=asc");
   },
 
   getObraBySlug: async (slug: string): Promise<any> => {
@@ -24,7 +24,7 @@ export const wpApi = {
   },
 
   getSlugObras: async (): Promise<string[]> => {
-    const data = await wpFetch("obras?_fields=slug");
+    const data = await wpFetch("obras?_fields=slug&per_page=100");
     return data.map((obra: any) => obra.slug);
   },
 

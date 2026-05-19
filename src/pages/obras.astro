@@ -27,7 +27,7 @@ const obras = await wpApi.getObras();
           <Cardrep
             url={obra.slug}
             numeracion={index + 1}
-            ano={obra.acf.fecha_estreno_source.formatted_value}
+            ano={obra.acf.fecha_estreno_source?.formatted_value || ""}
             titulo={obra.title.rendered}
             description={obra.excerpt.rendered}
           />

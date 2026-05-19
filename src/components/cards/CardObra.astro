@@ -9,9 +9,9 @@ interface Props{
 const { url, imgSrc, titulo, descripcion } = Astro.props;
 ---
 
-<article class="h-130 border border-amber-50 rounded">
+<article class="h-130 border border-amber-50 rounded hover:border-gold-500 focus:border-gold-500 transition-all">
   <a
-    href={url}
+    href={`/obras/${url}`}
     class="group bg-hero-gradient flex h-full w-full rounded overflow-hidden"
   >
     <figure class="relative h-full w-full">
@@ -23,13 +23,11 @@ const { url, imgSrc, titulo, descripcion } = Astro.props;
       <figcaption
         class="absolute bottom-0 left-0 w-full xl:translate-y-[calc(100%-60px)] group-hover:translate-y-0 transition-transform duration-500 ease-in-out group-focus:translate-y-0"
       >
-        <h2 class="uppercase text-white text-3xl p-4">
-          {titulo}
+        <h2 class="uppercase text-white text-2xl p-4" set:html={titulo}>
         </h2>
         <div class="backdrop-brightness-30 p-4 flex flex-col gap-4">
-          <p class="text-base text-white-soft">
-            {descripcion}
-          </p>
+          <div class="text-base text-white-soft" set:html={descripcion}>
+          </div>
           <span
             class="text-gold-500 uppercase font-heading-2 flex gap-1 items-center font-semibold tracking-[1.4px]"
             >Leer más

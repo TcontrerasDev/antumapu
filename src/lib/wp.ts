@@ -1,7 +1,11 @@
 const WP_DOMAIN = import.meta.env.WP_DOMAIN;
 
 async function wpFetch(endpoint: string): Promise<any> {
-  const response = await fetch(`${WP_DOMAIN}${endpoint}`);
+  if (!WP_DOMAIN) {
+    throw new Error("WP_DOMAIN is not defined in environment variables. Check your .env file.");
+  }
+  const baseUrl = WP_DOMAIN.endsWith('/') ? WP_DOMAIN : `${WP_DOMAIN}/`;
+  const response = await fetch(`${baseUrl}${endpoint}`);
   if (!response.ok) {
     throw new Error(`Failed to fetch ${endpoint}: ${response.statusText}`);
   }

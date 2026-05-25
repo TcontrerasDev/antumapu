@@ -9,7 +9,21 @@ async function wpFetch(endpoint: string): Promise<any> {
   if (!response.ok) {
     throw new Error(`Failed to fetch ${endpoint}: ${response.statusText}`);
   }
-  return response.json();
+  const data = await response.json();
+
+  // Extract the root domain of the WordPress installation
+  const wpRootUrl = WP_DOMAIN.replace(/\/wp-json\/wp\/v2\/?$/, "").replace(/\/$/, "");
+
+  // If we are running in production (where WP_DOMAIN is not localhost),
+  // dynamically replace any localhost references inside the returned data
+  if (wpRootUrl && !wpRootUrl.includes("localhost")) {
+    const jsonStr = JSON.stringify(data);
+    // Replace http://localhost/cms-antumapu references with the actual production domain root
+    const fixedJsonStr = jsonStr.replace(/http:\/\/localhost\/cms-antumapu/g, wpRootUrl);
+    return JSON.parse(fixedJsonStr);
+  }
+
+  return data;
 }
 
 export const wpApi = {

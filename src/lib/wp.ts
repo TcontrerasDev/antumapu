@@ -17,10 +17,19 @@ async function wpFetch(endpoint: string): Promise<any> {
   // If we are running in production (where WP_DOMAIN is not localhost),
   // dynamically replace any localhost references inside the returned data
   if (wpRootUrl && !wpRootUrl.includes("localhost")) {
-    const jsonStr = JSON.stringify(data);
-    // Replace http://localhost/cms-antumapu references with the actual production domain root
-    const fixedJsonStr = jsonStr.replace(/http:\/\/localhost\/cms-antumapu/g, wpRootUrl);
-    return JSON.parse(fixedJsonStr);
+    let jsonStr = JSON.stringify(data);
+    
+    // 1. Replace http://localhost/cms-antumapu references with the actual production domain root
+    jsonStr = jsonStr.split("http://localhost/cms-antumapu").join(wpRootUrl);
+    
+    // 2. Force HTTPS for the production WordPress domain to avoid "Mixed Content" blocks
+    const secureWpRoot = wpRootUrl.replace(/^http:\/\//, "https://");
+    const insecureWpRoot = wpRootUrl.replace(/^https:\/\//, "http://");
+    
+    // Replace any http://your-domain with https://your-domain
+    jsonStr = jsonStr.split(insecureWpRoot).join(secureWpRoot);
+    
+    return JSON.parse(jsonStr);
   }
 
   return data;

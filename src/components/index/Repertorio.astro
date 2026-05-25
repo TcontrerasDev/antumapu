@@ -35,20 +35,24 @@ const obras = await wpApi.getObras();
     </div>
     
     <div class="mt-4 flex justify-end lg:hidden">
-      <div class="flex items-center gap-2 text-gold-500 animate-pulse scroll-indicator">
+      <button 
+        type="button" 
+        class="flex items-center gap-2 text-gold-500 animate-pulse scroll-indicator cursor-pointer hover:text-gold-400 active:scale-95 transition-all duration-200 select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 rounded p-1"
+        aria-label="Deslizar repertorio"
+      >
         <span class="text-sm font-heading-2 uppercase tracking-widest">Desliza</span>
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-bounce-x">
           <path d="M5 12h14"></path>
           <path d="m12 5 7 7-7 7"></path>
         </svg>
-      </div>
+      </button>
     </div>
   </div>
 </section>
 
 <script>
   const slider = document.querySelector('.custom-scrollbar') as HTMLElement;
-  const indicator = document.querySelector('.scroll-indicator');
+  const indicator = document.querySelector('.scroll-indicator') as HTMLElement;
 
   if (slider) {
     // Manejo del indicador
@@ -59,6 +63,16 @@ const obras = await wpApi.getObras();
           setTimeout(() => indicator.remove(), 500);
         }
       }, { once: true });
+
+      // Hacer que al hacer clic se desplace hacia la derecha por una obra
+      indicator.addEventListener('click', () => {
+        const firstCard = slider.querySelector('.snap-start') as HTMLElement;
+        const scrollAmount = firstCard ? firstCard.offsetWidth + 20 : slider.clientWidth;
+        slider.scrollBy({
+          left: scrollAmount,
+          behavior: 'smooth'
+        });
+      });
     }
 
     // Lógica de Scroll: SHIFT para horizontal, sin SHIFT para vertical (Lenis)

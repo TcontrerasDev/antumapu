@@ -1,9 +1,29 @@
 ---
-import { url } from "astro:schema";
 import Logo from "../assets/logo-light.png";
+import MobileMenu from "./MobileMenu.astro";
 import { wpApi } from "../lib/wp";
 
-const nav: {title: string, url: string}[] = await wpApi.getNav("menu-primary")
+// Recuperar navegación y contactos de WordPress de manera segura
+const nav: {title: string, url: string}[] = await wpApi.getNav("menu-primary").catch(() => []);
+const navRrss = await wpApi.getNav("menu-rrss").catch(() => []);
+const navContacto = await wpApi.getNav("menu-contacto").catch(() => []);
+
+// Obtener y normalizar la ruta actual para el indicador de página activa
+const currentPath = Astro.url.pathname;
+const normalizePath = (p: string) => {
+  if (!p) return "";
+  let path = p.replace(/\/$/, ""); // eliminar barra diagonal al final
+  return path === "" ? "/" : path;
+};
+const normalizedCurrent = normalizePath(currentPath);
+
+const checkActive = (itemUrl: string) => {
+  const normalizedItem = normalizePath(itemUrl);
+  if (normalizedItem === "/") {
+    return normalizedCurrent === "/";
+  }
+  return normalizedCurrent === normalizedItem || normalizedCurrent.startsWith(normalizedItem + "/");
+};
 ---
 
 <nav class="w-full flex justify-center">
@@ -11,14 +31,23 @@ const nav: {title: string, url: string}[] = await wpApi.getNav("menu-primary")
     <a href="/" class="w-32">
       <img src={Logo.src} alt="Logo" class="w-full" />
     </a>
-    <button class="block xl:hidden">
+    
+    <!-- Disparador Hamburguesa Grande e Interactivo (Accesible) -->
+    <button
+      id="mobile-menu-trigger"
+      class="block xl:hidden text-white hover:text-gold-500 focus:text-gold-500 focus:outline-none p-2 rounded-lg transition-colors duration-200 cursor-pointer"
+      aria-expanded="false"
+      aria-controls="mobile-overlay-menu"
+      aria-haspopup="dialog"
+      aria-label="Abrir menú de navegación"
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="35"
         height="35"
         viewBox="0 0 24 24"
-        fill="#ffffff"
-        stroke="#ffffff"
+        fill="none"
+        stroke="currentColor"
         stroke-width="2"
         stroke-linecap="round"
         stroke-linejoin="round"
@@ -30,14 +59,33 @@ const nav: {title: string, url: string}[] = await wpApi.getNav("menu-primary")
         <path d="M10 18h10"></path>
       </svg>
     </button>
+    
+    <!-- Menú de Escritorio con Indicador de Página Activa -->
     <ul
-      class="hidden xl:flex gap-8 text-white-soft items-center font-heading-2"
+      class="hidden xl:flex gap-8 items-center font-heading-2"
     >
-      {nav.map((item) => (
-        <li>
-          <a class="uppercase text-[16px] tracking-[1.4px] hover:text-gold-500 transition-colors" href={item.url}>{item.title}</a>
-        </li>
-      ))}
+      {nav.map((item) => {
+        const isActive = checkActive(item.url);
+        return (
+          <li>
+            <a 
+              class:list={[
+                "uppercase text-[16px] tracking-[1.4px] transition-colors duration-300",
+                isActive 
+                  ? "text-gold-500 font-bold" 
+                  : "text-white-soft hover:text-gold-500"
+              ]} 
+              href={item.url}
+              aria-current={isActive ? "page" : undefined}
+            >
+              {item.title}
+            </a>
+          </li>
+        );
+      })}
     </ul>
   </div>
 </nav>
+
+<!-- Menú Desplegable en Pantalla Completa con Datos de WordPress -->
+<MobileMenu nav={nav} navRrss={navRrss} navContacto={navContacto} />

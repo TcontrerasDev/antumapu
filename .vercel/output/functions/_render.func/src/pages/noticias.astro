@@ -1,0 +1,23 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import Footer from "../components/Footer.astro";
+import Noticia from "../components/layout/Noticias.astro";
+import { wpApi } from "../lib/wp";
+
+const pageNoticias = await wpApi.getPageBySlug("noticias");
+---
+
+<Layout title="Noticias">
+  <Header theme="dark" />
+  <main>
+    <Hero
+      title={pageNoticias.title.rendered}
+      bajada={pageNoticias.content.rendered}
+      theme="dark"
+    />
+    <Noticia title=" " bajada=" " theme="dark" />
+  </main>
+  <Footer />
+</Layout>

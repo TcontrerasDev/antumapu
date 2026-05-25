@@ -22,6 +22,8 @@ function initLenis() {
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     });
 
+    window.lenis = lenis;
+
     lenis.on('scroll', ScrollTrigger.update);
 
     gsap.ticker.add((time) => {

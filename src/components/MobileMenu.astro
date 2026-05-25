@@ -1,0 +1,347 @@
+---
+// src/components/MobileMenu.astro
+import Logo from "../assets/logo-light.png";
+
+interface Props {
+  nav?: { title: string; url: string }[];
+  navRrss?: { title: string; url: string; acf?: { icono?: string } }[];
+  navContacto?: { title: string; url: string; acf?: { icono?: string } }[];
+}
+
+const { nav, navRrss = [], navContacto = [] } = Astro.props;
+
+// Fallback a menú estático si el menú dinámico de WordPress no está disponible
+const fallbackNav = [
+  { title: "Inicio", url: "/" },
+  { title: "Historia", url: "/historia" },
+  { title: "Repertorio", url: "/obras" },
+  { title: "Cartelera", url: "/presentaciones" },
+  { title: "Contacto", url: "#contacto" },
+];
+
+const fallbackRrss = [
+  { title: "Facebook", url: "https://www.facebook.com/balletantumapu", acf: { icono: "bi bi-facebook" } },
+  { title: "Instagram", url: "https://www.instagram.com/ballet_antumapu", acf: { icono: "bi bi-instagram" } },
+  { title: "YouTube", url: "https://www.youtube.com/user/AntumapuChile", acf: { icono: "bi bi-youtube" } }
+];
+
+const fallbackContacto = [
+  { title: "Llamar", url: "tel:+56229787500", acf: { icono: "bi bi-telephone" } },
+];
+
+const menuItems = nav && nav.length > 0 ? nav : fallbackNav;
+const rrRssItems = navRrss && navRrss.length > 0 ? navRrss : fallbackRrss;
+const contactoItems = navContacto && navContacto.length > 0 ? navContacto : fallbackContacto;
+
+// Obtener y normalizar la ruta actual para el indicador de página activa
+const currentPath = Astro.url.pathname;
+const normalizePath = (p: string) => {
+  if (!p) return "";
+  let path = p.replace(/\/$/, ""); // eliminar barra diagonal final
+  return path === "" ? "/" : path;
+};
+const normalizedCurrent = normalizePath(currentPath);
+
+const checkActive = (itemUrl: string) => {
+  const normalizedItem = normalizePath(itemUrl);
+  if (normalizedItem === "/") {
+    return normalizedCurrent === "/";
+  }
+  return normalizedCurrent === normalizedItem || normalizedCurrent.startsWith(normalizedItem + "/");
+};
+---
+
+<div
+  id="mobile-overlay-menu"
+  class="fixed inset-0 w-screen h-screen z-50 bg-[radial-gradient(ellipse_at_center,_var(--color-navy-800)_0%,_var(--color-navy-950)_100%)] flex flex-col items-center justify-center transition-all duration-300 ease-in-out invisible opacity-0 pointer-events-none xl:hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Menú de navegación móvil"
+>
+  <!-- Efecto de Brillo Central e Iluminación de Escenario (Spotlights con tonalidades de #e0b24a) -->
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(224,178,74,0.12)_0%,_transparent_70%)] pointer-events-none"></div>
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(224,178,74,0.22)_0%,_transparent_40%)] pointer-events-none"></div>
+  <div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_rgba(224,178,74,0.18)_0%,_transparent_60%)] pointer-events-none"></div>
+
+  <!-- Logotipo Sutil en la Cabecera (Branding) -->
+  <div class="absolute top-6 left-6 flex items-center gap-3 pointer-events-none select-none z-10">
+    <div class="w-20 sm:w-24 opacity-30">
+      <img src={Logo.src} alt="Logo Antumapu" class="w-full filter drop-shadow-[0_0_8px_rgba(224,178,74,0.2)]" />
+    </div>
+  </div>
+
+  <!-- Botón de Cierre Grande y Accesible con Texto de Ayuda (Cierre Asistido) -->
+  <button
+    id="mobile-menu-close"
+    class="absolute top-6 right-6 p-3 text-[#FCFCFC] hover:text-gold-500 focus:text-gold-500 focus:outline-none focus:ring-2 focus:ring-gold-500 rounded-none border border-white/10 hover:border-gold-500/30 transition-all duration-300 bg-white/5 hover:bg-white/10 active:scale-95 flex flex-col items-center justify-center cursor-pointer min-w-[76px] min-h-[76px] z-20"
+    aria-label="Cerrar menú de navegación"
+  >
+    <!-- Icono X de alta visibilidad -->
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="28"
+      height="28"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="transition-transform duration-300"
+    >
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+      <line x1="6" y1="6" x2="18" y2="18"></line>
+    </svg>
+    <!-- Texto de ayuda complementario para adultos mayores -->
+    <span class="font-heading-2 text-[10px] tracking-[1.5px] uppercase mt-1 opacity-80 select-none">Cerrar</span>
+  </button>
+
+  <!-- Enlaces de Navegación Verticales Centrados -->
+  <nav class="w-full max-w-lg px-8 menu-content z-10">
+    <ul class="flex flex-col items-center justify-center space-y-5">
+      {
+        menuItems.map((item) => {
+          const isActive = checkActive(item.url);
+          return (
+            <li class="w-full text-center mobile-menu-item">
+              <a
+                href={item.url}
+                class:list={[
+                  "mobile-menu-link block py-3.5 px-8 w-full font-heading-2 text-3xl sm:text-4xl uppercase tracking-[3px] transition-all duration-300 rounded-none hover:bg-white/5 focus:bg-white/5 focus:outline-none active:scale-98",
+                  isActive
+                    ? "text-gold-500 font-bold bg-white/5"
+                    : "text-[#FCFCFC] hover:text-gold-500 focus:text-gold-500"
+                ]}
+                aria-current={isActive ? "page" : undefined}
+              >
+                {item.title}
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </nav>
+
+  <!-- Enlaces Rápidos de Contacto y Redes Sociales (Base del Menú) -->
+  <div class="mt-10 w-full max-w-md px-8 text-center z-10 select-none mobile-menu-footer">
+    <!-- Línea decorativa sutil -->
+    <div class="opacity-20 w-24 h-[1px] bg-gold-500 mx-auto mb-6"></div>
+
+    <!-- Botones de contacto de fácil acceso táctil -->
+    <div class="flex justify-center gap-4 mb-6">
+      {contactoItems.map(item => (
+        <a
+          href={item.url}
+          class="mobile-contact-link flex items-center gap-2.5 py-2.5 px-5 bg-white/5 hover:bg-white/10 active:scale-95 text-[#FCFCFC] hover:text-gold-500 border border-white/10 hover:border-gold-500/30 rounded-none transition-all duration-300 font-heading-2 text-[13px] uppercase tracking-[1px] min-h-[48px] cursor-pointer"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {item.acf?.icono && <i class={`${item.acf.icono} text-[16px]`}></i>}
+          <span>{item.title}</span>
+        </a>
+      ))}
+    </div>
+
+    <!-- Iconos Redes Sociales -->
+    <div class="flex justify-center gap-5">
+      {rrRssItems.map(item => (
+        <a
+          href={item.url}
+          class="mobile-contact-link flex items-center justify-center w-11 h-11 bg-white/5 hover:bg-white/10 active:scale-90 text-[#FCFCFC] hover:text-gold-500 rounded-none border border-white/10 transition-all duration-300 cursor-pointer"
+          target="_blank"
+          rel="noopener noreferrer"
+          title={item.title}
+          aria-label={`Visitar nuestro ${item.title}`}
+        >
+          {item.acf?.icono && <i class={`${item.acf.icono} text-[18px]`}></i>}
+        </a>
+      ))}
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Animación Teatral para la Pantalla Completa */
+  #mobile-overlay-menu {
+    transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.4s;
+  }
+  
+  #mobile-overlay-menu.is-open {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  
+  /* El contenido del menú se escala y se desplaza al abrirse simulando un telón */
+  #mobile-overlay-menu .menu-content {
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
+    transform: scale(0.9) translateY(30px);
+    opacity: 0;
+  }
+  
+  #mobile-overlay-menu.is-open .menu-content {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+
+  /* Animación escalonada (Staggered) para los enlaces */
+  #mobile-overlay-menu .mobile-menu-item {
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease;
+    transform: translateY(40px);
+    opacity: 0;
+  }
+
+  #mobile-overlay-menu.is-open .mobile-menu-item:nth-child(1) { transition-delay: 0.1s; transform: translateY(0); opacity: 1; }
+  #mobile-overlay-menu.is-open .mobile-menu-item:nth-child(2) { transition-delay: 0.15s; transform: translateY(0); opacity: 1; }
+  #mobile-overlay-menu.is-open .mobile-menu-item:nth-child(3) { transition-delay: 0.2s; transform: translateY(0); opacity: 1; }
+  #mobile-overlay-menu.is-open .mobile-menu-item:nth-child(4) { transition-delay: 0.25s; transform: translateY(0); opacity: 1; }
+  #mobile-overlay-menu.is-open .mobile-menu-item:nth-child(5) { transition-delay: 0.3s; transform: translateY(0); opacity: 1; }
+
+  /* Animación final escalonada para la base del menú */
+  #mobile-overlay-menu .mobile-menu-footer {
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease;
+    transform: translateY(30px);
+    opacity: 0;
+    transition-delay: 0.36s;
+  }
+
+  #mobile-overlay-menu.is-open .mobile-menu-footer {
+    transform: translateY(0);
+    opacity: 1;
+  }
+</style>
+
+<script>
+  interface Window {
+    lenis?: any;
+  }
+
+  function initMobileMenu() {
+    const trigger = document.getElementById('mobile-menu-trigger');
+    const menu = document.getElementById('mobile-overlay-menu');
+    const closeBtn = document.getElementById('mobile-menu-close');
+    const links = document.querySelectorAll('.mobile-menu-link');
+    const contactLinks = document.querySelectorAll('.mobile-contact-link');
+
+    if (!trigger || !menu || !closeBtn) return;
+
+    // Función de vibración háptica ligera para dispositivos táctiles (15ms es muy suave y profesional)
+    function triggerHaptic() {
+      if (typeof window !== 'undefined' && window.navigator && window.navigator.vibrate) {
+        window.navigator.vibrate(15);
+      }
+    }
+
+    // Abrir el menú de pantalla completa
+    function openMenu() {
+      menu?.classList.add('is-open');
+      trigger?.setAttribute('aria-expanded', 'true');
+      
+      // Bloquear scroll de fondo nativo y Lenis
+      document.body.classList.add('overflow-hidden');
+      document.documentElement.classList.add('overflow-hidden');
+      if (window.lenis) {
+        window.lenis.stop();
+      }
+
+      // Colocar el foco en el botón de cierre para accesibilidad
+      closeBtn?.focus();
+
+      // Habilitar controles de teclado
+      document.addEventListener('keydown', handleKeyDown);
+    }
+
+    // Cerrar el menú de pantalla completa
+    function closeMenu() {
+      menu?.classList.remove('is-open');
+      trigger?.setAttribute('aria-expanded', 'false');
+      
+      // Restaurar scroll de fondo nativo y Lenis
+      document.body.classList.remove('overflow-hidden');
+      document.documentElement.classList.remove('overflow-hidden');
+      if (window.lenis) {
+        window.lenis.start();
+      }
+
+      // Devolver el foco al disparador hamburguesa
+      (trigger as HTMLElement)?.focus();
+
+      // Remover controles de teclado
+      document.removeEventListener('keydown', handleKeyDown);
+    }
+
+    // Controlar el foco del teclado (Focus Trap) y tecla Escape
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        triggerHaptic();
+        closeMenu();
+        return;
+      }
+
+      if (e.key === 'Tab') {
+        const focusableElements = [closeBtn, ...Array.from(links), ...Array.from(contactLinks)] as HTMLElement[];
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (e.shiftKey) { // Shift + Tab (hacia atrás)
+          if (document.activeElement === firstElement) {
+            lastElement.focus();
+            e.preventDefault();
+          }
+        } else { // Tab (hacia adelante)
+          if (document.activeElement === lastElement) {
+            firstElement.focus();
+            e.preventDefault();
+          }
+        }
+      }
+    }
+
+    // Eventos con vibración háptica integrada
+    trigger.addEventListener('click', () => {
+      triggerHaptic();
+      openMenu();
+    });
+
+    closeBtn.addEventListener('click', () => {
+      triggerHaptic();
+      closeMenu();
+    });
+
+    // Cerrar al hacer clic en un enlace y vibrar
+    links.forEach(link => {
+      link.addEventListener('click', () => {
+        triggerHaptic();
+        closeMenu();
+      });
+    });
+
+    // Vibrar al presionar los enlaces de contacto y redes
+    contactLinks.forEach(cl => {
+      cl.addEventListener('click', () => {
+        triggerHaptic();
+      });
+    });
+
+    // Cerrar automáticamente si la pantalla se agranda a >= 1280px (xl)
+    const mediaQuery = window.matchMedia('(min-width: 1280px)');
+    function handleResize(e: MediaQueryListEvent | MediaQueryList) {
+      if (e.matches && menu?.classList.contains('is-open')) {
+        closeMenu();
+      }
+    }
+    
+    // Escuchar cambios de resolución
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener('change', handleResize);
+    } else {
+      mediaQuery.addListener(handleResize);
+    }
+  }
+
+  // Inicializar en carga de página de Astro (compatible con View Transitions)
+  document.addEventListener('astro:page-load', () => {
+    initMobileMenu();
+  });
+</script>

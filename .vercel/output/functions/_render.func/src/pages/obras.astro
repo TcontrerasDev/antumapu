@@ -1,0 +1,39 @@
+---
+import type { GetStaticPaths } from "astro";
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import RepObras from "../components/repertorio/RepObras.astro";
+import Cardrep from "../components/cards/Cardrep.astro";
+import Footer from "../components/Footer.astro";
+import { wpApi } from "../lib/wp";
+
+const pageObras = await wpApi.getPageBySlug("obras")
+const obras = await wpApi.getObras();
+
+---
+
+<Layout title="Obras">
+  <Header theme="dark" />
+  <main>
+    <Hero
+      title={pageObras.title.rendered}
+      bajada={pageObras.content.rendered}
+      theme="dark"
+    />
+    <RepObras>
+      {
+        obras.map((obra, index) => (
+          <Cardrep
+            url={obra.slug}
+            numeracion={index + 1}
+            ano={obra.acf.fecha_estreno_source?.formatted_value || ""}
+            titulo={obra.title.rendered}
+            description={obra.excerpt.rendered}
+          />
+        ))
+      }
+    </RepObras>
+  </main>
+  <Footer />
+</Layout>

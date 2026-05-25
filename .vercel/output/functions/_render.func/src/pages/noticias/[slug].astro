@@ -1,0 +1,123 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import { wpApi } from "../../lib/wp";
+import { getBreadcrumbs } from "../../lib/utils";
+
+export const prerender = false;
+
+interface Props {
+  theme?: "light" | "dark";
+}
+const { theme = "light" } = Astro.props;
+
+const { slug } = Astro.params;
+if (!slug) return Astro.redirect("/404");
+const noticia = await wpApi.getNoticiaBySlug(slug);
+if (!noticia) return Astro.redirect("/404");
+
+const tags: { name: string }[] = noticia._embedded?.["wp:term"]?.[0] || [];
+
+const breadcrumbs = getBreadcrumbs(Astro.url.pathname);
+
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+---
+
+<Layout title={noticia.title.rendered}>
+  <Header theme="light" />
+  <main class="bg-sand-100 pt-30">
+    <section>
+      <div class="wrapper">
+        <span class="text-gold-500 font-heading-2 tracking-[1.4px]">
+          <a
+            href="/"
+            class:list={[
+              {
+                "text-white-soft!": theme === "dark",
+                "text-navy-950": theme === "light",
+              },
+            ]}
+            >Inicio /
+          </a>
+          {
+            breadcrumbs.map((bc) =>
+              bc.isLast ? (
+                <span
+                  class:list={[
+                    {
+                      "text-gold-500": theme === "dark",
+                      "text-gold-700": theme === "light",
+                    },
+                  ]}
+                >
+                  {" "}
+                  {bc.name}
+                </span>
+              ) : (
+                <a
+                  href={bc.url}
+                  class:list={[
+                    {
+                      "text-white-soft!": theme === "dark",
+                      "text-navy-950": theme === "light",
+                    },
+                  ]}
+                >
+                  {" "}
+                  {bc.name} /
+                </a>
+              ),
+            )
+          }
+        </span>
+        <h1
+          class="text-navy-950 text-h2 lg:text-h1 font-heading-2"
+          set:html={noticia.title.rendered}
+        />
+        <div
+          class="text-[18px] lg:text-2xl pt-5 text-navy-950 w-full lg:w-3/4"
+          set:html={noticia.excerpt.rendered}
+        />
+      </div>
+    </section>
+    <section class="padding-section">
+      <div class="wrapper grid grid-cols-12 gap-5">
+        <div
+          class="col-span-full lg:col-span-9 [&_p]:text-navy-950 [&_p]:text-base [&_p]:py-3 [&_figure]:mb-3"
+          set:html={noticia.content.rendered}
+        />
+        <div class="col-span-full lg:col-span-3 flex flex-col gap-5 p-5 h-max bg-navy-950 lg:sticky lg:top-22.5">
+          <div class="flex flex-col gap-4">
+            <h3 class="text-[24px] text-gold-500 tracking-[15%]">Fecha de Publicación</h3>
+            <p
+              class="text-white text-base"
+              set:html={formatDate(noticia.date)}
+            />
+          </div>
+          <div class="flex flex-col gap-4">
+            <h3 class="text-[24px] text-gold-500 tracking-[15%]">Autor</h3>
+            <p
+              class="text-white text-base"
+              set:html={noticia.acf?.autor || "Antumapu"}
+            />
+          </div>
+          <div>
+            {tags.map((tag, index) => (
+                <span class="text-white-soft w-max">
+                    {tag.name}{index < tags.length - 1 ? " / " : ""}
+                </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>

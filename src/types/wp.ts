@@ -132,6 +132,7 @@ export interface WPActividad {
   slug: string;
   title: RenderedText;
   acf: ActividadAcf;
+  class_list?: string[];
 }
 
 // ----------------------------------------------------

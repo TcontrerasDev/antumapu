@@ -112,9 +112,9 @@ export interface WPObra {
 }
 
 // ----------------------------------------------------
-// PRESENTACION TYPE
+// ACTIVIDAD TYPE
 // ----------------------------------------------------
-export interface PresentacionAcf {
+export interface ActividadAcf {
   url: string;
   fecha_source: {
     formatted_value: string;
@@ -127,11 +127,11 @@ export interface PresentacionAcf {
   };
 }
 
-export interface WPPresentacion {
+export interface WPActividad {
   id: number;
   slug: string;
   title: RenderedText;
-  acf: PresentacionAcf;
+  acf: ActividadAcf;
 }
 
 // ----------------------------------------------------

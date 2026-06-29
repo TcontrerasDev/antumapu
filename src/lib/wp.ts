@@ -1,4 +1,4 @@
-import type { WPPage, WPObra, WPPresentacion, WPNoticia } from "../types/wp";
+import type { WPPage, WPObra, WPActividad, WPNoticia } from "../types/wp";
 
 const WP_DOMAIN = import.meta.env.WP_DOMAIN;
 
@@ -110,12 +110,12 @@ export const wpApi = {
     return data.map((obra: { slug: string }) => obra.slug);
   },
 
-  getPresentaciones: async (lang?: string, page?: number, perPage?: number): Promise<WPPresentacion[]> => {
+  getActividades: async (lang?: string, page?: number, perPage?: number): Promise<WPActividad[]> => {
     const data = page !== undefined
       ? await wpFetch(`presentaciones?per_page=${perPage ?? 10}&page=${page}`, lang)
       : await wpFetchAll("presentaciones", lang);
 
-    return data.sort((a: WPPresentacion, b: WPPresentacion) => {
+    return data.sort((a: WPActividad, b: WPActividad) => {
       const fechaA = a.acf?.fecha_source?.formatted_value || "";
       const fechaB = b.acf?.fecha_source?.formatted_value || "";
       return fechaA.localeCompare(fechaB);

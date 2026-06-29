@@ -20,11 +20,11 @@ The project follows a standard Astro directory layout with organized component s
     - `assets/`: Static assets like images (`bg-image.png`, `logo-light.png`, `chiliche.webp`, `img-historia.png`).
     - `components/`: Reusable Astro components.
         - `buttons/`: Interactive button components (`ButtonBg.astro`, `ButtonTransparent.astro`).
-        - `cards/`: UI cards for news, works, and presentations (`CardNoticia.astro`, `CardObra.astro`, `CardPresentacion.astro`, `CardPresentacionCol.astro`, `Cardrep.astro`).
+        - `cards/`: UI cards for news, works, and presentations (`CardNoticia.astro`, `CardObra.astro`, `CardActividad.astro`, `CardActividadCol.astro`, `Cardrep.astro`).
         - `historia/`: Components specifically for the "Historia" page.
-        - `index/`: Components specifically for the "Home" page (`HeroIndex.astro`, `Historia.astro`, `Presentaciones.astro`, `Repertorio.astro`).
+        - `index/`: Components specifically for the "Home" page (`HeroIndex.astro`, `Historia.astro`, `Actividades.astro`, `Repertorio.astro`).
         - `repertorio/`: Components for the "Obras" page (`RepObras.astro`).
-        - `presentaciones/`: Components for the "Presentaciones" page (`GridPrestaciones.astro`).
+        - `actividades/`: Components for the "Actividades" page (`GridActividades.astro`).
         - `single-obra/`: Components for individual work pages (`descripcion.astro`).
         - `layout/`: Layout-specific components like `ColFooter.astro` and `Noticias.astro`.
         - `Header.astro`, `Navbar.astro`, `Footer.astro`, `Hero.astro`: Main navigation and layout elements.
@@ -37,7 +37,7 @@ The project follows a standard Astro directory layout with organized component s
         - `historia.astro`: History page.
         - `noticias.astro`: News listing page.
         - `obras.astro`: Repertoire/Works page.
-        - `presentaciones.astro`: Presentations listing page.
+        - `actividades.astro`: Activities listing page.
         - `noticias/[slug].astro`: Dynamic route for individual news articles.
         - `obras/[slug].astro`: Dynamic route for individual work details.
     - `scripts/`: Client-side scripts (e.g., `smoothScroll.js`).
@@ -110,7 +110,7 @@ pnpm astro [command]
 - `src/pages/historia.astro`: The history page.
 - `src/pages/noticias.astro`: The news page.
 - `src/pages/obras.astro`: The works (repertoire) page.
-- `src/pages/presentaciones.astro`: The presentations page.
+- `src/pages/actividades.astro`: The activities page.
 - `src/lib/wp.ts`: WordPress API client.
 - `src/styles/global.css`: Entry point for global CSS, Tailwind directives, and theme configuration.
 - `astro.config.mjs`: Configuration for Astro and its plugins.

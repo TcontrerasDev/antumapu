@@ -18,7 +18,7 @@ const mes = dateParts.find(p => !/\d/.test(p)) || '';
 ---
 
 <article>
-  <a href={url} target="_blank" class="card-presentacion">
+  <a href={url} target="_blank" class="card-actividad">
     <div class="info-main">
       <div class="flex flex-col justify-center max-sm:py-3 md:w-[6rem] lg:w-[3rem]">
         <span class="dia">{dia}</span>
@@ -61,16 +61,16 @@ const mes = dateParts.find(p => !/\d/.test(p)) || '';
 <style>
   @reference "../../styles/global.css";
 
-  .card-presentacion {
+  .card-actividad {
     @apply flex flex-col justify-start p-4 border-b border-navy-950 gap-5 transition-all duration-300;
     @apply md:flex-row md:gap-30 lg:gap-50;
   }
 
-  .card-presentacion:hover {
+  .card-actividad:hover {
     @apply bg-navy-950;
   }
   
-  .card-presentacion:focus {
+  .card-actividad:focus {
     @apply bg-navy-950;
   }
 
@@ -116,37 +116,37 @@ const mes = dateParts.find(p => !/\d/.test(p)) || '';
   }
 
   /* Efectos al hacer Hover en la Card */
-  .card-presentacion:hover .dia,
-  .card-presentacion:hover .titulo,
-  .card-presentacion:hover .lugar,
-  .card-presentacion:hover .hora {
+  .card-actividad:hover .dia,
+  .card-actividad:hover .titulo,
+  .card-actividad:hover .lugar,
+  .card-actividad:hover .hora {
     @apply text-white;
   }
 
-  .card-presentacion:hover .mes,
-  .card-presentacion:hover .obra,
-  .card-presentacion:hover .direccion {
+  .card-actividad:hover .mes,
+  .card-actividad:hover .obra,
+  .card-actividad:hover .direccion {
     @apply text-gold-500;
   }
 
-  .card-presentacion:hover .arrow-icon {
+  .card-actividad:hover .arrow-icon {
     @apply stroke-gold-500 rotate-[-30deg];
   }
 
-  .card-presentacion:focus .dia,
-  .card-presentacion:focus .titulo,
-  .card-presentacion:focus .lugar,
-  .card-presentacion:focus .hora {
+  .card-actividad:focus .dia,
+  .card-actividad:focus .titulo,
+  .card-actividad:focus .lugar,
+  .card-actividad:focus .hora {
     @apply text-white;
   }
 
-  .card-presentacion:focus .mes,
-  .card-presentacion:focus .obra,
-  .card-presentacion:focus .direccion {
+  .card-actividad:focus .mes,
+  .card-actividad:focus .obra,
+  .card-actividad:focus .direccion {
     @apply text-gold-500;
   }
 
-  .card-presentacion:focus .arrow-icon {
+  .card-actividad:focus .arrow-icon {
     @apply stroke-gold-500 rotate-[-30deg];
   }
 </style>

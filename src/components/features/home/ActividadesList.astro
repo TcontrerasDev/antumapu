@@ -1,5 +1,5 @@
 ---
-import CardPresentacion from "../../ui/CardPresentacion.astro";
+import CardActividad from "../../ui/CardActividad.astro";
 import { wpApi } from "../../../lib/wp";
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
 
 const { lang = "es" } = Astro.props;
 
-const dataPresentaciones: {
+const dataActividades: {
   title: { rendered: string };
   acf: {
     url: string;
@@ -18,19 +18,19 @@ const dataPresentaciones: {
     direccion: string;
     hora_source: { formatted_value: string };
   };
-}[] = await wpApi.getPresentaciones(lang);
+}[] = await wpApi.getActividades(lang);
 ---
 
 {
-  dataPresentaciones.map((presentacion) => (
-    <CardPresentacion
-      url={presentacion.acf.url}
-      fecha={presentacion.acf.fecha_source.formatted_value}
-      titulo={presentacion.title.rendered}
-      obra={presentacion.acf.obra}
-      lugar={presentacion.acf.lugar}
-      direccion={presentacion.acf.direccion}
-      hora={presentacion.acf.hora_source.formatted_value}
+  dataActividades.map((actividad) => (
+    <CardActividad
+      url={actividad.acf.url}
+      fecha={actividad.acf.fecha_source.formatted_value}
+      titulo={actividad.title.rendered}
+      obra={actividad.acf.obra}
+      lugar={actividad.acf.lugar}
+      direccion={actividad.acf.direccion}
+      hora={actividad.acf.hora_source.formatted_value}
     />
   ))
 }

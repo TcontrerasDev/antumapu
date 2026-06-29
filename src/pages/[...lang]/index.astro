@@ -12,9 +12,9 @@ import Layout from "../../layouts/Layout.astro";
 import Header from "../../components/common/Header.astro";
 import HeroIndex from "../../components/features/home/HeroIndex.astro";
 import Historia from "../../components/features/home/Historia.astro";
-import Presentaciones from "../../components/features/home/Presentaciones.astro";
-import PresentacionesList from "../../components/features/home/PresentacionesList.astro";
-import PresentacionesSkeleton from "../../components/ui/PresentacionesSkeleton.astro";
+import Actividades from "../../components/features/home/Actividades.astro";
+import ActividadesList from "../../components/features/home/ActividadesList.astro";
+import ActividadesSkeleton from "../../components/ui/ActividadesSkeleton.astro";
 import Repertorio from "../../components/features/home/Repertorio.astro";
 import Noticias from "../../components/features/noticias/Noticias.astro";
 import Footer from "../../components/common/Footer.astro";
@@ -51,14 +51,14 @@ if (!page) {
       statNumber2={page.acf.estadisticas?.numero_estadistica_2 || ""}
       statNumber3={page.acf.estadisticas?.numero_estadistica_3 || ""}
     />
-    <Presentaciones
+    <Actividades
       title={page.acf.titulo_presentaciones || ""}
       bajada={page.acf.bajada_presentaciones || ""}
     >
-      <PresentacionesList lang={lang} server:defer>
-        <PresentacionesSkeleton slot="fallback" />
-      </PresentacionesList>
-    </Presentaciones>
+      <ActividadesList lang={lang} server:defer>
+        <ActividadesSkeleton slot="fallback" />
+      </ActividadesList>
+    </Actividades>
     <Repertorio title={page.acf.titulo_obras || ""} bajada={page.acf.bajada_obras || ""} lang={lang} />
     <Noticias
       title={page.acf.titulo_noticias || ""}

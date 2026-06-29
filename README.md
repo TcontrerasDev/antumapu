@@ -2,7 +2,7 @@
 
 **Antumapu** es una moderna y elegante aplicación web construida sobre el framework **Astro v6**, diseñada para alojar el sitio oficial del **Ballet Folklórico Antumapu** de la Universidad de Chile. 
 
-El sitio web sirve como plataforma de difusión cultural, presentando la rica historia de la agrupación, su destacado repertorio folklórico de obras, noticias de actualidad y la programación de sus próximas presentaciones artísticas.
+El sitio web sirve como plataforma de difusión cultural, presentando la rica historia de la agrupación, su destacado repertorio folklórico de obras, noticias de actualidad y la programación de sus próximas actividades artísticas.
 
 ---
 
@@ -13,7 +13,7 @@ El sitio web sirve como plataforma de difusión cultural, presentando la rica hi
     *   Diseño personalizado utilizando **Tailwind CSS v4** con integración nativa en Vite.
     *   Paleta de colores elegante inspirada en la identidad de la agrupación: azul marino (`navy`), dorado (`gold`) y arena (`sand`).
     *   Tipografía premium cuidadosamente seleccionada: **Italiana** para encabezados principales, **Oswald** para subtítulos y **Fraunces** para el cuerpo de texto.
-*   **📜 Integración Headless CMS (WordPress):** Consumo dinámico de contenidos (obras, noticias y presentaciones) a través de la API REST de WordPress.
+*   **📜 Integración Headless CMS (WordPress):** Consumo dinámico de contenidos (obras, noticias y actividades) a través de la API REST de WordPress.
 *   **🌊 Navegación Fluida:** Experiencia de usuario inmersiva con desplazamiento suave implementado mediante **Lenis** y animaciones potentes con **GSAP**.
 *   **📱 Diseño Responsivo:** Completamente adaptado a dispositivos móviles con menús interactivos modernos y layouts fluidos.
 
@@ -43,7 +43,7 @@ src/
 │   ├── cards/       # Tarjetas de presentación para noticias, obras y eventos
 │   ├── historia/    # Componentes específicos de la página de historia
 │   ├── index/       # Componentes clave de la página de inicio (Hero, Repertorio, etc.)
-│   ├── presentaciones/ # Componentes para la grilla de presentaciones
+│   ├── actividades/ # Componentes para la grilla de actividades
 │   ├── single-obra/ # Detalle de obras individuales
 │   ├── layout/      # Componentes estructurales de diseño (Footer, Noticias)
 │   ├── Header.astro # Cabecera del sitio
@@ -55,7 +55,7 @@ src/
 │   ├── historia.astro # Sección de historia de la agrupación
 │   ├── noticias.astro # Listado de noticias
 │   ├── obras.astro    # Catálogo de obras y repertorio
-│   ├── presentaciones.astro # Agenda de eventos y presentaciones
+│   ├── actividades.astro # Agenda de eventos y actividades
 │   ├── noticias/[slug].astro # Detalle dinámico de noticias
 │   └── obras/[slug].astro    # Detalle dinámico de cada obra
 ├── scripts/         # Scripts en el lado del cliente (como smoothScroll.js)

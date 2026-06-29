@@ -12,41 +12,41 @@ import Layout from "../../layouts/Layout.astro";
 import Header from "../../components/common/Header.astro";
 import Hero from "../../components/common/Hero.astro";
 import Footer from "../../components/common/Footer.astro";
-import GridPrestaciones from "../../components/features/presentaciones/GridPrestaciones.astro";
-import CardPresentacionCol from "../../components/ui/CardPresentacionCol.astro";
+import GridActividades from "../../components/features/actividades/GridActividades.astro";
+import CardActividadCol from "../../components/ui/CardActividadCol.astro";
 import { wpApi } from "../../lib/wp";
 
-const pagePresentaciones = await wpApi.getPageBySlug("presentaciones", lang);
-if (!pagePresentaciones) {
+const pageActividades = await wpApi.getPageBySlug("presentaciones", lang);
+if (!pageActividades) {
   throw new Error("Page 'presentaciones' not found in WordPress");
 }
 
-const dataPresentaciones = await wpApi.getPresentaciones(lang);
+const dataActividades = await wpApi.getActividades(lang);
 ---
 
-<Layout title="Presentaciones" lang={lang}>
+<Layout title="Actividades" lang={lang}>
   <Header theme="light" lang={lang} />
   <main>
     <Hero
-      title={pagePresentaciones.title.rendered}
-      bajada={pagePresentaciones.content.rendered}
+      title={pageActividades.title.rendered}
+      bajada={pageActividades.content.rendered}
       theme="light"
     />
-    <GridPrestaciones>
+    <GridActividades>
       {
-        dataPresentaciones.map((presentacion) => (
-          <CardPresentacionCol
-            url={presentacion.acf.url}
-            fecha={presentacion.acf.fecha_source.formatted_value}
-            titulo={presentacion.title.rendered}
-            obra={presentacion.acf.obra}
-            lugar={presentacion.acf.lugar}
-            direccion={presentacion.acf.direccion}
-            hora={presentacion.acf.hora_source.formatted_value}
+        dataActividades.map((actividad) => (
+          <CardActividadCol
+            url={actividad.acf.url}
+            fecha={actividad.acf.fecha_source.formatted_value}
+            titulo={actividad.title.rendered}
+            obra={actividad.acf.obra}
+            lugar={actividad.acf.lugar}
+            direccion={actividad.acf.direccion}
+            hora={actividad.acf.hora_source.formatted_value}
           />
         ))
       }
-    </GridPrestaciones>
+    </GridActividades>
   </main>
   <Footer lang={lang} />
 </Layout>

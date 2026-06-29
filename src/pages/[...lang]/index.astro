@@ -39,6 +39,16 @@ if (!page) {
       linkBtn2={page.acf.botones?.pagina_2 || ""}
       imgBack={page._embedded?.["wp:featuredmedia"]?.[0]?.source_url || ""}
     />
+
+    <Actividades
+      title={page.acf.titulo_presentaciones || ""}
+      bajada={page.acf.bajada_presentaciones || ""}
+    >
+      <ActividadesList lang={lang} server:defer>
+        <ActividadesSkeleton slot="fallback" />
+      </ActividadesList>
+    </Actividades>
+
     <Historia
       title={page.acf.titulo_historia || ""}
       resumen={page.acf.resumen || ""}
@@ -51,15 +61,9 @@ if (!page) {
       statNumber2={page.acf.estadisticas?.numero_estadistica_2 || ""}
       statNumber3={page.acf.estadisticas?.numero_estadistica_3 || ""}
     />
-    <Actividades
-      title={page.acf.titulo_presentaciones || ""}
-      bajada={page.acf.bajada_presentaciones || ""}
-    >
-      <ActividadesList lang={lang} server:defer>
-        <ActividadesSkeleton slot="fallback" />
-      </ActividadesList>
-    </Actividades>
+
     <Repertorio title={page.acf.titulo_obras || ""} bajada={page.acf.bajada_obras || ""} lang={lang} />
+
     <Noticias
       title={page.acf.titulo_noticias || ""}
       bajada={page.acf.bajada_noticias || ""}

@@ -116,8 +116,8 @@ export const wpApi = {
       : await wpFetchAll("presentaciones", lang);
 
     return data.sort((a: WPActividad, b: WPActividad) => {
-      const fechaA = a.acf?.fecha_source?.formatted_value || "";
-      const fechaB = b.acf?.fecha_source?.formatted_value || "";
+      const fechaA = a.acf?.fecha || "";
+      const fechaB = b.acf?.fecha || "";
       return fechaA.localeCompare(fechaB);
     });
   },

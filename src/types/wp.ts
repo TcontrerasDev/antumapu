@@ -116,6 +116,7 @@ export interface WPObra {
 // ----------------------------------------------------
 export interface ActividadAcf {
   url: string;
+  fecha?: string;
   fecha_source: {
     formatted_value: string;
   };

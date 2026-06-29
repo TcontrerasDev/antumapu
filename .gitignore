@@ -27,3 +27,6 @@ pnpm-debug.log*
 
 # Vercel build folder
 .vercel/
+
+# Superpowers temporary and metadata directory
+.superpowers/

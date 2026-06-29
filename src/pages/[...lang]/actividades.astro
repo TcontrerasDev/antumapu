@@ -41,9 +41,9 @@ const dataActividades = await wpApi.getActividades(lang);
             {lang === "en" ? "Activities Calendar" : "Calendario de Actividades"}
           </h3>
           <div class="flex gap-2 items-center">
-            <button type="button" id="btn-prev-month" class="px-2 py-1 border border-navy-950 text-navy-950 font-heading-2 font-bold cursor-pointer hover:bg-navy-950 hover:text-white transition-colors" aria-label={lang === "en" ? "Previous month" : "Mes anterior"}>&lt;</button>
+            <button type="button" id="btn-prev-month" class="px-2 py-1 border border-navy-950 text-navy-950 font-heading-2 font-bold cursor-pointer hover:bg-navy-950 hover:text-white focus:bg-navy-950 focus:text-white focus:outline-none transition-colors" aria-label={lang === "en" ? "Previous month" : "Mes anterior"}>&lt;</button>
             <span id="label-month-year" class="font-heading-2 text-[16px] text-navy-950 uppercase min-w-[120px] text-center font-bold"></span>
-            <button type="button" id="btn-next-month" class="px-2 py-1 border border-navy-950 text-navy-950 font-heading-2 font-bold cursor-pointer hover:bg-navy-950 hover:text-white transition-colors" aria-label={lang === "en" ? "Next month" : "Siguiente mes"}>&gt;</button>
+            <button type="button" id="btn-next-month" class="px-2 py-1 border border-navy-950 text-navy-950 font-heading-2 font-bold cursor-pointer hover:bg-navy-950 hover:text-white focus:bg-navy-950 focus:text-white focus:outline-none transition-colors" aria-label={lang === "en" ? "Next month" : "Siguiente mes"}>&gt;</button>
           </div>
         </div>
 
@@ -61,7 +61,7 @@ const dataActividades = await wpApi.getActividades(lang);
         
         <div class="mt-2 flex justify-between items-center text-[12px] text-navy-800 font-sans italic">
           <span>* {lang === "en" ? "Gold-bordered days have events." : "Días con borde dorado tienen actividades."}</span>
-          <button type="button" id="btn-clear-date" class="hidden text-gold-700 underline font-heading-2 text-[12px] uppercase cursor-pointer hover:text-gold-500">{lang === "en" ? "View all days" : "Ver todos los días"}</button>
+          <button type="button" id="btn-clear-date" class="hidden text-gold-700 underline font-heading-2 text-[12px] uppercase cursor-pointer hover:text-gold-500 focus:text-gold-500 focus:outline-none">{lang === "en" ? "View all days" : "Ver todos los días"}</button>
         </div>
       </div>
 
@@ -278,21 +278,25 @@ const dataActividades = await wpApi.getActividades(lang);
 
         // Navegación del calendario
         btnPrevMonth?.addEventListener("click", () => {
+          selectedDate = null;
           currentMonth--;
           if (currentMonth < 0) {
             currentMonth = 11;
             currentYear--;
           }
           renderCalendar();
+          filterCards();
         });
 
         btnNextMonth?.addEventListener("click", () => {
+          selectedDate = null;
           currentMonth++;
           if (currentMonth > 11) {
             currentMonth = 0;
             currentYear++;
           }
           renderCalendar();
+          filterCards();
         });
 
         btnClearDate?.addEventListener("click", () => {

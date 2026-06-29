@@ -3,9 +3,10 @@ import Navbar from "./Navbar.astro";
 
 interface Props {
     theme?: "light" | "dark";
+    lang?: string;
 }
 
-const { theme = "dark" } = Astro.props;
+const { theme = "dark", lang = "es" } = Astro.props;
 ---
 
 <header
@@ -17,7 +18,7 @@ const { theme = "dark" } = Astro.props;
         },
     ]}
 >
-    <Navbar />
+    <Navbar lang={lang} />
 </header>
 
 <script>

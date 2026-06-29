@@ -1,15 +1,18 @@
 ---
 import CardObra from "../../ui/CardObra.astro";
 import { wpApi } from "../../../lib/wp";
+import { useTranslations } from "../../../lib/i18n";
 
 interface Props {
   title: string;
   bajada: string;
+  lang?: string;
 }
 
-const { title, bajada } = Astro.props;
+const { title, bajada, lang = "es" } = Astro.props;
+const t = useTranslations(lang);
 
-const obras = await wpApi.getObras();
+const obras = await wpApi.getObras(lang);
 ---
 
 <section class="bg-navy-950 padding-section">
@@ -25,7 +28,7 @@ const obras = await wpApi.getObras();
       {obras.map((obra) => (
         <div class="w-full shrink-0 md:w-[calc(50%-10px)] lg:w-[calc(33.333%-14px)] xl:w-[calc(25%-15px)] snap-start">
           <CardObra
-            url={obra.slug}
+            url={lang === "es" ? `obras/${obra.slug}` : `en/obras/${obra.slug}`}
             imgSrc={obra._embedded?.["wp:featuredmedia"]?.[0]?.source_url || ""}
             titulo={obra.title.rendered}
             descripcion={obra.excerpt.rendered}
@@ -40,7 +43,7 @@ const obras = await wpApi.getObras();
         class="flex items-center gap-2 text-gold-500 animate-pulse scroll-indicator cursor-pointer hover:text-gold-400 active:scale-95 transition-all duration-200 select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 rounded p-1"
         aria-label="Deslizar repertorio"
       >
-        <span class="text-sm font-heading-2 uppercase tracking-widest">Desliza</span>
+        <span class="text-sm font-heading-2 uppercase tracking-widest">{t("desliza")}</span>
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-bounce-x">
           <path d="M5 12h14"></path>
           <path d="m12 5 7 7-7 7"></path>

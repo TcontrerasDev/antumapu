@@ -1,24 +1,33 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import Header from "../components/common/Header.astro";
-import HeroIndex from "../components/features/home/HeroIndex.astro";
-import Historia from "../components/features/home/Historia.astro";
-import Presentaciones from "../components/features/home/Presentaciones.astro";
-import PresentacionesList from "../components/features/home/PresentacionesList.astro";
-import PresentacionesSkeleton from "../components/ui/PresentacionesSkeleton.astro";
-import Repertorio from "../components/features/home/Repertorio.astro";
-import Noticias from "../components/features/noticias/Noticias.astro";
-import Footer from "../components/common/Footer.astro";
-import { wpApi } from "../lib/wp";
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } },
+    { params: { lang: "en" } },
+  ];
+}
 
-const page = await wpApi.getPageBySlug("antumapu");
+const { lang = "es" } = Astro.params;
+
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/common/Header.astro";
+import HeroIndex from "../../components/features/home/HeroIndex.astro";
+import Historia from "../../components/features/home/Historia.astro";
+import Presentaciones from "../../components/features/home/Presentaciones.astro";
+import PresentacionesList from "../../components/features/home/PresentacionesList.astro";
+import PresentacionesSkeleton from "../../components/ui/PresentacionesSkeleton.astro";
+import Repertorio from "../../components/features/home/Repertorio.astro";
+import Noticias from "../../components/features/noticias/Noticias.astro";
+import Footer from "../../components/common/Footer.astro";
+import { wpApi } from "../../lib/wp";
+
+const page = await wpApi.getPageBySlug("antumapu", lang);
 if (!page) {
   throw new Error("Page 'antumapu' not found in WordPress");
 }
 ---
 
-<Layout title="Antumapu">
-  <Header theme="dark" />
+<Layout title="Antumapu" lang={lang}>
+  <Header theme="dark" lang={lang} />
   <main>
     <HeroIndex
       antetitulo={page.acf.antetitulo || ""}
@@ -46,16 +55,17 @@ if (!page) {
       title={page.acf.titulo_presentaciones || ""}
       bajada={page.acf.bajada_presentaciones || ""}
     >
-      <PresentacionesList server:defer>
+      <PresentacionesList lang={lang} server:defer>
         <PresentacionesSkeleton slot="fallback" />
       </PresentacionesList>
     </Presentaciones>
-    <Repertorio title={page.acf.titulo_obras || ""} bajada={page.acf.bajada_obras || ""} />
+    <Repertorio title={page.acf.titulo_obras || ""} bajada={page.acf.bajada_obras || ""} lang={lang} />
     <Noticias
       title={page.acf.titulo_noticias || ""}
       bajada={page.acf.bajada_noticias || ""}
       theme="light"
+      lang={lang}
     />
   </main>
-  <Footer />
+  <Footer lang={lang} />
 </Layout>

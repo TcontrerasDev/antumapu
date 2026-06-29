@@ -6,9 +6,10 @@ interface Props {
     title: string;
     bajada: string;
     theme?: "light" | "dark";
+    lang?: string;
 }
 
-const { title, bajada, theme = "light" } = Astro.props;
+const { title, bajada, theme = "light", lang = "es" } = Astro.props;
 ---
 
 <section
@@ -45,7 +46,7 @@ const { title, bajada, theme = "light" } = Astro.props;
                 {bajada}
             </p>
         </div>
-        <NoticiasList theme={theme} server:defer>
+        <NoticiasList theme={theme} lang={lang} server:defer>
             <NoticiasSkeleton theme={theme} slot="fallback" />
         </NoticiasList>
     </div>

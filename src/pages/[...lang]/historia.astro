@@ -1,15 +1,24 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import Header from "../components/common/Header.astro";
-import Hero from "../components/common/Hero.astro";
-import FeatureSplit from "../components/features/historia/FeatureSplit.astro";
-import GridSection from "../components/features/historia/GridSection.astro";
-import CardInfo from "../components/ui/CardInfo.astro";
-import Conclusion from "../components/features/historia/Conclusion.astro";
-import Footer from "../components/common/Footer.astro";
-import { wpApi } from '../lib/wp';
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } },
+    { params: { lang: "en" } },
+  ];
+}
 
-const page = await wpApi.getPageBySlug('historia');
+const { lang = "es" } = Astro.params;
+
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/common/Header.astro";
+import Hero from "../../components/common/Hero.astro";
+import FeatureSplit from "../../components/features/historia/FeatureSplit.astro";
+import GridSection from "../../components/features/historia/GridSection.astro";
+import CardInfo from "../../components/ui/CardInfo.astro";
+import Conclusion from "../../components/features/historia/Conclusion.astro";
+import Footer from "../../components/common/Footer.astro";
+import { wpApi } from '../../lib/wp';
+
+const page = await wpApi.getPageBySlug('historia', lang);
 if (!page) {
   throw new Error("Page 'historia' not found in WordPress");
 }
@@ -17,8 +26,8 @@ if (!page) {
 const cardsInfo = page.acf.destacadas || [];
 ---
 
-<Layout title="Historia">
-  <Header theme="dark" />
+<Layout title="Historia" lang={lang}>
+  <Header theme="dark" lang={lang} />
   <main>
     <Hero
       title={page.title.rendered}
@@ -59,5 +68,5 @@ const cardsInfo = page.acf.destacadas || [];
       alt={page.acf.imagen_conclusion?.alt || ""}
     />
   </main>
-  <Footer />
+  <Footer lang={lang} />
 </Layout>

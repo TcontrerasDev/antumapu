@@ -1,22 +1,30 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import Header from "../components/common/Header.astro";
-import Hero from "../components/common/Hero.astro";
-import RepObras from "../components/features/obras/RepObras.astro";
-import Cardrep from "../components/ui/Cardrep.astro";
-import Footer from "../components/common/Footer.astro";
-import { wpApi } from "../lib/wp";
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } },
+    { params: { lang: "en" } },
+  ];
+}
 
-const pageObras = await wpApi.getPageBySlug("obras");
+const { lang = "es" } = Astro.params;
+
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/common/Header.astro";
+import Hero from "../../components/common/Hero.astro";
+import RepObras from "../../components/features/obras/RepObras.astro";
+import Cardrep from "../../components/ui/Cardrep.astro";
+import Footer from "../../components/common/Footer.astro";
+import { wpApi } from "../../lib/wp";
+
+const pageObras = await wpApi.getPageBySlug("obras", lang);
 if (!pageObras) {
   throw new Error("Page 'obras' not found in WordPress");
 }
-const obras = await wpApi.getObras();
-
+const obras = await wpApi.getObras(lang);
 ---
 
-<Layout title="Obras">
-  <Header theme="dark" />
+<Layout title="Obras" lang={lang}>
+  <Header theme="dark" lang={lang} />
   <main>
     <Hero
       title={pageObras.title.rendered}
@@ -27,7 +35,7 @@ const obras = await wpApi.getObras();
       {
         obras.map((obra, index) => (
           <Cardrep
-            url={obra.slug}
+            url={lang === "es" ? `obras/${obra.slug}` : `en/obras/${obra.slug}`}
             numeracion={index + 1}
             ano={obra.acf.fecha_estreno_source?.formatted_value || ""}
             titulo={obra.title.rendered}
@@ -37,5 +45,5 @@ const obras = await wpApi.getObras();
       }
     </RepObras>
   </main>
-  <Footer />
+  <Footer lang={lang} />
 </Layout>

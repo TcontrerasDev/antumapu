@@ -6,12 +6,19 @@ interface Props {
   nav?: { title: string; url: string }[];
   navRrss?: { title: string; url: string; acf?: { icono?: string } }[];
   navContacto?: { title: string; url: string; acf?: { icono?: string } }[];
+  lang?: string;
 }
 
-const { nav, navRrss = [], navContacto = [] } = Astro.props;
+const { nav, navRrss = [], navContacto = [], lang = "es" } = Astro.props;
 
 // Fallback a menú estático si el menú dinámico de WordPress no está disponible
-const fallbackNav = [
+const fallbackNav = lang === "en" ? [
+  { title: "Home", url: "/en" },
+  { title: "History", url: "/en/historia" },
+  { title: "Repertoire", url: "/en/obras" },
+  { title: "Presentations", url: "/en/presentaciones" },
+  { title: "Contact", url: "#contacto" },
+] : [
   { title: "Inicio", url: "/" },
   { title: "Historia", url: "/historia" },
   { title: "Repertorio", url: "/obras" },

@@ -1,20 +1,38 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import Header from "../../components/common/Header.astro";
-import Footer from "../../components/common/Footer.astro";
-import Hero from "../../components/common/Hero.astro";
-import Descripcion from "../../components/features/obras/descripcion.astro";
-import { wpApi } from "../../lib/wp";
+import Layout from "../../../layouts/Layout.astro";
+import Header from "../../../components/common/Header.astro";
+import Footer from "../../../components/common/Footer.astro";
+import Hero from "../../../components/common/Hero.astro";
+import Descripcion from "../../../components/features/obras/descripcion.astro";
+import { wpApi } from "../../../lib/wp";
+import { useTranslations } from "../../../lib/i18n";
 
 export async function getStaticPaths() {
-  const slugs = await wpApi.getSlugObras();
-  return slugs.map((slug) => ({ params: { slug } }));
+  const locales = ["es", "en"];
+  const paths = [];
+
+  for (const lang of locales) {
+    const slugs = await wpApi.getSlugObras(lang);
+    const isDefault = lang === "es";
+    for (const slug of slugs) {
+      paths.push({ 
+        params: { 
+          lang: isDefault ? undefined : lang, 
+          slug 
+        } 
+      });
+    }
+  }
+
+  return paths;
 }
 
-const { slug } = Astro.params;
-const obra = await wpApi.getObraBySlug(slug);
+const { lang = "es", slug } = Astro.params;
+const obra = await wpApi.getObraBySlug(slug, lang);
 
 if (!obra) return Astro.redirect("/404");
+
+const t = useTranslations(lang);
 
 // Formatear fecha: Capitalizar primera letra y cambiar espacios por " - "
 const rawFecha = obra.acf.fecha_estreno_source?.formatted_value || "";
@@ -24,25 +42,25 @@ const formattedFecha =
 const repertorio: { nombre: string }[] = obra.acf.repertorio || [];
 ---
 
-<Layout title={obra.title.rendered}>
-  <Header />
+<Layout title={obra.title.rendered} lang={lang}>
+  <Header theme="dark" lang={lang} />
   <main>
-    <Hero title={obra.title.rendered} bajada={obra.content.rendered}>
+    <Hero title={obra.title.rendered} bajada={obra.content.rendered} theme="dark">
       <div
         class="mt-8 border-t border-gold-500/20 flex flex-col gap-12 py-4 w-max md:gap-25 md:flex-row"
       >
         <div>
           <h2 class="text-[14px] tracking-[15%] text-gold-500">
-            Director Artístico y Coreográfico
+            {t("director")}
           </h2>
           <p class="text-[20px] mt-4 text-white">{obra.acf.director}</p>
         </div>
         <div>
-          <h2 class="text-[14px] tracking-[15%] text-gold-500">Duración</h2>
+          <h2 class="text-[14px] tracking-[15%] text-gold-500">{t("duracion")}</h2>
           <p class="text-[20px] mt-4 text-white">{obra.acf.duracion}</p>
         </div>
         <div>
-          <h2 class="text-[14px] tracking-[15%] text-gold-500">Estreno</h2>
+          <h2 class="text-[14px] tracking-[15%] text-gold-500">{t("estreno")}</h2>
           <p class="text-[20px] mt-4 text-white">{formattedFecha}</p>
         </div>
       </div>
@@ -55,7 +73,7 @@ const repertorio: { nombre: string }[] = obra.acf.repertorio || [];
         />
         <div class="col-span-full lg:col-span-4 lg:col-start-9 xl:col-span-3 xl:col-start-10 bg-navy-950 px-5 h-max max-lg:mt-10">
           <h3 class="uppercase text-h3 text-white py-3 flex flex-col">
-            Repertorio
+            {t("repertorio")}
           </h3>
           <ul
             class="*:border-t *:border-dashed *:border-white"
@@ -74,5 +92,5 @@ const repertorio: { nombre: string }[] = obra.acf.repertorio || [];
       </div>
     </section>
   </main>
-  <Footer />
+  <Footer lang={lang} />
 </Layout>

@@ -3,13 +3,14 @@ import CardNoticia from "../../ui/CardNoticia.astro";
 import CardDestacada from "../../ui/CardNoticiaDestacada.astro";
 import { wpApi } from "../../../lib/wp";
 
-const noticias = await wpApi.getNoticias();
-
 interface Props {
   theme?: "light" | "dark";
+  lang?: string;
 }
 
-const { theme = "light" } = Astro.props;
+const { theme = "light", lang = "es" } = Astro.props;
+
+const noticias = await wpApi.getNoticias(lang);
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -25,7 +26,7 @@ const formatDate = (dateString: string) => {
     if (index === 0) {
       return (
         <CardDestacada
-          url={noticia.slug}
+          url={lang === "es" ? `noticias/${noticia.slug}` : `en/noticias/${noticia.slug}`}
           imgSrc={noticia._embedded?.["wp:featuredmedia"]?.[0]?.source_url || ""}
           fecha={formatDate(noticia.date)}
           titulo={noticia.title.rendered}
@@ -39,7 +40,7 @@ const formatDate = (dateString: string) => {
     if (index === 1) {
       return (
         <CardNoticia
-          url={noticia.slug}
+          url={lang === "es" ? `noticias/${noticia.slug}` : `en/noticias/${noticia.slug}`}
           imgSrc={noticia._embedded?.["wp:featuredmedia"]?.[0]?.source_url || ""}
           fecha={formatDate(noticia.date)}
           titulo={noticia.title.rendered}
@@ -55,7 +56,7 @@ const formatDate = (dateString: string) => {
     if (index !== 0 && index !== 1) {
       return (
         <CardNoticia
-          url={noticia.slug}
+          url={lang === "es" ? `noticias/${noticia.slug}` : `en/noticias/${noticia.slug}`}
           imgSrc={noticia._embedded?.["wp:featuredmedia"]?.[0]?.source_url || ""}
           fecha={formatDate(noticia.date)}
           titulo={noticia.title.rendered}

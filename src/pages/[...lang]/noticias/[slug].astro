@@ -1,9 +1,10 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import Header from "../../components/common/Header.astro";
-import Footer from "../../components/common/Footer.astro";
-import { wpApi } from "../../lib/wp";
-import { getBreadcrumbs } from "../../lib/utils";
+import Layout from "../../../layouts/Layout.astro";
+import Header from "../../../components/common/Header.astro";
+import Footer from "../../../components/common/Footer.astro";
+import { wpApi } from "../../../lib/wp";
+import { getBreadcrumbs } from "../../../lib/utils";
+import { useTranslations } from "../../../lib/i18n";
 
 export const prerender = false;
 
@@ -12,10 +13,12 @@ interface Props {
 }
 const { theme = "light" } = Astro.props;
 
-const { slug } = Astro.params;
+const { lang = "es", slug } = Astro.params;
 if (!slug) return Astro.redirect("/404");
-const noticia = await wpApi.getNoticiaBySlug(slug);
+const noticia = await wpApi.getNoticiaBySlug(slug, lang);
 if (!noticia) return Astro.redirect("/404");
+
+const t = useTranslations(lang);
 
 const tags: { name: string }[] = noticia._embedded?.["wp:term"]?.[0] || [];
 
@@ -30,8 +33,8 @@ const formatDate = (dateString: string) => {
 };
 ---
 
-<Layout title={noticia.title.rendered}>
-  <Header theme="light" />
+<Layout title={noticia.title.rendered} lang={lang}>
+  <Header theme="light" lang={lang} />
   <main class="bg-sand-100 pt-30">
     <section>
       <div class="wrapper">
@@ -95,14 +98,14 @@ const formatDate = (dateString: string) => {
         />
         <div class="col-span-full lg:col-span-3 flex flex-col gap-5 p-5 h-max bg-navy-950 lg:sticky lg:top-22.5">
           <div class="flex flex-col gap-4">
-            <h3 class="text-[24px] text-gold-500 tracking-[15%]">Fecha de Publicación</h3>
+            <h3 class="text-[24px] text-gold-500 tracking-[15%]">{t("fecha_publicacion")}</h3>
             <p
               class="text-white text-base"
               set:html={formatDate(noticia.date)}
             />
           </div>
           <div class="flex flex-col gap-4">
-            <h3 class="text-[24px] text-gold-500 tracking-[15%]">Autor</h3>
+            <h3 class="text-[24px] text-gold-500 tracking-[15%]">{t("autor")}</h3>
             <p
               class="text-white text-base"
               set:html={noticia.acf?.autor || "Antumapu"}
@@ -119,5 +122,5 @@ const formatDate = (dateString: string) => {
       </div>
     </section>
   </main>
-  <Footer />
+  <Footer lang={lang} />
 </Layout>

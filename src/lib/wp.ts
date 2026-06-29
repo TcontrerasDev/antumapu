@@ -2,12 +2,20 @@ import type { WPPage, WPObra, WPPresentacion, WPNoticia } from "../types/wp";
 
 const WP_DOMAIN = import.meta.env.WP_DOMAIN;
 
-async function wpFetch(endpoint: string): Promise<any> {
+async function wpFetch(endpoint: string, lang?: string): Promise<any> {
   if (!WP_DOMAIN) {
     throw new Error("WP_DOMAIN is not defined in environment variables. Check your .env file.");
   }
   const baseUrl = WP_DOMAIN.endsWith('/') ? WP_DOMAIN : `${WP_DOMAIN}/`;
-  const response = await fetch(`${baseUrl}${endpoint}`);
+  
+  // Append language query parameter if provided
+  let url = `${baseUrl}${endpoint}`;
+  if (lang) {
+    const separator = endpoint.includes('?') ? '&' : '?';
+    url = `${url}${separator}lang=${lang}`;
+  }
+
+  const response = await fetch(url);
   if (!response.ok) {
     throw new Error(`Failed to fetch ${endpoint}: ${response.statusText}`);
   }
@@ -37,7 +45,7 @@ async function wpFetch(endpoint: string): Promise<any> {
   return data;
 }
 
-async function wpFetchAll(endpoint: string): Promise<any[]> {
+async function wpFetchAll(endpoint: string, lang?: string): Promise<any[]> {
   let allData: any[] = [];
   let page = 1;
   const perPage = 100;
@@ -48,7 +56,7 @@ async function wpFetchAll(endpoint: string): Promise<any[]> {
     const paginatedEndpoint = `${endpoint}${separator}per_page=${perPage}&page=${page}`;
     
     try {
-      const data = await wpFetch(paginatedEndpoint);
+      const data = await wpFetch(paginatedEndpoint, lang);
       if (Array.isArray(data) && data.length > 0) {
         allData = [...allData, ...data];
         if (data.length < perPage) {
@@ -69,43 +77,43 @@ async function wpFetchAll(endpoint: string): Promise<any[]> {
 }
 
 export const wpApi = {
-  getNav: async (nav: string): Promise<any> => {
-    const data = await wpFetch(`menu/${nav}`);
+  getNav: async (nav: string, lang?: string): Promise<any> => {
+    const data = await wpFetch(`menu/${nav}`, lang);
     return data;
   },
 
-  getWidget: async (widget: string): Promise<any> => {
-    const data = await wpFetch(`widget-area/${widget}`);
+  getWidget: async (widget: string, lang?: string): Promise<any> => {
+    const data = await wpFetch(`widget-area/${widget}`, lang);
     return data;
   },
 
-  getPageBySlug: async (slug: string): Promise<WPPage | null> => {
-    const data = await wpFetch(`pages?slug=${slug}&_embed`);
+  getPageBySlug: async (slug: string, lang?: string): Promise<WPPage | null> => {
+    const data = await wpFetch(`pages?slug=${slug}&_embed`, lang);
     return data?.[0] || null;
   },
 
-  getObras: async (page?: number, perPage?: number): Promise<WPObra[]> => {
+  getObras: async (lang?: string, page?: number, perPage?: number): Promise<WPObra[]> => {
     if (page !== undefined) {
       const limit = perPage ?? 10;
-      return wpFetch(`obras?_embed&orderby=date&order=asc&per_page=${limit}&page=${page}`);
+      return wpFetch(`obras?_embed&orderby=date&order=asc&per_page=${limit}&page=${page}`, lang);
     }
-    return wpFetchAll("obras?_embed&orderby=date&order=asc");
+    return wpFetchAll("obras?_embed&orderby=date&order=asc", lang);
   },
 
-  getObraBySlug: async (slug: string): Promise<WPObra | null> => {
-    const data = await wpFetch(`obras?slug=${slug}&_embed`);
+  getObraBySlug: async (slug: string, lang?: string): Promise<WPObra | null> => {
+    const data = await wpFetch(`obras?slug=${slug}&_embed`, lang);
     return data?.[0] || null;
   },
 
-  getSlugObras: async (): Promise<string[]> => {
-    const data = await wpFetchAll("obras?_fields=slug");
+  getSlugObras: async (lang?: string): Promise<string[]> => {
+    const data = await wpFetchAll("obras?_fields=slug", lang);
     return data.map((obra: { slug: string }) => obra.slug);
   },
 
-  getPresentaciones: async (page?: number, perPage?: number): Promise<WPPresentacion[]> => {
+  getPresentaciones: async (lang?: string, page?: number, perPage?: number): Promise<WPPresentacion[]> => {
     const data = page !== undefined
-      ? await wpFetch(`presentaciones?per_page=${perPage ?? 10}&page=${page}`)
-      : await wpFetchAll("presentaciones");
+      ? await wpFetch(`presentaciones?per_page=${perPage ?? 10}&page=${page}`, lang)
+      : await wpFetchAll("presentaciones", lang);
 
     return data.sort((a: WPPresentacion, b: WPPresentacion) => {
       const fechaA = a.acf?.fecha_source?.formatted_value || "";
@@ -114,16 +122,16 @@ export const wpApi = {
     });
   },
 
-  getNoticias: async (page?: number, perPage?: number): Promise<WPNoticia[]> => {
+  getNoticias: async (lang?: string, page?: number, perPage?: number): Promise<WPNoticia[]> => {
     if (page !== undefined) {
       const limit = perPage ?? 10;
-      return wpFetch(`noticias?_embed&per_page=${limit}&page=${page}`);
+      return wpFetch(`noticias?_embed&per_page=${limit}&page=${page}`, lang);
     }
-    return wpFetchAll("noticias?_embed");
+    return wpFetchAll("noticias?_embed", lang);
   },
 
-  getNoticiaBySlug: async (slug: string): Promise<WPNoticia | null> => {
-    const data = await wpFetch(`noticias?slug=${slug}&_embed`);
+  getNoticiaBySlug: async (slug: string, lang?: string): Promise<WPNoticia | null> => {
+    const data = await wpFetch(`noticias?slug=${slug}&_embed`, lang);
     return data?.[0] || null;
   },
 };

@@ -2,6 +2,12 @@
 import CardPresentacion from "../../ui/CardPresentacion.astro";
 import { wpApi } from "../../../lib/wp";
 
+interface Props {
+  lang?: string;
+}
+
+const { lang = "es" } = Astro.props;
+
 const dataPresentaciones: {
   title: { rendered: string };
   acf: {
@@ -12,7 +18,7 @@ const dataPresentaciones: {
     direccion: string;
     hora_source: { formatted_value: string };
   };
-}[] = await wpApi.getPresentaciones();
+}[] = await wpApi.getPresentaciones(lang);
 ---
 
 {

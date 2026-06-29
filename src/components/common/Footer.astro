@@ -3,12 +3,20 @@ import { Image } from "astro:assets";
 import Logo from "../../assets/logo-light.png";
 import ColFooter from "./ColFooter.astro";
 import { wpApi } from "../../lib/wp";
+import { useTranslations } from "../../lib/i18n";
+
+interface Props {
+  lang?: string;
+}
+
+const { lang = "es" } = Astro.props;
+const t = useTranslations(lang);
 
 const navRrss: { title: string; url: string; acf: { icono: string } }[] =
-  await wpApi.getNav("menu-rrss");
+  await wpApi.getNav("menu-rrss", lang).catch(() => []);
 const navContacto: { title: string; url: string; acf: { icono: string } }[] =
-  await wpApi.getNav("menu-contacto");
-const colWidget: { rendered: string } = await wpApi.getWidget("col-footer");
+  await wpApi.getNav("menu-contacto", lang).catch(() => []);
+const colWidget: { rendered: string } = await wpApi.getWidget("col-footer", lang).catch(() => ({ rendered: "" }));
 ---
 
 <footer
@@ -18,7 +26,7 @@ const colWidget: { rendered: string } = await wpApi.getWidget("col-footer");
   <div class="wrapper grid grid-cols-12 gap-5">
     <ColFooter title="" set:html={colWidget.rendered}>
     </ColFooter>
-    <ColFooter title="Redes Sociales">
+    <ColFooter title={t("social_media")}>
       <ul class="flex flex-col gap-3">
         {
           navRrss.map((item) => (
@@ -40,7 +48,7 @@ const colWidget: { rendered: string } = await wpApi.getWidget("col-footer");
         }
       </ul>
     </ColFooter>
-    <ColFooter title="Contacto">
+    <ColFooter title={t("contacto")}>
       <ul class="flex flex-col gap-3">
         {
           navContacto.map((item) => (

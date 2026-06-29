@@ -1,26 +1,35 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import Header from "../components/common/Header.astro";
-import Hero from "../components/common/Hero.astro";
-import Footer from "../components/common/Footer.astro";
-import Noticia from "../components/features/noticias/Noticias.astro";
-import { wpApi } from "../lib/wp";
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } },
+    { params: { lang: "en" } },
+  ];
+}
 
-const pageNoticias = await wpApi.getPageBySlug("noticias");
+const { lang = "es" } = Astro.params;
+
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/common/Header.astro";
+import Hero from "../../components/common/Hero.astro";
+import Footer from "../../components/common/Footer.astro";
+import Noticia from "../../components/features/noticias/Noticias.astro";
+import { wpApi } from "../../lib/wp";
+
+const pageNoticias = await wpApi.getPageBySlug("noticias", lang);
 if (!pageNoticias) {
   throw new Error("Page 'noticias' not found in WordPress");
 }
 ---
 
-<Layout title="Noticias">
-  <Header theme="dark" />
+<Layout title="Noticias" lang={lang}>
+  <Header theme="dark" lang={lang} />
   <main>
     <Hero
       title={pageNoticias.title.rendered}
       bajada={pageNoticias.content.rendered}
       theme="dark"
     />
-    <Noticia title=" " bajada=" " theme="dark" />
+    <Noticia title=" " bajada=" " theme="dark" lang={lang} />
   </main>
-  <Footer />
+  <Footer lang={lang} />
 </Layout>

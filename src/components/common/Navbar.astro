@@ -3,10 +3,25 @@ import Logo from "../../assets/logo-light.png";
 import MobileMenu from "./MobileMenu.astro";
 import { wpApi } from "../../lib/wp";
 
+interface Props {
+  lang?: string;
+}
+
+const { lang = "es" } = Astro.props;
+
 // Recuperar navegación y contactos de WordPress de manera segura
-const nav: {title: string, url: string}[] = await wpApi.getNav("menu-primary").catch(() => []);
-const navRrss = await wpApi.getNav("menu-rrss").catch(() => []);
-const navContacto = await wpApi.getNav("menu-contacto").catch(() => []);
+const rawNav: {title: string, url: string}[] = await wpApi.getNav("menu-primary", lang).catch(() => []);
+const navRrss = await wpApi.getNav("menu-rrss", lang).catch(() => []);
+const navContacto = await wpApi.getNav("menu-contacto", lang).catch(() => []);
+
+// Localizar links locales si el idioma actual es inglés
+const nav = rawNav.map(item => {
+  let url = item.url;
+  if (lang === "en" && url.startsWith("/") && !url.startsWith("/en")) {
+    url = `/en${url === "/" ? "" : url}`;
+  }
+  return { ...item, url };
+});
 
 // Obtener y normalizar la ruta actual para el indicador de página activa
 const currentPath = Astro.url.pathname;
@@ -88,4 +103,4 @@ const checkActive = (itemUrl: string) => {
 </nav>
 
 <!-- Menú Desplegable en Pantalla Completa con Datos de WordPress -->
-<MobileMenu nav={nav} navRrss={navRrss} navContacto={navContacto} />
+<MobileMenu nav={nav} navRrss={navRrss} navContacto={navContacto} lang={lang} />

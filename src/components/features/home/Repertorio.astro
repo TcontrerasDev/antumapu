@@ -1,6 +1,6 @@
 ---
-import CardObra from "../cards/CardObra.astro";
-import { wpApi } from "../../lib/wp";
+import CardObra from "../../ui/CardObra.astro";
+import { wpApi } from "../../../lib/wp";
 
 interface Props {
   title: string;
@@ -26,7 +26,7 @@ const obras = await wpApi.getObras();
         <div class="w-full shrink-0 md:w-[calc(50%-10px)] lg:w-[calc(33.333%-14px)] xl:w-[calc(25%-15px)] snap-start">
           <CardObra
             url={obra.slug}
-            imgSrc={obra._embedded?.["wp:featuredmedia"]?.[0]?.source_url}
+            imgSrc={obra._embedded?.["wp:featuredmedia"]?.[0]?.source_url || ""}
             titulo={obra.title.rendered}
             descripcion={obra.excerpt.rendered}
           />

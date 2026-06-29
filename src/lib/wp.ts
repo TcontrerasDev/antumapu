@@ -1,3 +1,5 @@
+import type { WPPage, WPObra, WPPresentacion, WPNoticia } from "../types/wp";
+
 const WP_DOMAIN = import.meta.env.WP_DOMAIN;
 
 async function wpFetch(endpoint: string): Promise<any> {
@@ -38,47 +40,47 @@ async function wpFetch(endpoint: string): Promise<any> {
 export const wpApi = {
   getNav: async (nav: string): Promise<any> => {
     const data = await wpFetch(`menu/${nav}`);
-    return data
+    return data;
   },
 
   getWidget: async (widget: string): Promise<any> => {
     const data = await wpFetch(`widget-area/${widget}`);
-    return data
+    return data;
   },
 
-  getPageBySlug: async (slug: string): Promise<any> => {
+  getPageBySlug: async (slug: string): Promise<WPPage | null> => {
     const data = await wpFetch(`pages?slug=${slug}&_embed`);
     return data?.[0] || null;
   },
 
-  getObras: async (): Promise<any[]> => {
+  getObras: async (): Promise<WPObra[]> => {
     return wpFetch("obras?_embed&per_page=100&orderby=date&order=asc");
   },
 
-  getObraBySlug: async (slug: string): Promise<any> => {
+  getObraBySlug: async (slug: string): Promise<WPObra | null> => {
     const data = await wpFetch(`obras?slug=${slug}&_embed`);
     return data?.[0] || null;
   },
 
   getSlugObras: async (): Promise<string[]> => {
     const data = await wpFetch("obras?_fields=slug&per_page=100");
-    return data.map((obra: any) => obra.slug);
+    return data.map((obra: { slug: string }) => obra.slug);
   },
 
-  getPresentaciones: async (): Promise<any[]> => {
+  getPresentaciones: async (): Promise<WPPresentacion[]> => {
     const data = await wpFetch("presentaciones");
-    return data.sort((a: any, b: any) => {
-      const fechaA = a.acf?.fecha || "";
-      const fechaB = b.acf?.fecha || "";
+    return data.sort((a: WPPresentacion, b: WPPresentacion) => {
+      const fechaA = a.acf?.fecha_source?.formatted_value || "";
+      const fechaB = b.acf?.fecha_source?.formatted_value || "";
       return fechaA.localeCompare(fechaB);
     });
   },
 
-  getNoticias: async (): Promise<any[]> => {
+  getNoticias: async (): Promise<WPNoticia[]> => {
     return wpFetch("noticias?_embed");
   },
 
-  getNoticiaBySlug: async (slug: string): Promise<any> => {
+  getNoticiaBySlug: async (slug: string): Promise<WPNoticia | null> => {
     const data = await wpFetch(`noticias?slug=${slug}&_embed`);
     return data?.[0] || null;
   },

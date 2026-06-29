@@ -1,25 +1,18 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Header from "../components/Header.astro";
-import Hero from "../components/Hero.astro";
-import Footer from "../components/Footer.astro";
-import GridPrestaciones from "../components/presentaciones/GridPrestaciones.astro";
-import CardPresentacionCol from "../components/cards/CardPresentacionCol.astro";
+import Header from "../components/common/Header.astro";
+import Hero from "../components/common/Hero.astro";
+import Footer from "../components/common/Footer.astro";
+import GridPrestaciones from "../components/features/presentaciones/GridPrestaciones.astro";
+import CardPresentacionCol from "../components/ui/CardPresentacionCol.astro";
 import { wpApi } from "../lib/wp";
 
 const pagePresentaciones = await wpApi.getPageBySlug("presentaciones");
+if (!pagePresentaciones) {
+  throw new Error("Page 'presentaciones' not found in WordPress");
+}
 
-const dataPresentaciones: {
-  title: { rendered: string };
-  acf: {
-    url: string;
-    fecha_source: { formatted_value: string };
-    obra: string;
-    lugar: string;
-    direccion: string;
-    hora_source: { formatted_value: string };
-  };
-}[] = await wpApi.getPresentaciones();
+const dataPresentaciones = await wpApi.getPresentaciones();
 ---
 
 <Layout title="Presentaciones">

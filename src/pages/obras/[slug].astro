@@ -1,9 +1,9 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import Header from "../../components/Header.astro";
-import Footer from "../../components/Footer.astro";
-import Hero from "../../components/Hero.astro";
-import Descripcion from "../../components/single-obra/descripcion.astro";
+import Header from "../../components/common/Header.astro";
+import Footer from "../../components/common/Footer.astro";
+import Hero from "../../components/common/Hero.astro";
+import Descripcion from "../../components/features/obras/descripcion.astro";
 import { wpApi } from "../../lib/wp";
 
 export async function getStaticPaths() {
@@ -51,7 +51,7 @@ const repertorio: { nombre: string }[] = obra.acf.repertorio || [];
       <div class="wrapper grid grid-cols-12">
         <Descripcion
           texto={obra.acf.descripcion_obra}
-          video={obra.acf.video_source?.formatted_value}
+          video={obra.acf.video_source?.formatted_value || ""}
         />
         <div class="col-span-full lg:col-span-4 lg:col-start-9 xl:col-span-3 xl:col-start-10 bg-navy-950 px-5 h-max max-lg:mt-10">
           <h3 class="uppercase text-h3 text-white py-3 flex flex-col">

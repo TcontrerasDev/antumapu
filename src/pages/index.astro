@@ -1,56 +1,59 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Header from "../components/Header.astro";
-import HeroIndex from "../components/index/HeroIndex.astro";
-import Historia from "../components/index/Historia.astro";
-import Presentaciones from "../components/index/Presentaciones.astro";
-import PresentacionesList from "../components/index/PresentacionesList.astro";
-import PresentacionesSkeleton from "../components/index/PresentacionesSkeleton.astro";
-import Repertorio from "../components/index/Repertorio.astro";
-import Noticias from "../components/layout/Noticias.astro";
-import Footer from "../components/Footer.astro";
+import Header from "../components/common/Header.astro";
+import HeroIndex from "../components/features/home/HeroIndex.astro";
+import Historia from "../components/features/home/Historia.astro";
+import Presentaciones from "../components/features/home/Presentaciones.astro";
+import PresentacionesList from "../components/features/home/PresentacionesList.astro";
+import PresentacionesSkeleton from "../components/ui/PresentacionesSkeleton.astro";
+import Repertorio from "../components/features/home/Repertorio.astro";
+import Noticias from "../components/features/noticias/Noticias.astro";
+import Footer from "../components/common/Footer.astro";
 import { wpApi } from "../lib/wp";
 
 const page = await wpApi.getPageBySlug("antumapu");
+if (!page) {
+  throw new Error("Page 'antumapu' not found in WordPress");
+}
 ---
 
 <Layout title="Antumapu">
   <Header theme="dark" />
   <main>
     <HeroIndex
-      antetitulo={page.acf.antetitulo}
+      antetitulo={page.acf.antetitulo || ""}
       title={page.title.rendered}
       bajada={page.content.rendered}
-      txtBtn1={page.acf.botones.text_boton}
-      linkBtn1={page.acf.botones.pagina}
-      txtBtn2={page.acf.botones.text_boton_2}
-      linkBtn2={page.acf.botones.pagina_2}
-      imgBack={page._embedded?.["wp:featuredmedia"]?.[0]?.source_url}
+      txtBtn1={page.acf.botones?.text_boton || ""}
+      linkBtn1={page.acf.botones?.pagina || ""}
+      txtBtn2={page.acf.botones?.text_boton_2 || ""}
+      linkBtn2={page.acf.botones?.pagina_2 || ""}
+      imgBack={page._embedded?.["wp:featuredmedia"]?.[0]?.source_url || ""}
     />
     <Historia
-      title={page.acf.titulo_historia}
-      resumen={page.acf.resumen}
-      img={page.acf.imagen_seccion.url}
-      alt={page.acf.imagen_seccion.alt}
-      statText1={page.acf.estadisticas.titulo_estadistica}
-      statText2={page.acf.estadisticas.titulo_estadistica_2}
-      statText3={page.acf.estadisticas.titulo_estadistica_3}
-      statNumber1={page.acf.estadisticas.numero_estadistica}
-      statNumber2={page.acf.estadisticas.numero_estadistica_2}
-      statNumber3={page.acf.estadisticas.numero_estadistica_3}
+      title={page.acf.titulo_historia || ""}
+      resumen={page.acf.resumen || ""}
+      img={page.acf.imagen_seccion?.url || ""}
+      alt={page.acf.imagen_seccion?.alt || ""}
+      statText1={page.acf.estadisticas?.titulo_estadistica || ""}
+      statText2={page.acf.estadisticas?.titulo_estadistica_2 || ""}
+      statText3={page.acf.estadisticas?.titulo_estadistica_3 || ""}
+      statNumber1={page.acf.estadisticas?.numero_estadistica || ""}
+      statNumber2={page.acf.estadisticas?.numero_estadistica_2 || ""}
+      statNumber3={page.acf.estadisticas?.numero_estadistica_3 || ""}
     />
     <Presentaciones
-      title={page.acf.titulo_presentaciones}
-      bajada={page.acf.bajada_presentaciones}
+      title={page.acf.titulo_presentaciones || ""}
+      bajada={page.acf.bajada_presentaciones || ""}
     >
       <PresentacionesList server:defer>
         <PresentacionesSkeleton slot="fallback" />
       </PresentacionesList>
     </Presentaciones>
-    <Repertorio title={page.acf.titulo_obras} bajada={page.acf.bajada_obras} />
+    <Repertorio title={page.acf.titulo_obras || ""} bajada={page.acf.bajada_obras || ""} />
     <Noticias
-      title={page.acf.titulo_noticias}
-      bajada={page.acf.bajada_noticias}
+      title={page.acf.titulo_noticias || ""}
+      bajada={page.acf.bajada_noticias || ""}
       theme="light"
     />
   </main>

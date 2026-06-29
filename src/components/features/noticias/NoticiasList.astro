@@ -1,7 +1,7 @@
 ---
-import CardNoticia from "../cards/CardNoticia.astro";
-import CardDestacada from "../cards/CardNoticiaDestacada.astro";
-import { wpApi } from "../../lib/wp";
+import CardNoticia from "../../ui/CardNoticia.astro";
+import CardDestacada from "../../ui/CardNoticiaDestacada.astro";
+import { wpApi } from "../../../lib/wp";
 
 const noticias = await wpApi.getNoticias();
 
@@ -26,7 +26,7 @@ const formatDate = (dateString: string) => {
       return (
         <CardDestacada
           url={noticia.slug}
-          imgSrc={noticia._embedded?.["wp:featuredmedia"]?.[0]?.source_url}
+          imgSrc={noticia._embedded?.["wp:featuredmedia"]?.[0]?.source_url || ""}
           fecha={formatDate(noticia.date)}
           titulo={noticia.title.rendered}
           descripcion={noticia.excerpt.rendered}
@@ -40,7 +40,7 @@ const formatDate = (dateString: string) => {
       return (
         <CardNoticia
           url={noticia.slug}
-          imgSrc={noticia._embedded?.["wp:featuredmedia"]?.[0]?.source_url}
+          imgSrc={noticia._embedded?.["wp:featuredmedia"]?.[0]?.source_url || ""}
           fecha={formatDate(noticia.date)}
           titulo={noticia.title.rendered}
           descripcion={noticia.excerpt.rendered}
@@ -56,7 +56,7 @@ const formatDate = (dateString: string) => {
       return (
         <CardNoticia
           url={noticia.slug}
-          imgSrc={noticia._embedded?.["wp:featuredmedia"]?.[0]?.source_url}
+          imgSrc={noticia._embedded?.["wp:featuredmedia"]?.[0]?.source_url || ""}
           fecha={formatDate(noticia.date)}
           titulo={noticia.title.rendered}
           descripcion={noticia.excerpt.rendered}

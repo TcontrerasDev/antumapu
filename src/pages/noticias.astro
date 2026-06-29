@@ -1,12 +1,15 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Header from "../components/Header.astro";
-import Hero from "../components/Hero.astro";
-import Footer from "../components/Footer.astro";
-import Noticia from "../components/layout/Noticias.astro";
+import Header from "../components/common/Header.astro";
+import Hero from "../components/common/Hero.astro";
+import Footer from "../components/common/Footer.astro";
+import Noticia from "../components/features/noticias/Noticias.astro";
 import { wpApi } from "../lib/wp";
 
 const pageNoticias = await wpApi.getPageBySlug("noticias");
+if (!pageNoticias) {
+  throw new Error("Page 'noticias' not found in WordPress");
+}
 ---
 
 <Layout title="Noticias">

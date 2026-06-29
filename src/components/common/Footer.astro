@@ -1,8 +1,8 @@
 ---
 import { Image } from "astro:assets";
-import Logo from "../assets/logo-light.png";
-import ColFooter from "./layout/ColFooter.astro";
-import { wpApi } from "../lib/wp";
+import Logo from "../../assets/logo-light.png";
+import ColFooter from "./ColFooter.astro";
+import { wpApi } from "../../lib/wp";
 
 const navRrss: { title: string; url: string; acf: { icono: string } }[] =
   await wpApi.getNav("menu-rrss");

@@ -1,7 +1,7 @@
 ---
-import Logo from "../assets/logo-light.png";
+import Logo from "../../assets/logo-light.png";
 import MobileMenu from "./MobileMenu.astro";
-import { wpApi } from "../lib/wp";
+import { wpApi } from "../../lib/wp";
 
 // Recuperar navegación y contactos de WordPress de manera segura
 const nav: {title: string, url: string}[] = await wpApi.getNav("menu-primary").catch(() => []);

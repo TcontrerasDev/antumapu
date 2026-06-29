@@ -1,6 +1,6 @@
 ---
 // src/components/MobileMenu.astro
-import Logo from "../assets/logo-light.png";
+import Logo from "../../assets/logo-light.png";
 
 interface Props {
   nav?: { title: string; url: string }[];
@@ -213,8 +213,10 @@ const checkActive = (itemUrl: string) => {
 </style>
 
 <script>
-  interface Window {
-    lenis?: any;
+  declare global {
+    interface Window {
+      lenis: any;
+    }
   }
 
   function initMobileMenu() {

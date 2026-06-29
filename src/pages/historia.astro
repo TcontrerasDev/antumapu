@@ -1,17 +1,20 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Header from "../components/Header.astro";
-import Hero from "../components/Hero.astro";
-import FeatureSplit from "../components/historia/FeatureSplit.astro";
-import GridSection from "../components/historia/GridSection.astro";
-import CardInfo from "../components/cards/CardInfo.astro";
-import Conclusion from "../components/historia/Conclusion.astro";
-import Footer from "../components/Footer.astro";
+import Header from "../components/common/Header.astro";
+import Hero from "../components/common/Hero.astro";
+import FeatureSplit from "../components/features/historia/FeatureSplit.astro";
+import GridSection from "../components/features/historia/GridSection.astro";
+import CardInfo from "../components/ui/CardInfo.astro";
+import Conclusion from "../components/features/historia/Conclusion.astro";
+import Footer from "../components/common/Footer.astro";
 import { wpApi } from '../lib/wp';
 
 const page = await wpApi.getPageBySlug('historia');
+if (!page) {
+  throw new Error("Page 'historia' not found in WordPress");
+}
 
-const cardsInfo: { titulo: string, descripcion: string, img: {url: string} }[] = page.acf.destacadas;
+const cardsInfo = page.acf.destacadas || [];
 ---
 
 <Layout title="Historia">
@@ -23,15 +26,15 @@ const cardsInfo: { titulo: string, descripcion: string, img: {url: string} }[] =
       theme="dark"
     />
     <FeatureSplit
-      title={page.acf.titulo_1}
-      content={page.acf.texto_1}
-      img={page.acf.imagen_1.url}
-      alt={page.acf.imagen_1.alt}
+      title={page.acf.titulo_1 || ""}
+      content={page.acf.texto_1 || ""}
+      img={page.acf.imagen_1?.url || ""}
+      alt={page.acf.imagen_1?.alt || ""}
       imageLeft={false}
     />
     <GridSection
-      title={page.acf.titulo_2}
-      content={page.acf.texto_2}
+      title={page.acf.titulo_2 || ""}
+      content={page.acf.texto_2 || ""}
     >
       {
         cardsInfo.map((card) => (
@@ -44,16 +47,16 @@ const cardsInfo: { titulo: string, descripcion: string, img: {url: string} }[] =
       }
     </GridSection>
     <FeatureSplit
-      title={page.acf.titulo_3}
-      content={page.acf.texto_3}
-      img={page.acf.imagen_3.url}
-      alt={page.acf.imagen_3.alt}
+      title={page.acf.titulo_3 || ""}
+      content={page.acf.texto_3 || ""}
+      img={page.acf.imagen_3?.url || ""}
+      alt={page.acf.imagen_3?.alt || ""}
       imageLeft={true}
     />
     <Conclusion
-      text={page.acf.conclusion}
-      img={page.acf.imagen_conclusion.url}
-      alt={page.acf.imagen_conclusion.alt}
+      text={page.acf.conclusion || ""}
+      img={page.acf.imagen_conclusion?.url || ""}
+      alt={page.acf.imagen_conclusion?.alt || ""}
     />
   </main>
   <Footer />

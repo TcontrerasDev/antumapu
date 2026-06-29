@@ -90,7 +90,6 @@ const dataActividades = await wpApi.getActividades(lang);
       {
         dataActividades.map((actividad) => {
           const fechaRaw = actividad.acf.fecha || "";
-          const mesVal = fechaRaw.length >= 6 ? fechaRaw.substring(4, 6) : "";
           const fechaFullVal = fechaRaw.length === 8 ? `${fechaRaw.substring(0, 4)}-${fechaRaw.substring(4, 6)}-${fechaRaw.substring(6, 8)}` : "";
           const tipoClass = actividad.class_list?.find((cls) => cls.startsWith("tipo-")) || "";
           
@@ -103,7 +102,6 @@ const dataActividades = await wpApi.getActividades(lang);
               lugar={actividad.acf.lugar}
               direccion={actividad.acf.direccion}
               hora={actividad.acf.hora_source.formatted_value}
-              mes={mesVal}
               fechaFull={fechaFullVal}
               tipo={tipoClass}
             />
@@ -125,9 +123,12 @@ const dataActividades = await wpApi.getActividades(lang);
           type: card.getAttribute("data-tipo") || "",
         })).filter(evt => evt.date);
 
+        // Elementos DOM necesarios para inicializar el estado del filtro
+        const selectType = document.getElementById("select-type-filter") as HTMLSelectElement | null;
+
         // Estado del Filtro
         let selectedDate: string | null = null;
-        let selectedType = "all";
+        let selectedType = selectType ? (selectType as HTMLSelectElement).value : "all";
         
         // Determinar la fecha inicial para enfocar el calendario
         let currentYear = new Date().getFullYear();
@@ -143,8 +144,14 @@ const dataActividades = await wpApi.getActividades(lang);
           
           const targetEvent = futureEvents.length > 0 ? futureEvents[0] : sortedEvents[sortedEvents.length - 1];
           const parts = targetEvent.date.split("-");
-          currentYear = parseInt(parts[0], 10);
-          currentMonth = parseInt(parts[1], 10) - 1; // 0-indexed
+          if (parts.length === 3) {
+            const parsedYear = parseInt(parts[0], 10);
+            const parsedMonth = parseInt(parts[1], 10) - 1;
+            if (!isNaN(parsedYear) && !isNaN(parsedMonth)) {
+              currentYear = parsedYear;
+              currentMonth = parsedMonth;
+            }
+          }
         }
 
         const monthNamesEs = [
@@ -165,7 +172,6 @@ const dataActividades = await wpApi.getActividades(lang);
         const btnPrevMonth = document.getElementById("btn-prev-month");
         const btnNextMonth = document.getElementById("btn-next-month");
         const btnClearDate = document.getElementById("btn-clear-date");
-        const selectType = document.getElementById("select-type-filter") as HTMLSelectElement | null;
         const msgNoActivities = document.getElementById("msg-no-activities");
 
         function renderCalendar() {

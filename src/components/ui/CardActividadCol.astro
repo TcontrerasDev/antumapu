@@ -7,12 +7,11 @@ interface Props {
   lugar: string;
   direccion: string;
   hora: string;
-  mes?: string;
   fechaFull?: string;
   tipo?: string;
 }
 
-const { url, fecha, titulo, obra, lugar, direccion, hora, mes, fechaFull, tipo } = Astro.props;
+const { url, fecha, titulo, obra, lugar, direccion, hora, fechaFull, tipo } = Astro.props;
 
 // Separar fecha
 const dateParts = fecha.split(" ");
@@ -22,7 +21,6 @@ const mesLabel = dateParts.find((p) => !/\d/.test(p)) || "";
 
 <article 
   class="col-span-full md:col-span-6 lg:col-span-4 actividad-card"
-  data-mes={mes}
   data-fecha={fechaFull}
   data-tipo={tipo}
 >

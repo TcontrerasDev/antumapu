@@ -7,17 +7,25 @@ interface Props {
   lugar: string;
   direccion: string;
   hora: string;
+  mes?: string;
+  fechaFull?: string;
+  tipo?: string;
 }
 
-const { url, fecha, titulo, obra, lugar, direccion, hora } = Astro.props;
+const { url, fecha, titulo, obra, lugar, direccion, hora, mes, fechaFull, tipo } = Astro.props;
 
 // Separar fecha
 const dateParts = fecha.split(" ");
 const dia = dateParts.find((p) => /\d/.test(p)) || "";
-const mes = dateParts.find((p) => !/\d/.test(p)) || "";
+const mesLabel = dateParts.find((p) => !/\d/.test(p)) || "";
 ---
 
-<article class="col-span-full md:col-span-6 lg:col-span-4">
+<article 
+  class="col-span-full md:col-span-6 lg:col-span-4 actividad-card"
+  data-mes={mes}
+  data-fecha={fechaFull}
+  data-tipo={tipo}
+>
   <a
     href={url}
     target="_blank"
@@ -30,7 +38,7 @@ const mes = dateParts.find((p) => !/\d/.test(p)) || "";
       >
       <span
         class="uppercase text-[16px] text-gold-700 font-heading-2 group-hover:text-gold-500 group-focus:text-gold-500 transition-colors ease-in"
-        >{mes}</span
+        >{mesLabel}</span
       >
     </div>
     <div class="flex flex-col gap-4">

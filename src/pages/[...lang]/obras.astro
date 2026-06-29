@@ -35,7 +35,7 @@ const obras = await wpApi.getObras(lang);
       {
         obras.map((obra, index) => (
           <Cardrep
-            url={lang === "es" ? `obras/${obra.slug}` : `en/obras/${obra.slug}`}
+            url={lang === "es" ? `/obras/${obra.slug}` : `/en/obras/${obra.slug}`}
             numeracion={index + 1}
             ano={obra.acf.fecha_estreno_source?.formatted_value || ""}
             titulo={obra.title.rendered}

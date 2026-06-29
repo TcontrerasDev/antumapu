@@ -5,9 +5,34 @@ interface Props {
 }
 
 const { texto, video } = Astro.props;
+
+// Convert potential YouTube URL to an iframe embed
+const getEmbedHtml = (videoStr: string) => {
+  if (!videoStr) return "";
+  
+  // If it already has an iframe, return it
+  if (videoStr.includes("<iframe")) {
+    return videoStr;
+  }
+  
+  // Try to match YouTube video ID
+  const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+  const match = videoStr.match(youtubeRegex);
+  
+  if (match && match[1]) {
+    const videoId = match[1];
+    return `<iframe src="https://www.youtube.com/embed/${videoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+  }
+  
+  return "";
+};
+
+const embedHtml = getEmbedHtml(video);
 ---
 
 <div class="flex flex-col gap-10 col-span-full lg:col-span-7">
   <p class="text-base text-navy-950 whitespace-pre-line" set:html={texto} ></p>
-  <div class="*:w-full *:h-120" set:html={video}></div>
+  {embedHtml && (
+    <div class="*:w-full *:h-120" set:html={embedHtml}></div>
+  )}
 </div>

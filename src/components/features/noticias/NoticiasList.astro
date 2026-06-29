@@ -26,7 +26,7 @@ const formatDate = (dateString: string) => {
     if (index === 0) {
       return (
         <CardDestacada
-          url={lang === "es" ? `noticias/${noticia.slug}` : `en/noticias/${noticia.slug}`}
+          url={lang === "es" ? `/noticias/${noticia.slug}` : `/en/noticias/${noticia.slug}`}
           imgSrc={noticia._embedded?.["wp:featuredmedia"]?.[0]?.source_url || ""}
           fecha={formatDate(noticia.date)}
           titulo={noticia.title.rendered}
@@ -40,7 +40,7 @@ const formatDate = (dateString: string) => {
     if (index === 1) {
       return (
         <CardNoticia
-          url={lang === "es" ? `noticias/${noticia.slug}` : `en/noticias/${noticia.slug}`}
+          url={lang === "es" ? `/noticias/${noticia.slug}` : `/en/noticias/${noticia.slug}`}
           imgSrc={noticia._embedded?.["wp:featuredmedia"]?.[0]?.source_url || ""}
           fecha={formatDate(noticia.date)}
           titulo={noticia.title.rendered}
@@ -56,7 +56,7 @@ const formatDate = (dateString: string) => {
     if (index !== 0 && index !== 1) {
       return (
         <CardNoticia
-          url={lang === "es" ? `noticias/${noticia.slug}` : `en/noticias/${noticia.slug}`}
+          url={lang === "es" ? `/noticias/${noticia.slug}` : `/en/noticias/${noticia.slug}`}
           imgSrc={noticia._embedded?.["wp:featuredmedia"]?.[0]?.source_url || ""}
           fecha={formatDate(noticia.date)}
           titulo={noticia.title.rendered}

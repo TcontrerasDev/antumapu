@@ -28,7 +28,7 @@ const obras = await wpApi.getObras(lang);
       {obras.map((obra) => (
         <div class="w-full shrink-0 md:w-[calc(50%-10px)] lg:w-[calc(33.333%-14px)] xl:w-[calc(25%-15px)] snap-start">
           <CardObra
-            url={lang === "es" ? `obras/${obra.slug}` : `en/obras/${obra.slug}`}
+            url={lang === "es" ? `/obras/${obra.slug}` : `/en/obras/${obra.slug}`}
             imgSrc={obra._embedded?.["wp:featuredmedia"]?.[0]?.source_url || ""}
             titulo={obra.title.rendered}
             descripcion={obra.excerpt.rendered}

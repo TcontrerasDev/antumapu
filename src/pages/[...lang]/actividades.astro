@@ -16,7 +16,7 @@ import GridActividades from "../../components/features/actividades/GridActividad
 import CardActividadCol from "../../components/ui/CardActividadCol.astro";
 import { wpApi } from "../../lib/wp";
 
-const pageActividades = await wpApi.getPageBySlug("presentaciones", lang);
+const pageActividades = await wpApi.getPageBySlug("actividades", lang);
 if (!pageActividades) {
   throw new Error("Page 'presentaciones' not found in WordPress");
 }

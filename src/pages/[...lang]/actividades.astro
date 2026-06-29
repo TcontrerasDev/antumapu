@@ -41,9 +41,9 @@ const dataActividades = await wpApi.getActividades(lang);
             {lang === "en" ? "Activities Calendar" : "Calendario de Actividades"}
           </h3>
           <div class="flex gap-2 items-center">
-            <button id="btn-prev-month" class="px-2 py-1 border border-navy-950 text-navy-950 font-heading-2 font-bold cursor-pointer hover:bg-navy-950 hover:text-white transition-colors" aria-label={lang === "en" ? "Previous month" : "Mes anterior"}>&lt;</button>
+            <button type="button" id="btn-prev-month" class="px-2 py-1 border border-navy-950 text-navy-950 font-heading-2 font-bold cursor-pointer hover:bg-navy-950 hover:text-white transition-colors" aria-label={lang === "en" ? "Previous month" : "Mes anterior"}>&lt;</button>
             <span id="label-month-year" class="font-heading-2 text-[16px] text-navy-950 uppercase min-w-[120px] text-center font-bold"></span>
-            <button id="btn-next-month" class="px-2 py-1 border border-navy-950 text-navy-950 font-heading-2 font-bold cursor-pointer hover:bg-navy-950 hover:text-white transition-colors" aria-label={lang === "en" ? "Next month" : "Siguiente mes"}>&gt;</button>
+            <button type="button" id="btn-next-month" class="px-2 py-1 border border-navy-950 text-navy-950 font-heading-2 font-bold cursor-pointer hover:bg-navy-950 hover:text-white transition-colors" aria-label={lang === "en" ? "Next month" : "Siguiente mes"}>&gt;</button>
           </div>
         </div>
 
@@ -61,7 +61,7 @@ const dataActividades = await wpApi.getActividades(lang);
         
         <div class="mt-2 flex justify-between items-center text-[12px] text-navy-800 font-sans italic">
           <span>* {lang === "en" ? "Gold-bordered days have events." : "Días con borde dorado tienen actividades."}</span>
-          <button id="btn-clear-date" class="hidden text-gold-700 underline font-heading-2 text-[12px] uppercase cursor-pointer hover:text-gold-500">{lang === "en" ? "View all days" : "Ver todos los días"}</button>
+          <button type="button" id="btn-clear-date" class="hidden text-gold-700 underline font-heading-2 text-[12px] uppercase cursor-pointer hover:text-gold-500">{lang === "en" ? "View all days" : "Ver todos los días"}</button>
         </div>
       </div>
 
@@ -112,21 +112,21 @@ const dataActividades = await wpApi.getActividades(lang);
       }
     </GridActividades>
 
-    <script is:inline define:vars={{ lang }}>
+    <script>
       document.addEventListener("astro:page-load", () => {
-        // --- LÓGICA DE FILTRADO CLIENTE ---
+        const lang = document.documentElement.lang || "es";
         
         // Obtener los datos de las actividades desde el DOM
         const cards = Array.from(document.querySelectorAll(".actividad-card"));
         
         // Recopilar las fechas y tipos de las actividades presentes
         const activeEvents = cards.map(card => ({
-          date: card.getAttribute("data-fecha"),
-          type: card.getAttribute("data-tipo"),
+          date: card.getAttribute("data-fecha") || "",
+          type: card.getAttribute("data-tipo") || "",
         })).filter(evt => evt.date);
 
         // Estado del Filtro
-        let selectedDate = null;
+        let selectedDate: string | null = null;
         let selectedType = "all";
         
         // Determinar la fecha inicial para enfocar el calendario
@@ -137,7 +137,8 @@ const dataActividades = await wpApi.getActividades(lang);
           // Ordenar por fecha cronológica (localeCompare funciona perfectamente para YYYY-MM-DD strings)
           const sortedEvents = [...activeEvents].sort((a, b) => a.date.localeCompare(b.date));
           // Filtrar eventos futuros o de hoy (para evitar enfocar en el pasado)
-          const todayStr = new Date().toISOString().split('T')[0];
+          const now = new Date();
+          const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
           const futureEvents = sortedEvents.filter(e => e.date >= todayStr);
           
           const targetEvent = futureEvents.length > 0 ? futureEvents[0] : sortedEvents[0];
@@ -164,7 +165,7 @@ const dataActividades = await wpApi.getActividades(lang);
         const btnPrevMonth = document.getElementById("btn-prev-month");
         const btnNextMonth = document.getElementById("btn-next-month");
         const btnClearDate = document.getElementById("btn-clear-date");
-        const selectType = document.getElementById("select-type-filter");
+        const selectType = document.getElementById("select-type-filter") as HTMLSelectElement | null;
         const msgNoActivities = document.getElementById("msg-no-activities");
 
         function renderCalendar() {
@@ -305,7 +306,7 @@ const dataActividades = await wpApi.getActividades(lang);
         });
 
         selectType?.addEventListener("change", (e) => {
-          selectedType = e.target.value;
+          selectedType = (e.target as HTMLSelectElement).value;
           renderCalendar();
           filterCards();
         });

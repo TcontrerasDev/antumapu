@@ -112,6 +112,9 @@ const dataActividades = await wpApi.getActividades(lang);
 
     <script>
       document.addEventListener("astro:page-load", () => {
+        const containerDays = document.getElementById("container-calendar-days");
+        if (!containerDays) return;
+
         const lang = document.documentElement.lang || "es";
         
         // Obtener los datos de las actividades desde el DOM
@@ -167,7 +170,6 @@ const dataActividades = await wpApi.getActividades(lang);
         const monthNames = lang === "en" ? monthNamesEn : monthNamesEs;
 
         // Elementos DOM
-        const containerDays = document.getElementById("container-calendar-days");
         const labelMonthYear = document.getElementById("label-month-year");
         const btnPrevMonth = document.getElementById("btn-prev-month");
         const btnNextMonth = document.getElementById("btn-next-month");
@@ -217,7 +219,7 @@ const dataActividades = await wpApi.getActividades(lang);
               btn.type = "button";
               btn.setAttribute("aria-label", lang === "en" ? `Day ${day}, view activities` : `Día ${day}, ver actividades`);
               btn.setAttribute("aria-pressed", isSelected ? "true" : "false");
-              btn.className = `w-7 h-7 rounded-full border-2 border-gold-700 font-bold transition-all cursor-pointer hover:bg-gold-500 hover:text-navy-950 ${
+              btn.className = `w-7 h-7 rounded-full border-2 border-gold-700 font-bold transition-all cursor-pointer hover:bg-gold-500 hover:text-navy-950 focus:bg-gold-500 focus:text-navy-950 focus:outline-none ${
                 isSelected ? "bg-gold-500 text-navy-950" : "bg-transparent text-gold-700"
               }`;
               

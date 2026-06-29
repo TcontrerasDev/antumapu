@@ -128,7 +128,7 @@ const dataActividades = await wpApi.getActividades(lang);
 
         // Estado del Filtro
         let selectedDate: string | null = null;
-        let selectedType = selectType ? (selectType as HTMLSelectElement).value : "all";
+        let selectedType = selectType ? selectType.value : "all";
         
         // Determinar la fecha inicial para enfocar el calendario
         let currentYear = new Date().getFullYear();
@@ -266,18 +266,6 @@ const dataActividades = await wpApi.getActividades(lang);
             }
           });
 
-          // Si hay un día seleccionado pero ya no tiene eventos con el nuevo filtro de tipo, limpiar la selección
-          if (selectedDate) {
-            const activeDateHasActivity = activeEvents.some(evt => {
-              return evt.date === selectedDate && (selectedType === "all" || evt.type === selectedType);
-            });
-            if (!activeDateHasActivity) {
-              selectedDate = null;
-              renderCalendar();
-              return filterCards(); // re-filtrar sin fecha seleccionada
-            }
-          }
-
           // Mostrar/ocultar mensaje sin actividades
           if (visibleCount === 0) {
             msgNoActivities?.classList.remove("hidden");
@@ -312,7 +300,18 @@ const dataActividades = await wpApi.getActividades(lang);
         });
 
         selectType?.addEventListener("change", (e) => {
-          selectedType = (e.target as HTMLSelectElement).value;
+          const target = e.target as HTMLSelectElement | null;
+          if (target) {
+            selectedType = target.value;
+          }
+          if (selectedDate) {
+            const activeDateHasActivity = activeEvents.some(evt => {
+              return evt.date === selectedDate && (selectedType === "all" || evt.type === selectedType);
+            });
+            if (!activeDateHasActivity) {
+              selectedDate = null;
+            }
+          }
           renderCalendar();
           filterCards();
         });

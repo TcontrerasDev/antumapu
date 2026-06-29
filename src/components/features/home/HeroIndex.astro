@@ -1,6 +1,8 @@
 ---
 import ButtonBg from "../../ui/ButtonBg.astro";
 import ButtonTransparent from "../../ui/ButtonTransparent.astro";
+import LogoUchile from "../../../assets/logo-uchile.png";
+import { Image } from "astro:assets";
 
 interface Props {
   antetitulo: string;
@@ -22,9 +24,10 @@ const { antetitulo ,title, bajada, txtBtn1, linkBtn1, txtBtn2, linkBtn2, imgBack
   <img
     src={imgBack}
     alt=" "
-    class="absolute top-0 left-0 w-full h-[120%] object-cover opacity-10 z-0 parallax-img pointer-events-none"
+    class="absolute top-0 left-0 w-full h-[120%] object-cover opacity-30 z-0 parallax-img pointer-events-none mask-b-from-10% mask-b-to-90%"
   />
   <div class="wrapper relative z-10 flex flex-col items-start gap-7">
+    <Image src={LogoUchile} alt="Universidad de Chile" class="absolute w-[20%] md:w-[16%] lg:w-[12%] bottom-0 right-5 sm:right-0"></Image>
     <div class="flex items-center gap-2 reveal-text">
       <svg
         xmlns="http://www.w3.org/2000/svg"

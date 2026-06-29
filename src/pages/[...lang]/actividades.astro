@@ -41,9 +41,9 @@ const dataActividades = await wpApi.getActividades(lang);
             {lang === "en" ? "Activities Calendar" : "Calendario de Actividades"}
           </h3>
           <div class="flex gap-2 items-center">
-            <button id="btn-prev-month" class="px-2 py-1 border border-navy-950 text-navy-950 font-heading-2 font-bold cursor-pointer hover:bg-navy-950 hover:text-white transition-colors" aria-label="Mes anterior">&lt;</button>
+            <button id="btn-prev-month" class="px-2 py-1 border border-navy-950 text-navy-950 font-heading-2 font-bold cursor-pointer hover:bg-navy-950 hover:text-white transition-colors" aria-label={lang === "en" ? "Previous month" : "Mes anterior"}>&lt;</button>
             <span id="label-month-year" class="font-heading-2 text-[16px] text-navy-950 uppercase min-w-[120px] text-center font-bold"></span>
-            <button id="btn-next-month" class="px-2 py-1 border border-navy-950 text-navy-950 font-heading-2 font-bold cursor-pointer hover:bg-navy-950 hover:text-white transition-colors" aria-label="Siguiente mes">&gt;</button>
+            <button id="btn-next-month" class="px-2 py-1 border border-navy-950 text-navy-950 font-heading-2 font-bold cursor-pointer hover:bg-navy-950 hover:text-white transition-colors" aria-label={lang === "en" ? "Next month" : "Siguiente mes"}>&gt;</button>
           </div>
         </div>
 
@@ -113,197 +113,206 @@ const dataActividades = await wpApi.getActividades(lang);
     </GridActividades>
 
     <script is:inline define:vars={{ lang }}>
-      // --- LÓGICA DE FILTRADO CLIENTE ---
-      
-      // Obtener los datos de las actividades desde el DOM
-      const cards = Array.from(document.querySelectorAll(".actividad-card"));
-      
-      // Recopilar las fechas y tipos de las actividades presentes
-      const activeEvents = cards.map(card => ({
-        date: card.getAttribute("data-fecha"),
-        type: card.getAttribute("data-tipo"),
-      })).filter(evt => evt.date);
-
-      // Estado del Filtro
-      let selectedDate = null;
-      let selectedType = "all";
-      
-      // Determinar la fecha inicial para enfocar el calendario
-      // Usamos el mes del primer evento futuro, o la fecha actual
-      let initialDate = new Date();
-      if (activeEvents.length > 0) {
-        // Ordenar por fecha cronológica y encontrar la primera
-        const dates = activeEvents.map(e => new Date(e.date)).sort((a,b) => a.getTime() - b.getTime());
-        initialDate = dates[0];
-      }
-      
-      let currentYear = initialDate.getFullYear();
-      let currentMonth = initialDate.getMonth(); // 0-11
-
-      const monthNamesEs = [
-        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-      ];
-      
-      const monthNamesEn = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-      ];
-      
-      const monthNames = lang === "en" ? monthNamesEn : monthNamesEs;
-
-      // Elementos DOM
-      const containerDays = document.getElementById("container-calendar-days");
-      const labelMonthYear = document.getElementById("label-month-year");
-      const btnPrevMonth = document.getElementById("btn-prev-month");
-      const btnNextMonth = document.getElementById("btn-next-month");
-      const btnClearDate = document.getElementById("btn-clear-date");
-      const selectType = document.getElementById("select-type-filter");
-      const msgNoActivities = document.getElementById("msg-no-activities");
-
-      function renderCalendar() {
-        if (!containerDays || !labelMonthYear) return;
+      document.addEventListener("astro:page-load", () => {
+        // --- LÓGICA DE FILTRADO CLIENTE ---
         
-        labelMonthYear.textContent = `${monthNames[currentMonth]} ${currentYear}`;
-        containerDays.innerHTML = "";
+        // Obtener los datos de las actividades desde el DOM
+        const cards = Array.from(document.querySelectorAll(".actividad-card"));
         
-        // Primer día de la semana (1 de este mes)
-        const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay(); // Dom = 0, Lun = 1...
-        // Ajustar Dom = 0 a la última columna (index 6), y Lun = 1 a la primera (index 0)
-        const adjustedOffset = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+        // Recopilar las fechas y tipos de las actividades presentes
+        const activeEvents = cards.map(card => ({
+          date: card.getAttribute("data-fecha"),
+          type: card.getAttribute("data-tipo"),
+        })).filter(evt => evt.date);
+
+        // Estado del Filtro
+        let selectedDate = null;
+        let selectedType = "all";
         
-        // Cantidad de días del mes
-        const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+        // Determinar la fecha inicial para enfocar el calendario
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth(); // 0-11
         
-        // Celdas vacías previas
-        for (let i = 0; i < adjustedOffset; i++) {
-          const empty = document.createElement("div");
-          empty.className = "p-2";
-          containerDays.appendChild(empty);
+        if (activeEvents.length > 0) {
+          // Ordenar por fecha cronológica (localeCompare funciona perfectamente para YYYY-MM-DD strings)
+          const sortedEvents = [...activeEvents].sort((a, b) => a.date.localeCompare(b.date));
+          // Filtrar eventos futuros o de hoy (para evitar enfocar en el pasado)
+          const todayStr = new Date().toISOString().split('T')[0];
+          const futureEvents = sortedEvents.filter(e => e.date >= todayStr);
+          
+          const targetEvent = futureEvents.length > 0 ? futureEvents[0] : sortedEvents[0];
+          const parts = targetEvent.date.split("-");
+          currentYear = parseInt(parts[0], 10);
+          currentMonth = parseInt(parts[1], 10) - 1; // 0-indexed
         }
+
+        const monthNamesEs = [
+          "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+          "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        ];
         
-        // Días del mes
-        for (let day = 1; day <= totalDays; day++) {
-          const dayStr = day < 10 ? `0${day}` : `${day}`;
-          const monthStr = (currentMonth + 1) < 10 ? `0${currentMonth + 1}` : `${currentMonth + 1}`;
-          const dateStr = `${currentYear}-${monthStr}-${dayStr}`;
+        const monthNamesEn = [
+          "January", "February", "March", "April", "May", "June",
+          "July", "August", "September", "October", "November", "December"
+        ];
+        
+        const monthNames = lang === "en" ? monthNamesEn : monthNamesEs;
+
+        // Elementos DOM
+        const containerDays = document.getElementById("container-calendar-days");
+        const labelMonthYear = document.getElementById("label-month-year");
+        const btnPrevMonth = document.getElementById("btn-prev-month");
+        const btnNextMonth = document.getElementById("btn-next-month");
+        const btnClearDate = document.getElementById("btn-clear-date");
+        const selectType = document.getElementById("select-type-filter");
+        const msgNoActivities = document.getElementById("msg-no-activities");
+
+        function renderCalendar() {
+          if (!containerDays || !labelMonthYear) return;
           
-          // Revisar si hay un evento este día que coincida con el tipo
-          const hasActivity = activeEvents.some(evt => {
-            return evt.date === dateStr && (selectedType === "all" || evt.type === selectedType);
-          });
+          labelMonthYear.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+          containerDays.innerHTML = "";
           
-          const isSelected = selectedDate === dateStr;
+          // Primer día de la semana (1 de este mes)
+          const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay(); // Dom = 0, Lun = 1...
+          // Ajustar Dom = 0 a la última columna (index 6), y Lun = 1 a la primera (index 0)
+          const adjustedOffset = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
           
-          const dayCell = document.createElement("div");
-          dayCell.className = "p-1 flex items-center justify-center font-heading-2 text-[14px]";
+          // Cantidad de días del mes
+          const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
           
-          if (hasActivity) {
-            const btn = document.createElement("button");
-            btn.textContent = day.toString();
-            btn.type = "button";
-            btn.className = `w-7 h-7 rounded-full border-2 border-gold-700 font-bold transition-all cursor-pointer hover:bg-gold-500 hover:text-navy-950 ${
-              isSelected ? "bg-gold-500 text-navy-950" : "bg-transparent text-gold-700"
-            }`;
+          // Celdas vacías previas
+          for (let i = 0; i < adjustedOffset; i++) {
+            const empty = document.createElement("div");
+            empty.className = "p-2";
+            containerDays.appendChild(empty);
+          }
+          
+          // Días del mes
+          for (let day = 1; day <= totalDays; day++) {
+            const dayStr = day < 10 ? `0${day}` : `${day}`;
+            const monthStr = (currentMonth + 1) < 10 ? `0${currentMonth + 1}` : `${currentMonth + 1}`;
+            const dateStr = `${currentYear}-${monthStr}-${dayStr}`;
             
-            btn.addEventListener("click", () => {
-              if (selectedDate === dateStr) {
-                selectedDate = null;
-              } else {
-                selectedDate = dateStr;
-              }
-              renderCalendar();
-              filterCards();
+            // Revisar si hay un evento este día que coincida con el tipo
+            const hasActivity = activeEvents.some(evt => {
+              return evt.date === dateStr && (selectedType === "all" || evt.type === selectedType);
             });
             
-            dayCell.appendChild(btn);
-          } else {
-            dayCell.textContent = day.toString();
-            dayCell.className += " text-navy-950/20";
+            const isSelected = selectedDate === dateStr;
+            
+            const dayCell = document.createElement("div");
+            dayCell.className = "p-1 flex items-center justify-center font-heading-2 text-[14px]";
+            
+            if (hasActivity) {
+              const btn = document.createElement("button");
+              btn.textContent = day.toString();
+              btn.type = "button";
+              btn.setAttribute("aria-label", lang === "en" ? `Day ${day}, view activities` : `Día ${day}, ver actividades`);
+              btn.setAttribute("aria-pressed", isSelected ? "true" : "false");
+              btn.className = `w-7 h-7 rounded-full border-2 border-gold-700 font-bold transition-all cursor-pointer hover:bg-gold-500 hover:text-navy-950 ${
+                isSelected ? "bg-gold-500 text-navy-950" : "bg-transparent text-gold-700"
+              }`;
+              
+              btn.addEventListener("click", () => {
+                if (selectedDate === dateStr) {
+                  selectedDate = null;
+                } else {
+                  selectedDate = dateStr;
+                }
+                renderCalendar();
+                filterCards();
+              });
+              
+              dayCell.appendChild(btn);
+            } else {
+              dayCell.textContent = day.toString();
+              dayCell.className += " text-navy-950/20";
+            }
+            
+            containerDays.appendChild(dayCell);
           }
           
-          containerDays.appendChild(dayCell);
+          // Mostrar/ocultar botón de limpiar fecha
+          if (selectedDate) {
+            btnClearDate?.classList.remove("hidden");
+          } else {
+            btnClearDate?.classList.add("hidden");
+          }
         }
-        
-        // Mostrar/ocultar botón de limpiar fecha
-        if (selectedDate) {
-          btnClearDate?.classList.remove("hidden");
-        } else {
-          btnClearDate?.classList.add("hidden");
-        }
-      }
 
-      function filterCards() {
-        let visibleCount = 0;
-        
-        cards.forEach(card => {
-          const cardDate = card.getAttribute("data-fecha");
-          const cardType = card.getAttribute("data-tipo");
+        function filterCards() {
+          let visibleCount = 0;
           
-          const matchesDate = !selectedDate || cardDate === selectedDate;
-          const matchesType = selectedType === "all" || cardType === selectedType;
-          
-          if (matchesDate && matchesType) {
-            card.classList.remove("hidden");
-            visibleCount++;
-          } else {
-            card.classList.add("hidden");
+          cards.forEach(card => {
+            const cardDate = card.getAttribute("data-fecha");
+            const cardType = card.getAttribute("data-tipo");
+            
+            const matchesDate = !selectedDate || cardDate === selectedDate;
+            const matchesType = selectedType === "all" || cardType === selectedType;
+            
+            if (matchesDate && matchesType) {
+              card.classList.remove("hidden");
+              visibleCount++;
+            } else {
+              card.classList.add("hidden");
+            }
+          });
+
+          // Si hay un día seleccionado pero ya no tiene eventos con el nuevo filtro de tipo, limpiar la selección
+          if (selectedDate) {
+            const activeDateHasActivity = activeEvents.some(evt => {
+              return evt.date === selectedDate && (selectedType === "all" || evt.type === selectedType);
+            });
+            if (!activeDateHasActivity) {
+              selectedDate = null;
+              renderCalendar();
+              return filterCards(); // re-filtrar sin fecha seleccionada
+            }
           }
+
+          // Mostrar/ocultar mensaje sin actividades
+          if (visibleCount === 0) {
+            msgNoActivities?.classList.remove("hidden");
+          } else {
+            msgNoActivities?.classList.add("hidden");
+          }
+        }
+
+        // Navegación del calendario
+        btnPrevMonth?.addEventListener("click", () => {
+          currentMonth--;
+          if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+          }
+          renderCalendar();
         });
 
-        // Si hay un día seleccionado pero ya no tiene eventos con el nuevo filtro de tipo, limpiar la selección
-        if (selectedDate) {
-          const activeDateHasActivity = activeEvents.some(evt => {
-            return evt.date === selectedDate && (selectedType === "all" || evt.type === selectedType);
-          });
-          if (!activeDateHasActivity) {
-            selectedDate = null;
-            renderCalendar();
-            return filterCards(); // re-filtrar sin fecha seleccionada
+        btnNextMonth?.addEventListener("click", () => {
+          currentMonth++;
+          if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
           }
-        }
+          renderCalendar();
+        });
 
-        // Mostrar/ocultar mensaje sin actividades
-        if (visibleCount === 0) {
-          msgNoActivities?.classList.remove("hidden");
-        } else {
-          msgNoActivities?.classList.add("hidden");
-        }
-      }
+        btnClearDate?.addEventListener("click", () => {
+          selectedDate = null;
+          renderCalendar();
+          filterCards();
+        });
 
-      // Navegación del calendario
-      btnPrevMonth?.addEventListener("click", () => {
-        currentMonth--;
-        if (currentMonth < 0) {
-          currentMonth = 11;
-          currentYear--;
-        }
+        selectType?.addEventListener("change", (e) => {
+          selectedType = e.target.value;
+          renderCalendar();
+          filterCards();
+        });
+
+        // Carga inicial
         renderCalendar();
       });
-
-      btnNextMonth?.addEventListener("click", () => {
-        currentMonth++;
-        if (currentMonth > 11) {
-          currentMonth = 0;
-          currentYear++;
-        }
-        renderCalendar();
-      });
-
-      btnClearDate?.addEventListener("click", () => {
-        selectedDate = null;
-        renderCalendar();
-        filterCards();
-      });
-
-      selectType?.addEventListener("change", (e) => {
-        selectedType = e.target.value;
-        renderCalendar();
-        filterCards();
-      });
-
-      // Carga inicial
-      renderCalendar();
     </script>
   </main>
   <Footer lang={lang} />

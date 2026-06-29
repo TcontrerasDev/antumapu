@@ -37,6 +37,37 @@ async function wpFetch(endpoint: string): Promise<any> {
   return data;
 }
 
+async function wpFetchAll(endpoint: string): Promise<any[]> {
+  let allData: any[] = [];
+  let page = 1;
+  const perPage = 100;
+  let hasMore = true;
+
+  while (hasMore) {
+    const separator = endpoint.includes('?') ? '&' : '?';
+    const paginatedEndpoint = `${endpoint}${separator}per_page=${perPage}&page=${page}`;
+    
+    try {
+      const data = await wpFetch(paginatedEndpoint);
+      if (Array.isArray(data) && data.length > 0) {
+        allData = [...allData, ...data];
+        if (data.length < perPage) {
+          hasMore = false;
+        } else {
+          page++;
+        }
+      } else {
+        hasMore = false;
+      }
+    } catch (error) {
+      // If a page returns an error (e.g. page number out of bounds), stop fetching
+      hasMore = false;
+    }
+  }
+
+  return allData;
+}
+
 export const wpApi = {
   getNav: async (nav: string): Promise<any> => {
     const data = await wpFetch(`menu/${nav}`);
@@ -53,8 +84,12 @@ export const wpApi = {
     return data?.[0] || null;
   },
 
-  getObras: async (): Promise<WPObra[]> => {
-    return wpFetch("obras?_embed&per_page=100&orderby=date&order=asc");
+  getObras: async (page?: number, perPage?: number): Promise<WPObra[]> => {
+    if (page !== undefined) {
+      const limit = perPage ?? 10;
+      return wpFetch(`obras?_embed&orderby=date&order=asc&per_page=${limit}&page=${page}`);
+    }
+    return wpFetchAll("obras?_embed&orderby=date&order=asc");
   },
 
   getObraBySlug: async (slug: string): Promise<WPObra | null> => {
@@ -63,12 +98,15 @@ export const wpApi = {
   },
 
   getSlugObras: async (): Promise<string[]> => {
-    const data = await wpFetch("obras?_fields=slug&per_page=100");
+    const data = await wpFetchAll("obras?_fields=slug");
     return data.map((obra: { slug: string }) => obra.slug);
   },
 
-  getPresentaciones: async (): Promise<WPPresentacion[]> => {
-    const data = await wpFetch("presentaciones");
+  getPresentaciones: async (page?: number, perPage?: number): Promise<WPPresentacion[]> => {
+    const data = page !== undefined
+      ? await wpFetch(`presentaciones?per_page=${perPage ?? 10}&page=${page}`)
+      : await wpFetchAll("presentaciones");
+
     return data.sort((a: WPPresentacion, b: WPPresentacion) => {
       const fechaA = a.acf?.fecha_source?.formatted_value || "";
       const fechaB = b.acf?.fecha_source?.formatted_value || "";
@@ -76,8 +114,12 @@ export const wpApi = {
     });
   },
 
-  getNoticias: async (): Promise<WPNoticia[]> => {
-    return wpFetch("noticias?_embed");
+  getNoticias: async (page?: number, perPage?: number): Promise<WPNoticia[]> => {
+    if (page !== undefined) {
+      const limit = perPage ?? 10;
+      return wpFetch(`noticias?_embed&per_page=${limit}&page=${page}`);
+    }
+    return wpFetchAll("noticias?_embed");
   },
 
   getNoticiaBySlug: async (slug: string): Promise<WPNoticia | null> => {

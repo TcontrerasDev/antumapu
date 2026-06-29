@@ -1,0 +1,49 @@
+---
+interface Props {
+  theme?: "light" | "dark";
+}
+const { theme = "light" } = Astro.props;
+
+const bgClass = theme === "light" ? "bg-navy-950/10" : "bg-white-soft/10";
+const textClass = theme === "light" ? "bg-navy-800/10" : "bg-white/10";
+const goldClass = theme === "light" ? "bg-gold-700/20" : "bg-gold-500/20";
+---
+
+<div class="animate-pulse flex flex-col gap-8 w-full">
+  {/* Fila destacada y secundaria */}
+  <div class="grid gap-5 lg:grid-cols-12 items-baseline pb-8">
+    {/* Tarjeta Destacada skeleton (col-span-8) */}
+    <div class="col-span-full lg:col-span-8 flex flex-col gap-5">
+      <div class={`h-96 rounded w-full ${bgClass}`}></div>
+      <div class="flex flex-col gap-2">
+        <div class={`h-4 w-24 rounded ${goldClass}`}></div>
+        <div class={`h-7 w-3/4 rounded ${bgClass}`}></div>
+        <div class={`h-5 w-5/6 rounded ${textClass}`}></div>
+      </div>
+    </div>
+
+    {/* Tarjeta Secundaria skeleton (col-span-4) */}
+    <div class="col-span-full lg:col-span-4 flex flex-col gap-5">
+      <div class={`h-80 rounded w-full ${bgClass}`}></div>
+      <div class="flex flex-col gap-2">
+        <div class={`h-4 w-24 rounded ${goldClass}`}></div>
+        <div class={`h-7 w-5/6 rounded ${bgClass}`}></div>
+        <div class={`h-5 w-full rounded ${textClass}`}></div>
+      </div>
+    </div>
+  </div>
+
+  {/* Fila de otras noticias skeleton (3 cards) */}
+  <div class="grid gap-5 lg:grid-cols-12">
+    {Array.from({ length: 3 }).map(() => (
+      <div class="col-span-full lg:col-span-4 flex flex-col gap-5">
+        <div class={`h-80 rounded w-full ${bgClass}`}></div>
+        <div class="flex flex-col gap-2">
+          <div class={`h-4 w-24 rounded ${goldClass}`}></div>
+          <div class={`h-7 w-5/6 rounded ${bgClass}`}></div>
+          <div class={`h-5 w-full rounded ${textClass}`}></div>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>

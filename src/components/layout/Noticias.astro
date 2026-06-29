@@ -1,11 +1,6 @@
 ---
-import { url } from "astro:schema";
-import ImgNoticia from "../../assets/chiliche.webp";
-import CardNoticia from "../cards/CardNoticia.astro";
-import CardDestacada from "../cards/CardNoticiaDestacada.astro";
-import { wpApi } from "../../lib/wp";
-
-const noticias = await wpApi.getNoticias()
+import NoticiasList from "./NoticiasList.astro";
+import NoticiasSkeleton from "./NoticiasSkeleton.astro";
 
 interface Props {
     title: string;
@@ -14,15 +9,6 @@ interface Props {
 }
 
 const { title, bajada, theme = "light" } = Astro.props;
-
-const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const year = date.getFullYear();
-  return `${day}/${month}/${year}`;
-};
-
 ---
 
 <section
@@ -59,51 +45,8 @@ const formatDate = (dateString: string) => {
                 {bajada}
             </p>
         </div>
-        <div class="grid gap-5 lg:grid-cols-12 items-baseline pb-8">
-            {noticias.map((noticias, index) => {
-                if(index === 0 ) {
-                    return (
-                        <CardDestacada
-                            url={noticias.slug}
-                            imgSrc={noticias._embedded?.["wp:featuredmedia"]?.[0]?.source_url}
-                            fecha={formatDate(noticias.date)}
-                            titulo={noticias.title.rendered}
-                            descripcion={noticias.excerpt.rendered}
-                            theme={theme}
-                        />
-                    )
-                }
-            })}
-            {noticias.map((noticias, index) => {
-                if(index === 1 ) {
-                    return (
-                        <CardNoticia
-                            url={noticias.slug}
-                            imgSrc={noticias._embedded?.["wp:featuredmedia"]?.[0]?.source_url}
-                            fecha={formatDate(noticias.date)}
-                            titulo={noticias.title.rendered}
-                            descripcion={noticias.excerpt.rendered}
-                            theme={theme}
-                        />
-                    )
-                }
-            })}
-        </div>
-        <div class="grid gap-5 lg:grid-cols-12">
-            {noticias.map((noticia, index) => {
-                if(index !== 0 && index !== 1) {
-                    return (
-                        <CardNoticia
-                            url={noticia.slug}
-                            imgSrc={noticia._embedded?.["wp:featuredmedia"]?.[0]?.source_url}
-                            fecha={formatDate(noticia.date)}
-                            titulo={noticia.title.rendered}
-                            descripcion={noticia.excerpt.rendered}
-                            theme={theme}
-                        />
-                    )
-                }
-            })}
-        </div>
+        <NoticiasList theme={theme} server:defer>
+            <NoticiasSkeleton theme={theme} slot="fallback" />
+        </NoticiasList>
     </div>
 </section>

@@ -4,24 +4,14 @@ import Header from "../components/Header.astro";
 import HeroIndex from "../components/index/HeroIndex.astro";
 import Historia from "../components/index/Historia.astro";
 import Presentaciones from "../components/index/Presentaciones.astro";
-import CardPresentacion from "../components/cards/CardPresentacion.astro";
+import PresentacionesList from "../components/index/PresentacionesList.astro";
+import PresentacionesSkeleton from "../components/index/PresentacionesSkeleton.astro";
 import Repertorio from "../components/index/Repertorio.astro";
 import Noticias from "../components/layout/Noticias.astro";
 import Footer from "../components/Footer.astro";
 import { wpApi } from "../lib/wp";
 
 const page = await wpApi.getPageBySlug("antumapu");
-const dataPresentaciones: {
-  title: { rendered: string };
-  acf: {
-    url: string;
-    fecha_source: { formatted_value: string };
-    obra: string;
-    lugar: string;
-    direccion: string;
-    hora_source: { formatted_value: string };
-  };
-}[] = await wpApi.getPresentaciones();
 ---
 
 <Layout title="Antumapu">
@@ -53,19 +43,9 @@ const dataPresentaciones: {
       title={page.acf.titulo_presentaciones}
       bajada={page.acf.bajada_presentaciones}
     >
-      {
-        dataPresentaciones.map((presentacion) => (
-          <CardPresentacion
-            url={presentacion.acf.url}
-            fecha={presentacion.acf.fecha_source.formatted_value}
-            titulo={presentacion.title.rendered}
-            obra={presentacion.acf.obra}
-            lugar={presentacion.acf.lugar}
-            direccion={presentacion.acf.direccion}
-            hora={presentacion.acf.hora_source.formatted_value}
-          />
-        ))
-      }
+      <PresentacionesList server:defer>
+        <PresentacionesSkeleton slot="fallback" />
+      </PresentacionesList>
     </Presentaciones>
     <Repertorio title={page.acf.titulo_obras} bajada={page.acf.bajada_obras} />
     <Noticias

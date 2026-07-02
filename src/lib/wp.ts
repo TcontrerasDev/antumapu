@@ -131,7 +131,7 @@ export const wpApi = {
   },
 
   getNoticiaBySlug: async (slug: string, lang?: string): Promise<WPNoticia | null> => {
-    const data = await wpFetch(`noticias?slug=${slug}&_embed`, lang);
+    const data = await wpFetch(`noticias?slug=${encodeURIComponent(slug)}&_embed`, lang);
     return data?.[0] || null;
   },
 

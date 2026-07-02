@@ -5,10 +5,9 @@ import { useTranslations } from "../../../lib/i18n";
 interface Props {
   slug: string;
   lang?: string;
-  theme?: "light" | "dark";
 }
 
-const { slug, lang = "es", theme = "light" } = Astro.props;
+const { slug, lang = "es" } = Astro.props;
 
 let noticia = null;
 try {

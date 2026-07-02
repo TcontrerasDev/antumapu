@@ -1,0 +1,63 @@
+---
+import { wpApi } from "../../../lib/wp";
+import { useTranslations } from "../../../lib/i18n";
+
+interface Props {
+  slug: string;
+  lang?: string;
+  theme?: "light" | "dark";
+}
+
+const { slug, lang = "es", theme = "light" } = Astro.props;
+
+const noticia = await wpApi.getNoticiaBySlug(slug, lang);
+
+const t = useTranslations(lang);
+const tags: { name: string }[] = noticia?._embedded?.["wp:term"]?.[0] || [];
+
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+---
+
+{noticia ? (
+  <div class="grid grid-cols-12 gap-5 pt-15">
+    <div
+      class="col-span-full lg:col-span-9 [&_p]:text-navy-950 [&_p]:text-base [&_p]:py-3 [&_figure]:mb-3"
+      set:html={noticia.content.rendered}
+    />
+    <div class="col-span-full lg:col-span-3 flex flex-col gap-5 p-5 h-max bg-navy-950 lg:sticky lg:top-22.5">
+      <div class="flex flex-col gap-4">
+        <h3 class="text-[24px] text-gold-500 tracking-[15%]">{t("fecha_publicacion")}</h3>
+        <p
+          class="text-white text-base"
+          set:html={formatDate(noticia.date)}
+        />
+      </div>
+      <div class="flex flex-col gap-4">
+        <h3 class="text-[24px] text-gold-500 tracking-[15%]">{t("autor")}</h3>
+        <p
+          class="text-white text-base"
+          set:html={noticia.acf?.autor || "Antumapu"}
+        />
+      </div>
+      {tags.length > 0 && (
+        <div class="flex flex-wrap gap-x-2">
+          {tags.map((tag, index) => (
+              <span class="text-white-soft w-max">
+                  {tag.name}{index < tags.length - 1 ? " / " : ""}
+              </span>
+          ))}
+        </div>
+      )}
+    </div>
+  </div>
+) : (
+  <script is:inline>
+    window.location.href = "/404";
+  </script>
+)}

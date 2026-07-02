@@ -18,6 +18,7 @@ const translations: Record<string, Record<string, string>> = {
     "actividades_proximas": "Próximas Actividades",
     "social_media": "Redes Sociales",
     "contacto": "Contacto",
+    "navegacion": "Navegación",
   },
   en: {
     "director": "Artistic & Choreographic Director",
@@ -36,6 +37,7 @@ const translations: Record<string, Record<string, string>> = {
     "actividades_proximas": "Upcoming Activities",
     "social_media": "Social Media",
     "contacto": "Contact",
+    "navegacion": "Navigation",
   }
 };
 

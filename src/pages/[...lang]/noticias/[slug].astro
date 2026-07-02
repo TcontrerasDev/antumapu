@@ -5,13 +5,9 @@ import Footer from "../../../components/common/Footer.astro";
 import NoticiaDetalle from "../../../components/features/noticias/NoticiaDetalle.astro";
 import { wpApi } from "../../../lib/wp";
 import { getBreadcrumbs } from "../../../lib/utils";
+import { useTranslations } from "../../../lib/i18n";
 
 export const prerender = false;
-
-interface Props {
-  theme?: "light" | "dark";
-}
-const { theme = "light" } = Astro.props;
 
 const { lang = "es", slug } = Astro.params;
 if (!slug) return Astro.redirect("/404");
@@ -20,11 +16,15 @@ if (!slug) return Astro.redirect("/404");
 const noticiaMetadata = await wpApi.getNoticiaMetadataBySlug(slug, lang);
 if (!noticiaMetadata) return Astro.redirect("/404");
 
-const breadcrumbs = getBreadcrumbs(Astro.url.pathname);
+const t = useTranslations(lang);
 
-const bgClass = theme === "light" ? "bg-navy-950/10" : "bg-white-soft/10";
-const textClass = theme === "light" ? "bg-navy-800/10" : "bg-white/10";
-const goldClass = theme === "light" ? "bg-gold-700/20" : "bg-gold-500/20";
+const breadcrumbs = getBreadcrumbs(Astro.url.pathname).filter(
+  (bc) => bc.name.toLowerCase() !== "en" && bc.name.toLowerCase() !== "es"
+);
+
+const bgClass = "bg-navy-950/10";
+const textClass = "bg-navy-800/10";
+const goldClass = "bg-gold-700/20";
 ---
 
 <Layout title={noticiaMetadata.title.rendered} lang={lang}>
@@ -35,25 +35,15 @@ const goldClass = theme === "light" ? "bg-gold-700/20" : "bg-gold-500/20";
         <!-- Migas de pan renderizadas de inmediato -->
         <span class="text-gold-500 font-heading-2 tracking-[1.4px]">
           <a
-            href="/"
-            class:list={[
-              {
-                "text-white-soft!": theme === "dark",
-                "text-navy-950": theme === "light",
-              },
-            ]}
-            >Inicio /
+            href={lang === "es" ? "/" : `/${lang}`}
+            class="text-navy-950"
+            >{t("inicio")} /
           </a>
           {
             breadcrumbs.map((bc) =>
               bc.isLast ? (
                 <span
-                  class:list={[
-                    {
-                      "text-gold-500": theme === "dark",
-                      "text-gold-700": theme === "light",
-                    },
-                  ]}
+                  class="text-gold-700"
                 >
                   {" "}
                   {bc.name}
@@ -61,12 +51,7 @@ const goldClass = theme === "light" ? "bg-gold-700/20" : "bg-gold-500/20";
               ) : (
                 <a
                   href={bc.url}
-                  class:list={[
-                    {
-                      "text-white-soft!": theme === "dark",
-                      "text-navy-950": theme === "light",
-                    },
-                  ]}
+                  class="text-navy-950"
                 >
                   {" "}
                   {bc.name} /
@@ -87,7 +72,7 @@ const goldClass = theme === "light" ? "bg-gold-700/20" : "bg-gold-500/20";
         />
 
         <!-- Contenido diferido (Server Island) con Esqueleto en línea -->
-        <NoticiaDetalle slug={slug} lang={lang} theme={theme} server:defer>
+        <NoticiaDetalle slug={slug} lang={lang} theme="light" server:defer>
           <div slot="fallback" class="animate-pulse flex flex-col gap-6 w-full pt-15">
             <div class="grid grid-cols-12 gap-5">
               {/* Esqueleto del Contenido Principal (col-span-9) */}

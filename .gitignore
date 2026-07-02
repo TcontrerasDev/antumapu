@@ -29,6 +29,7 @@ pnpm-debug.log*
 .vercel/
 
 # Superpowers temporary and metadata directory
-.superpowers/
-
+superpowers/
 GEMINI.md
+
+.superpowers

@@ -136,7 +136,7 @@ export const wpApi = {
   },
 
   getNoticiaMetadataBySlug: async (slug: string, lang?: string): Promise<Pick<WPNoticia, "title" | "excerpt"> | null> => {
-    const data = await wpFetch(`noticias?slug=${slug}&_fields=title,excerpt`, lang);
+    const data = await wpFetch(`noticias?slug=${encodeURIComponent(slug)}&_fields=title,excerpt`, lang);
     return data?.[0] || null;
   },
 };

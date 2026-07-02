@@ -10,7 +10,12 @@ interface Props {
 
 const { slug, lang = "es", theme = "light" } = Astro.props;
 
-const noticia = await wpApi.getNoticiaBySlug(slug, lang);
+let noticia = null;
+try {
+  noticia = await wpApi.getNoticiaBySlug(slug, lang);
+} catch (error) {
+  console.error("Failed to load news detail:", error);
+}
 
 const t = useTranslations(lang);
 const tags: { name: string }[] = noticia?._embedded?.["wp:term"]?.[0] || [];

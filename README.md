@@ -1,4 +1,4 @@
-# 🎭 Antumapu
+# Antumapu
 
 **Antumapu** es una moderna y elegante aplicación web construida sobre el framework **Astro v6**, diseñada para alojar el sitio oficial del **Ballet Folklórico Antumapu** de la Universidad de Chile. 
 
@@ -6,20 +6,20 @@ El sitio web sirve como plataforma de difusión cultural, presentando la rica hi
 
 ---
 
-## ✨ Características Principales
+## Características Principales
 
-*   **⚡ Arquitectura Ultra-Rápida:** Desarrollada con **Astro v6** aprovechando la generación de sitios estáticos (SSG) e hidratación selectiva.
-*   **🎨 Estética Refinada:** 
+*   **Arquitectura Ultra-Rápida:** Desarrollada con **Astro v6** aprovechando la generación de sitios estáticos (SSG) e hidratación selectiva.
+*   **Estética Refinada:** 
     *   Diseño personalizado utilizando **Tailwind CSS v4** con integración nativa en Vite.
     *   Paleta de colores elegante inspirada en la identidad de la agrupación: azul marino (`navy`), dorado (`gold`) y arena (`sand`).
     *   Tipografía premium cuidadosamente seleccionada: **Italiana** para encabezados principales, **Oswald** para subtítulos y **Fraunces** para el cuerpo de texto.
-*   **📜 Integración Headless CMS (WordPress):** Consumo dinámico de contenidos (obras, noticias y actividades) a través de la API REST de WordPress.
-*   **🌊 Navegación Fluida:** Experiencia de usuario inmersiva con desplazamiento suave implementado mediante **Lenis** y animaciones potentes con **GSAP**.
-*   **📱 Diseño Responsivo:** Completamente adaptado a dispositivos móviles con menús interactivos modernos y layouts fluidos.
+*   **Integración Headless CMS (WordPress):** Consumo dinámico de contenidos (obras, noticias y actividades) a través de la API REST de WordPress.
+*   **Navegación Fluida:** Experiencia de usuario inmersiva con desplazamiento suave implementado mediante **Lenis** y animaciones potentes con **GSAP**.
+*   **Diseño Responsivo:** Completamente adaptado a dispositivos móviles con menús interactivos modernos y layouts fluidos.
 
 ---
 
-## 🛠️ Stack Tecnológico
+## Stack Tecnológico
 
 *   **Framework:** Astro (v6.x)
 *   **Estilado:** Tailwind CSS (v4.x) y `@tailwindcss/vite`
@@ -31,7 +31,7 @@ El sitio web sirve como plataforma de difusión cultural, presentando la rica hi
 
 ---
 
-## 📂 Estructura del Proyecto
+## Estructura del Proyecto
 
 El código fuente principal reside dentro del directorio `src/`, organizado bajo las siguientes convenciones:
 
@@ -64,7 +64,7 @@ src/
 
 ---
 
-## 🚀 Instalación y Desarrollo Local
+## Instalación y Desarrollo Local
 
 ### 1. Clonar el repositorio e instalar dependencias
 
@@ -108,6 +108,6 @@ pnpm preview
 
 ---
 
-## 🏛️ Sobre el Ballet Folklórico Antumapu
+## Sobre el Ballet Folklórico Antumapu
 
 Fundado en 1971 en la Universidad de Chile, el **Ballet Folklórico Antumapu** es una de las instituciones artísticas más representativas del folklore chileno. A través de la danza y la música, rescata, difunde y mantiene vivas las tradiciones de los diversos pueblos y regiones de Chile, logrando un reconocimiento tanto a nivel nacional como internacional. Este sitio web busca plasmar su trayectoria histórica y su vasto legado cultural de una manera interactiva y adaptada a los estándares de la web moderna.

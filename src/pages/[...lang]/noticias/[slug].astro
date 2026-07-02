@@ -2,9 +2,9 @@
 import Layout from "../../../layouts/Layout.astro";
 import Header from "../../../components/common/Header.astro";
 import Footer from "../../../components/common/Footer.astro";
+import NoticiaDetalle from "../../../components/features/noticias/NoticiaDetalle.astro";
 import { wpApi } from "../../../lib/wp";
 import { getBreadcrumbs } from "../../../lib/utils";
-import { useTranslations } from "../../../lib/i18n";
 
 export const prerender = false;
 
@@ -15,29 +15,24 @@ const { theme = "light" } = Astro.props;
 
 const { lang = "es", slug } = Astro.params;
 if (!slug) return Astro.redirect("/404");
-const noticia = await wpApi.getNoticiaBySlug(slug, lang);
-if (!noticia) return Astro.redirect("/404");
 
-const t = useTranslations(lang);
-
-const tags: { name: string }[] = noticia._embedded?.["wp:term"]?.[0] || [];
+// Obtención ultra-rápida de metadatos SEO y de cabecera
+const noticiaMetadata = await wpApi.getNoticiaMetadataBySlug(slug, lang);
+if (!noticiaMetadata) return Astro.redirect("/404");
 
 const breadcrumbs = getBreadcrumbs(Astro.url.pathname);
 
-const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const year = date.getFullYear();
-  return `${day}/${month}/${year}`;
-};
+const bgClass = theme === "light" ? "bg-navy-950/10" : "bg-white-soft/10";
+const textClass = theme === "light" ? "bg-navy-800/10" : "bg-white/10";
+const goldClass = theme === "light" ? "bg-gold-700/20" : "bg-gold-500/20";
 ---
 
-<Layout title={noticia.title.rendered} lang={lang}>
+<Layout title={noticiaMetadata.title.rendered} lang={lang}>
   <Header theme="light" lang={lang} />
-  <main class="bg-sand-100 pt-30">
+  <main class="bg-sand-100 pt-30 pb-20">
     <section>
       <div class="wrapper">
+        <!-- Migas de pan renderizadas de inmediato -->
         <span class="text-gold-500 font-heading-2 tracking-[1.4px]">
           <a
             href="/"
@@ -80,45 +75,56 @@ const formatDate = (dateString: string) => {
             )
           }
         </span>
+
+        <!-- Título y descripción/extracto renderizados de inmediato (SEO) -->
         <h1
-          class="text-navy-950 text-h2 lg:text-h1 font-heading-2"
-          set:html={noticia.title.rendered}
+          class="text-navy-950 text-h2 lg:text-h1 font-heading-2 mt-4"
+          set:html={noticiaMetadata.title.rendered}
         />
         <div
           class="text-[18px] lg:text-2xl pt-5 text-navy-950 w-full lg:w-3/4"
-          set:html={noticia.excerpt.rendered}
+          set:html={noticiaMetadata.excerpt.rendered}
         />
-      </div>
-    </section>
-    <section class="padding-section">
-      <div class="wrapper grid grid-cols-12 gap-5">
-        <div
-          class="col-span-full lg:col-span-9 [&_p]:text-navy-950 [&_p]:text-base [&_p]:py-3 [&_figure]:mb-3"
-          set:html={noticia.content.rendered}
-        />
-        <div class="col-span-full lg:col-span-3 flex flex-col gap-5 p-5 h-max bg-navy-950 lg:sticky lg:top-22.5">
-          <div class="flex flex-col gap-4">
-            <h3 class="text-[24px] text-gold-500 tracking-[15%]">{t("fecha_publicacion")}</h3>
-            <p
-              class="text-white text-base"
-              set:html={formatDate(noticia.date)}
-            />
+
+        <!-- Contenido diferido (Server Island) con Esqueleto en línea -->
+        <NoticiaDetalle slug={slug} lang={lang} theme={theme} server:defer>
+          <div slot="fallback" class="animate-pulse flex flex-col gap-6 w-full pt-15">
+            <div class="grid grid-cols-12 gap-5">
+              {/* Esqueleto del Contenido Principal (col-span-9) */}
+              <div class="col-span-full lg:col-span-9 flex flex-col gap-8">
+                <div class="flex flex-col gap-3">
+                  <div class={`h-4 rounded w-full ${textClass}`}></div>
+                  <div class={`h-4 rounded w-full ${textClass}`}></div>
+                  <div class={`h-4 rounded w-11/12 ${textClass}`}></div>
+                  <div class={`h-4 rounded w-4/5 ${textClass}`}></div>
+                </div>
+                <div class={`h-80 rounded w-full ${bgClass} my-2`}></div>
+                <div class="flex flex-col gap-3">
+                  <div class={`h-4 rounded w-full ${textClass}`}></div>
+                  <div class={`h-4 rounded w-full ${textClass}`}></div>
+                  <div class={`h-4 rounded w-5/6 ${textClass}`}></div>
+                  <div class={`h-4 rounded w-3/4 ${textClass}`}></div>
+                </div>
+              </div>
+
+              {/* Esqueleto de la Barra Lateral (col-span-3) */}
+              <div class="col-span-full lg:col-span-3 flex flex-col gap-5 p-5 h-max bg-navy-950">
+                <div class="flex flex-col gap-4">
+                  <div class={`h-6 rounded w-2/3 ${goldClass}`}></div>
+                  <div class="h-4 rounded w-1/2 bg-white/20"></div>
+                </div>
+                <div class="flex flex-col gap-4">
+                  <div class={`h-6 rounded w-1/2 ${goldClass}`}></div>
+                  <div class="h-4 rounded w-1/3 bg-white/20"></div>
+                </div>
+                <div class="flex gap-2 pt-2">
+                  <div class="h-6 rounded w-16 bg-white/10"></div>
+                  <div class="h-6 rounded w-20 bg-white/10"></div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="flex flex-col gap-4">
-            <h3 class="text-[24px] text-gold-500 tracking-[15%]">{t("autor")}</h3>
-            <p
-              class="text-white text-base"
-              set:html={noticia.acf?.autor || "Antumapu"}
-            />
-          </div>
-          <div>
-            {tags.map((tag, index) => (
-                <span class="text-white-soft w-max">
-                    {tag.name}{index < tags.length - 1 ? " / " : ""}
-                </span>
-            ))}
-          </div>
-        </div>
+        </NoticiaDetalle>
       </div>
     </section>
   </main>

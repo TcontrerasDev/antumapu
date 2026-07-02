@@ -30,3 +30,5 @@ pnpm-debug.log*
 
 # Superpowers temporary and metadata directory
 .superpowers/
+
+GEMINI.md

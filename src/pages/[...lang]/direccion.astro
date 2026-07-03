@@ -29,7 +29,7 @@ if (!page) {
       theme="light"
     />
     
-    <section class="padding-section">
+    <section>
       <div class="wrapper content-direccion">
         <div set:html={page.content.rendered} />
       </div>
@@ -132,12 +132,17 @@ if (!page) {
   /* Imágenes de Gutenberg */
   .content-direccion .wp-block-image {
     margin: 0;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    border-radius: 8px;
   }
 
   .content-direccion .wp-block-image img {
     width: 100%;
-    height: auto;
+    height: 100%;
     object-fit: cover;
+    object-position: center top;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
 </style>

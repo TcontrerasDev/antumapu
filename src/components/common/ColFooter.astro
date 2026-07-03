@@ -1,12 +1,13 @@
 ---
 interface Props {
   title: string;
+  class?: string;
 }
 
-const { title } = Astro.props;
+const { title, class: className = "col-span-12 md:col-span-6 lg:col-span-3 lg:justify-end" } = Astro.props;
 ---
 
-<div class="col-span-12 md:col-span-6 lg:col-span-3 flex mb-20 lg:justify-end">
+<div class:list={["flex mb-20", className]}>
   <div class="flex flex-col gap-5 items-start">
     {
       title && (

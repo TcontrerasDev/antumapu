@@ -18,6 +18,34 @@ const page = await wpApi.getPageBySlug('direccion', lang);
 if (!page) {
   throw new Error("Page 'direccion' not found in WordPress");
 }
+
+function injectRevealClass(html: string): string {
+  let processed = html;
+  processed = processed.replace(
+    /<(h[1-6]|p)\b([^>]*)/gi,
+    (match, tag, attrs) => {
+      if (/class=["']/i.test(attrs)) {
+        return `<${tag}${attrs.replace(/class=(["'])(.*?)\1/i, 'class=$1$2 reveal-text$1')}`;
+      } else {
+        return `<${tag} class="reveal-text"${attrs}`;
+      }
+    }
+  );
+  processed = processed.replace(
+    /<div\b([^>]*)/gi,
+    (match, attrs) => {
+      if (/class=["'][^"']*\bwp-block-column(?:s)?\b[^"']*["']/i.test(attrs)) {
+        if (/class=["']/i.test(attrs)) {
+          return `<div${attrs.replace(/class=(["'])(.*?)\1/i, 'class=$1$2 reveal-text$1')}`;
+        } else {
+          return `<div class="reveal-text"${attrs}`;
+        }
+      }
+      return match;
+    }
+  );
+  return processed;
+}
 ---
 
 <Layout title={page.title.rendered} lang={lang}>
@@ -31,7 +59,7 @@ if (!page) {
     
     <section class="padding-section">
       <div class="wrapper content-direccion">
-        <div set:html={page.content.rendered} />
+        <div set:html={injectRevealClass(page.content.rendered)} />
       </div>
     </section>
   </main>
@@ -52,8 +80,13 @@ if (!page) {
     font-family: "Italiana", serif;
     -webkit-text-stroke: 1px #000000;
     letter-spacing: 2px;
-    display: flex;
+    display: block;
     width: fit-content;
+  }
+
+  .content-direccion h2.has-text-align-right {
+    margin-left: auto;
+    border-bottom-color: var(--color-gold-500);
   }
 
   .content-direccion h3 {

@@ -52,12 +52,6 @@ if (!page) {
     margin-bottom: 1.5rem;
     border-bottom: 2px solid var(--color-gold-500);
     padding-bottom: 0.5rem;
-    font-family: var(--font-heading-2);
-  }
-
-  .content-direccion h2.has-text-align-right {
-    text-align: right;
-    border-bottom-color: var(--color-gold-500);
   }
 
   .content-direccion h3 {
@@ -65,11 +59,6 @@ if (!page) {
     color: var(--color-navy-800);
     margin-top: 1rem;
     margin-bottom: 1.5rem;
-    font-family: var(--font-heading-2);
-  }
-
-  .content-direccion h3.has-text-align-right {
-    text-align: right;
   }
 
   .content-direccion p {
@@ -77,7 +66,27 @@ if (!page) {
     line-height: 1.75;
     color: var(--color-navy-950);
     margin-bottom: 1.5rem;
-    font-family: var(--font-body);
+  }
+
+  .content-direccion p:empty {
+    display: none;
+  }
+
+  /* Alineación de texto genérica */
+  .content-direccion .has-text-align-left { text-align: left; }
+  .content-direccion .has-text-align-center { text-align: center; }
+  .content-direccion .has-text-align-right { text-align: right; }
+
+  /* Listas */
+  .content-direccion ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .content-direccion ol {
+    list-style-type: decimal;
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
   }
 
   /* Grid de Columnas de Gutenberg */
@@ -88,11 +97,16 @@ if (!page) {
     margin-bottom: 3rem;
   }
 
+  @media (max-width: 767px) {
+    .content-direccion .wp-block-column {
+      flex-basis: auto !important;
+    }
+  }
+
   @media (min-width: 768px) {
     .content-direccion .wp-block-columns {
       flex-direction: row;
       gap: 3rem;
-      align-items: center;
     }
   }
 
@@ -105,6 +119,12 @@ if (!page) {
   /* Alineación vertical */
   .content-direccion .wp-block-column.is-vertically-aligned-top {
     align-self: flex-start;
+  }
+  .content-direccion .wp-block-column.is-vertically-aligned-center {
+    align-self: center;
+  }
+  .content-direccion .wp-block-column.is-vertically-aligned-bottom {
+    align-self: flex-end;
   }
 
   /* Imágenes de Gutenberg */

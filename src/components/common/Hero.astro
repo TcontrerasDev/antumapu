@@ -76,16 +76,20 @@ const breadcrumbs = getBreadcrumbs(Astro.url.pathname);
       ]}
       set:html={title}
     />
-    <div
-      class:list={[
-        "text-[20px] lg:w-3/5 reveal-text",
-        {
-          "text-white": theme === "dark",
-          "text-navy-950": theme === "light",
-        },
-      ]}
-      set:html={bajada}
-    />
+    {
+      bajada && bajada.trim() !== "" && (
+        <div
+          class:list={[
+            "text-[20px] lg:w-3/5 reveal-text",
+            {
+              "text-white": theme === "dark",
+              "text-navy-950": theme === "light",
+            },
+          ]}
+          set:html={bajada}
+        />
+      )
+    }
     <slot />
   </div>
 </section>

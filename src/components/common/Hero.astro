@@ -10,11 +10,13 @@ interface Props {
 const { title, bajada, theme = "dark" } = Astro.props;
 
 const breadcrumbs = getBreadcrumbs(Astro.url.pathname);
+const hasBajada = bajada && bajada.trim() !== "";
 ---
 
 <section
   class:list={[
-    "h-max relative py-36",
+    "h-max relative",
+    hasBajada ? "py-36" : "py-10",
     {
       "bg-hero-gradient": theme === "dark",
       "bg-sand-100": theme === "light",

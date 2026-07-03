@@ -1,0 +1,123 @@
+---
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } },
+    { params: { lang: "en" } },
+  ];
+}
+
+const { lang = "es" } = Astro.params;
+
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/common/Header.astro";
+import Hero from "../../components/common/Hero.astro";
+import Footer from "../../components/common/Footer.astro";
+import { wpApi } from '../../lib/wp';
+
+const page = await wpApi.getPageBySlug('direccion', lang);
+if (!page) {
+  throw new Error("Page 'direccion' not found in WordPress");
+}
+---
+
+<Layout title={page.title.rendered} lang={lang}>
+  <Header theme="light" lang={lang} />
+  <main class="bg-sand-100 pb-20">
+    <Hero
+      title={page.title.rendered}
+      bajada=""
+      theme="light"
+    />
+    
+    <section class="padding-section">
+      <div class="wrapper content-direccion">
+        <div set:html={page.content.rendered} />
+      </div>
+    </section>
+  </main>
+  <Footer lang={lang} />
+</Layout>
+
+<style is:global>
+  /* Estilos específicos para maquetación de Gutenberg */
+  .content-direccion {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .content-direccion h2 {
+    font-size: 2.25rem;
+    color: var(--color-navy-950);
+    margin-top: 4rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--color-gold-500);
+    padding-bottom: 0.5rem;
+    font-family: var(--font-heading-2);
+  }
+
+  .content-direccion h2.has-text-align-right {
+    text-align: right;
+    border-bottom-color: var(--color-gold-500);
+  }
+
+  .content-direccion h3 {
+    font-size: 1.75rem;
+    color: var(--color-navy-800);
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+    font-family: var(--font-heading-2);
+  }
+
+  .content-direccion h3.has-text-align-right {
+    text-align: right;
+  }
+
+  .content-direccion p {
+    font-size: 1.125rem;
+    line-height: 1.75;
+    color: var(--color-navy-950);
+    margin-bottom: 1.5rem;
+    font-family: var(--font-body);
+  }
+
+  /* Grid de Columnas de Gutenberg */
+  .content-direccion .wp-block-columns {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  @media (min-width: 768px) {
+    .content-direccion .wp-block-columns {
+      flex-direction: row;
+      gap: 3rem;
+      align-items: center;
+    }
+  }
+
+  .content-direccion .wp-block-column {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+
+  /* Alineación vertical */
+  .content-direccion .wp-block-column.is-vertically-aligned-top {
+    align-self: flex-start;
+  }
+
+  /* Imágenes de Gutenberg */
+  .content-direccion .wp-block-image {
+    margin: 0;
+  }
+
+  .content-direccion .wp-block-image img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+</style>
+

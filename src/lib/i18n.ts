@@ -19,6 +19,7 @@ const translations: Record<string, Record<string, string>> = {
     "social_media": "Redes Sociales",
     "contacto": "Contacto",
     "navegacion": "Navegación",
+    "meta_description": "Sitio oficial del Conjunto Folklórico Antumapu de la Universidad de Chile. Conoce nuestra historia, repertorio de obras, noticias y próximas presentaciones.",
   },
   en: {
     "director": "Artistic & Choreographic Director",
@@ -38,6 +39,7 @@ const translations: Record<string, Record<string, string>> = {
     "social_media": "Social Media",
     "contacto": "Contact",
     "navegacion": "Navigation",
+    "meta_description": "Official website of the Antumapu Folkloric Group of the University of Chile. Discover our history, repertoire of works, news, and upcoming performances.",
   }
 };
 

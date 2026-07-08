@@ -1,27 +1,92 @@
 ---
 import "../styles/global.css";
 import { ClientRouter } from "astro:transitions";
+import { useTranslations } from "../lib/i18n";
+import defaultShareImage from "../assets/bg-image.png";
 
 interface Props {
 	title: string;
 	lang?: string;
+	description?: string;
+	image?: string;
+	ogType?: string;
 }
 
-const { title, lang = "es" } = Astro.props;
+const { 
+	title, 
+	lang = "es", 
+	description, 
+	image, 
+	ogType = "website" 
+} = Astro.props;
+
+const t = useTranslations(lang);
+const metaDescription = description || t("meta_description");
+
+// Construct absolute URL for sharing image
+const shareImageUrl = image
+	? (image.startsWith("http") ? image : new URL(image, Astro.url.origin).href)
+	: new URL(defaultShareImage.src, Astro.url.origin).href;
+
+// Construct canonical and alternate URLs
+const canonicalUrl = Astro.url.href;
+const origin = Astro.url.origin;
+let esUrl = "";
+let enUrl = "";
+
+if (lang === "en") {
+	enUrl = canonicalUrl;
+	const esPath = Astro.url.pathname.replace(/^\/en(\/|$)/, "/$1").replace(/\/+/g, "/");
+	esUrl = new URL(esPath, origin).href;
+} else {
+	esUrl = canonicalUrl;
+	const cleanPath = Astro.url.pathname.replace(/\/$/, "");
+	enUrl = new URL(`/en${cleanPath}`, origin).href;
+}
 ---
 
 <!doctype html>
 <html lang={lang}>
 	<head>
+		<!-- SEO Basics -->
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
+		<title set:html={title}></title>
+		<meta name="description" content={metaDescription} />
+		<meta name="author" content="Tomas Contreras Moya <tcontreras.com@gmail.com>">
 		<link rel="icon" type="image/png" href="/favicon.png" />
 		<meta name="generator" content={Astro.generator} />
+		<link rel="canonical" href={canonicalUrl} />
+
+		<!-- SEO Multi-idioma (hreflang) -->
+		<!-- <link rel="alternate" hreflang="es" href={esUrl} />
+		<link rel="alternate" hreflang="en" href={enUrl} />
+		<link rel="alternate" hreflang="x-default" href={esUrl} /> -->
+
+		<!-- Open Graph / Facebook / WhatsApp -->
+		<meta property="og:type" content={ogType} />
+		<meta property="og:title" content={title.replace(/<[^>]*>/g, '')} />
+		<meta property="og:description" content={metaDescription} />
+		<meta property="og:url" content={canonicalUrl} />
+		<meta property="og:image" content={shareImageUrl} />
+		{lang === "en" ? (
+			<meta property="og:locale" content="en_US" />
+			<meta property="og:locale:alternate" content="es_CL" />
+		) : (
+			<meta property="og:locale" content="es_CL" />
+			<meta property="og:locale:alternate" content="en_US" />
+		)}
+
+		<!-- Twitter / X Cards -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title.replace(/<[^>]*>/g, '')} />
+		<meta name="twitter:description" content={metaDescription} />
+		<meta name="twitter:image" content={shareImageUrl} />
+
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Italiana&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-		<title set:html={title}></title>
 		<ClientRouter />
 	</head>
 	<body>

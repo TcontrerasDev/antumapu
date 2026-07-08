@@ -26,6 +26,8 @@ const {
   statNumber2,
   statNumber3,
 } = Astro.props;
+
+const { lang = "es" } = Astro.params;
 ---
 
 <section class="padding-section bg-navy-950 overflow-hidden">
@@ -41,7 +43,7 @@ const {
         />
       </div>
       <div class="reveal-text mb-7">
-        <ButtonTransparent href="/historia">Conocer más</ButtonTransparent>
+        <ButtonTransparent href="/historia" aria-label={lang === "en" ? "Learn more about Antumapu's history" : "Conocer más sobre la historia de Antumapu"}>Conocer más</ButtonTransparent>
       </div>
     </div>
     <div class="overflow-hidden rounded-sm aspect-[4/5] lg:aspect-square">

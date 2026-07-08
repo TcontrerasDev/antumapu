@@ -22,30 +22,36 @@ const { title, bajada, theme = "light", lang = "es" } = Astro.props;
     ]}
 >
     <div class="wrapper">
-        <div class="pb-8 flex flex-col gap-4">
-            <h2
-                class:list={[
-                    "h2-heading",
-                    {
-                        "text-navy-950": theme === "light",
-                        "text-sand-100": theme === "dark",
-                    },
-                ]}
-            >
-                {title}
-            </h2>
-            <p
-                class:list={[
-                    {
-                        "text-navy-950/80": theme === "light",
-                        "text-white-soft/80": theme === "dark",
-                    },
-                    "max-w-2xl",
-                ]}
-            >
-                {bajada}
-            </p>
-        </div>
+        {(title && title.trim() !== "") || (bajada && bajada.trim() !== "") ? (
+            <div class="pb-8 flex flex-col gap-4">
+                {title && title.trim() !== "" && (
+                    <h2
+                        class:list={[
+                            "h2-heading",
+                            {
+                                "text-navy-950": theme === "light",
+                                "text-sand-100": theme === "dark",
+                            },
+                        ]}
+                    >
+                        {title}
+                    </h2>
+                )}
+                {bajada && bajada.trim() !== "" && (
+                    <p
+                        class:list={[
+                            {
+                                "text-navy-950/80": theme === "light",
+                                "text-white-soft/80": theme === "dark",
+                            },
+                            "max-w-2xl",
+                        ]}
+                    >
+                        {bajada}
+                    </p>
+                )}
+            </div>
+        ) : null}
         <NoticiasList theme={theme} lang={lang} server:defer>
             <NoticiasSkeleton theme={theme} slot="fallback" />
         </NoticiasList>

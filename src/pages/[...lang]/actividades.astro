@@ -26,7 +26,7 @@ const dataActividades = await wpApi.getActividades(lang);
 
 <Layout title="Actividades" lang={lang}>
   <Header theme="light" lang={lang} />
-  <main>
+  <main id="main-content" tabindex="-1" class="focus:outline-none">
     <Hero
       title={pageActividades.title.rendered}
       bajada={pageActividades.content.rendered}

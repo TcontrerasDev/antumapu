@@ -25,7 +25,7 @@ const obras = await wpApi.getObras(lang);
 
 <Layout title="Obras" lang={lang}>
   <Header theme="dark" lang={lang} />
-  <main>
+  <main id="main-content" tabindex="-1" class="focus:outline-none">
     <Hero
       title={pageObras.title.rendered}
       bajada={pageObras.content.rendered}

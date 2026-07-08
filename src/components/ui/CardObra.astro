@@ -30,6 +30,7 @@ const { url, imgSrc, titulo, descripcion } = Astro.props;
           </div>
           <span
             class="text-gold-500 uppercase font-heading-2 flex gap-1 items-center font-semibold tracking-[1.4px]"
+            aria-hidden="true"
             >Leer más
             <svg
               class="w-5 stroke-gold-500"
@@ -47,6 +48,7 @@ const { url, imgSrc, titulo, descripcion } = Astro.props;
               <path d="M13 6l6 6"></path>
             </svg>
           </span>
+          <span class="sr-only">Leer más sobre {titulo}</span>
         </div>
       </figcaption>
     </figure>

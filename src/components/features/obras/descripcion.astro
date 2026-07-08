@@ -10,8 +10,11 @@ const { texto, video } = Astro.props;
 const getEmbedHtml = (videoStr: string) => {
   if (!videoStr) return "";
   
-  // If it already has an iframe, return it
+  // If it already has an iframe, ensure it has a title
   if (videoStr.includes("<iframe")) {
+    if (!videoStr.includes("title=")) {
+      return videoStr.replace("<iframe", '<iframe title="Video de la obra"');
+    }
     return videoStr;
   }
   

@@ -28,7 +28,7 @@ const cardsInfo = page.acf.destacadas || [];
 
 <Layout title="Historia" lang={lang}>
   <Header theme="dark" lang={lang} />
-  <main>
+  <main id="main-content" tabindex="-1" class="focus:outline-none">
     <Hero
       title={page.title.rendered}
       bajada={page.content.rendered}

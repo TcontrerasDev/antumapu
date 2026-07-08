@@ -44,26 +44,26 @@ const repertorio: { nombre: string }[] = obra.acf.repertorio || [];
 
 <Layout title={obra.title.rendered} lang={lang}>
   <Header theme="dark" lang={lang} />
-  <main>
+  <main id="main-content" tabindex="-1" class="focus:outline-none">
     <Hero title={obra.title.rendered} bajada={obra.content.rendered} theme="dark">
-      <div
+      <dl
         class="mt-8 border-t border-gold-500/20 flex flex-col gap-12 py-4 w-max md:gap-25 md:flex-row"
       >
         <div>
-          <h2 class="text-[14px] tracking-[15%] text-gold-500">
+          <dt class="text-[14px] tracking-[15%] text-gold-500 font-heading-2 uppercase">
             {t("director")}
-          </h2>
-          <p class="text-[20px] mt-4 text-white">{obra.acf.director}</p>
+          </dt>
+          <dd class="text-[20px] mt-4 text-white font-body">{obra.acf.director}</dd>
         </div>
         <div>
-          <h2 class="text-[14px] tracking-[15%] text-gold-500">{t("duracion")}</h2>
-          <p class="text-[20px] mt-4 text-white">{obra.acf.duracion}</p>
+          <dt class="text-[14px] tracking-[15%] text-gold-500 font-heading-2 uppercase">{t("duracion")}</dt>
+          <dd class="text-[20px] mt-4 text-white font-body">{obra.acf.duracion}</dd>
         </div>
         <div>
-          <h2 class="text-[14px] tracking-[15%] text-gold-500">{t("estreno")}</h2>
-          <p class="text-[20px] mt-4 text-white">{formattedFecha}</p>
+          <dt class="text-[14px] tracking-[15%] text-gold-500 font-heading-2 uppercase">{t("estreno")}</dt>
+          <dd class="text-[20px] mt-4 text-white font-body">{formattedFecha}</dd>
         </div>
-      </div>
+      </dl>
     </Hero>
     <section class="bg-sand-100 padding-section">
       <div class="wrapper grid grid-cols-12">

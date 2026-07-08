@@ -23,7 +23,7 @@ if (!pageNoticias) {
 
 <Layout title="Noticias" lang={lang}>
   <Header theme="dark" lang={lang} />
-  <main>
+  <main id="main-content" tabindex="-1" class="focus:outline-none">
     <Hero
       title={pageNoticias.title.rendered}
       bajada={pageNoticias.content.rendered}

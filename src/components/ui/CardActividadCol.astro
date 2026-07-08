@@ -13,6 +13,10 @@ interface Props {
 
 const { url, fecha, titulo, obra, lugar, direccion, hora, fechaFull, tipo } = Astro.props;
 
+const { lang = "es" } = Astro.params;
+const cleanTitulo = titulo.replace(/<[^>]*>/g, "");
+const labelText = lang === "en" ? `${cleanTitulo} (opens in a new tab)` : `${cleanTitulo} (abre en una nueva pestaña)`;
+
 // Separar fecha
 const dateParts = fecha.split(" ");
 const dia = dateParts.find((p) => /\d/.test(p)) || "";
@@ -27,6 +31,8 @@ const mesLabel = dateParts.find((p) => !/\d/.test(p)) || "";
   <a
     href={url}
     target="_blank"
+    rel="noopener noreferrer"
+    aria-label={labelText}
     class="relative p-5 flex flex-col gap-5 group hover:bg-navy-950 focus:bg-navy-950 transition-all ease-in"
   >
     <div class="flex flex-col">
@@ -40,8 +46,8 @@ const mesLabel = dateParts.find((p) => !/\d/.test(p)) || "";
       >
     </div>
     <div class="flex flex-col gap-4">
-      <h2
-        class="text-[38px] text-navy-950 group-hover:text-white group-focus:text-white"
+      <h3
+        class="text-[38px] text-navy-950 group-hover:text-white group-focus:text-white font-heading-2 font-bold"
         set:html={titulo}
       />
       <p

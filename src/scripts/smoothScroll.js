@@ -13,7 +13,11 @@ if (typeof window !== 'undefined' && window.revealAnimationsPerformed === undefi
     window.revealAnimationsPerformed = false;
 }
 
+const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 function initLenis() {
+    if (prefersReducedMotion) return;
+    
     if (lenis) {
         lenis.destroy();
     }
@@ -35,6 +39,8 @@ function initLenis() {
 }
 
 function initAnimations() {
+    if (prefersReducedMotion) return;
+
     // Matamos los ScrollTriggers anteriores para evitar conflictos en la navegación
     ScrollTrigger.getAll().forEach(t => t.kill());
 

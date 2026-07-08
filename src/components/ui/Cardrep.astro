@@ -25,10 +25,10 @@ const yearOnly = yearMatch ? yearMatch[0] : ano;
       <div class="flex flex-col justify-center">
         <p class="ano">{numeracion} - {yearOnly}</p>
       </div>
-      <div class="flex flex-col justify-center">
-        <h3 class="iniTitulo" set:html={firstWord} ></h3>
-        <span class="termTitulo" set:html={restOfTitle}></span>
-      </div>
+      <h3 class="flex flex-col justify-center">
+        <span class="iniTitulo block" set:html={firstWord}></span>
+        <span class="termTitulo block" set:html={restOfTitle}></span>
+      </h3>
     </div>
 
     <div class="info-details">
@@ -110,7 +110,7 @@ const yearOnly = yearMatch ? yearMatch[0] : ano;
     @apply text-navy-800;
   }
   .card-presentacion:hover .ano {
-    @apply text-gold-700!;
+    @apply text-navy-800!;
   }
   .card-presentacion:hover .arrow-icon {
     @apply stroke-gold-700 rotate-[-30deg];
@@ -125,7 +125,7 @@ const yearOnly = yearMatch ? yearMatch[0] : ano;
     @apply text-navy-800;
   }
   .card-presentacion:focus .ano {
-    @apply text-gold-700!;
+    @apply text-navy-800!;
   }
   .card-presentacion:focus .arrow-icon {
     @apply stroke-gold-700 rotate-[-30deg];

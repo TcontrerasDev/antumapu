@@ -43,8 +43,8 @@ const checkActive = (itemUrl: string) => {
 
 <nav class="w-full flex justify-center">
   <div class="wrapper flex justify-between py-4 items-center">
-    <a href="/" class="w-32">
-      <img src={Logo.src} alt="Logo" class="w-full" />
+    <a href={lang === "en" ? "/en" : "/"} class="w-32" aria-label={lang === "en" ? "Home - Antumapu Folkloric Ballet" : "Inicio - Ballet Folklórico Antumapu"}>
+      <img src={Logo.src} alt="" class="w-full" />
     </a>
     
     <!-- Disparador Hamburguesa Grande e Interactivo (Accesible) -->

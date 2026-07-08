@@ -64,6 +64,8 @@ const nav = rawNav.map(item => {
               <a
                 href={item.url}
                 target="_blank"
+                rel="noopener noreferrer"
+                aria-label={lang === "en" ? `${item.title} (opens in a new tab)` : `${item.title} (abre en una nueva pestaña)`}
                 class="text-white-soft font-body text-[20px] hover:text-gold-500 hover:[&_i]:text-gold-500 transition-colors ease-in flex items-center gap-2"
               >
                 <i
@@ -85,6 +87,8 @@ const nav = rawNav.map(item => {
               <a
                 href={item.url}
                 target="_blank"
+                rel="noopener noreferrer"
+                aria-label={lang === "en" ? `${item.title} (opens in a new tab)` : `${item.title} (abre en una nueva pestaña)`}
                 class="text-white-soft font-body text-[20px] hover:text-gold-500 hover:[&_i]:text-gold-500 transition-colors ease-in flex items-center gap-2"
               >
                 <i

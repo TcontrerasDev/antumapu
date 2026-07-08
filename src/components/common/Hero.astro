@@ -9,6 +9,7 @@ interface Props {
 
 const { title, bajada, theme = "dark" } = Astro.props;
 
+const { lang = "es" } = Astro.params;
 const breadcrumbs = getBreadcrumbs(Astro.url.pathname);
 const hasBajada = bajada && bajada.trim() !== "";
 ---
@@ -28,46 +29,59 @@ const hasBajada = bajada && bajada.trim() !== "";
   >
   </div>
   <div class="wrapper flex flex-col justify-center gap-7 h-full relative z-10">
-    <span class="text-gold-500 font-heading-2 tracking-[1.4px] reveal-text">
-      <a
-        href="/"
-        class:list={[
-          {
-            "text-white-soft!": theme === "dark",
-            "text-navy-950": theme === "light",
-          },
-        ]}
-        >Inicio /
-      </a>
-      {
-        breadcrumbs.map((bc) => (
-          bc.isLast ? (
-            <span
-              class:list={[
-                {
-                  "text-gold-500": theme === "dark",
-                  "text-gold-700": theme === "light",
-                },
-              ]}
-            >
-              {" "}{bc.name}
-            </span>
-          ) : (
-            <a
-              href={bc.url}
-              class:list={[
-                {
-                  "text-white-soft!": theme === "dark",
-                  "text-navy-950": theme === "light",
-                },
-              ]}
-            >
-              {" "}{bc.name} /
-            </a>
-          )
-        ))
-      }
-    </span>
+    <nav
+      aria-label={lang === "en" ? "Breadcrumbs" : "Migas de pan"}
+      class="text-gold-500 font-heading-2 tracking-[1.4px] reveal-text"
+    >
+      <ol class="flex flex-wrap list-none p-0 m-0">
+        <li class="inline-flex items-center">
+          <a
+            href={lang === "en" ? "/en" : "/"}
+            class:list={[
+              {
+                "text-white-soft!": theme === "dark",
+                "text-navy-950": theme === "light",
+              },
+            ]}
+            >{lang === "en" ? "Home" : "Inicio"}</a
+          >
+          <span class="mx-1.5 opacity-60" aria-hidden="true">/</span>
+        </li>
+        {
+          breadcrumbs.map((bc) => (
+            bc.isLast ? (
+              <li class="inline-flex items-center" aria-current="page">
+                <span
+                  class:list={[
+                    {
+                      "text-gold-500": theme === "dark",
+                      "text-gold-700": theme === "light",
+                    },
+                  ]}
+                >
+                  {bc.name}
+                </span>
+              </li>
+            ) : (
+              <li class="inline-flex items-center">
+                <a
+                  href={bc.url}
+                  class:list={[
+                    {
+                      "text-white-soft!": theme === "dark",
+                      "text-navy-950": theme === "light",
+                    },
+                  ]}
+                >
+                  {bc.name}
+                </a>
+                <span class="mx-1.5 opacity-60" aria-hidden="true">/</span>
+              </li>
+            )
+          ))
+        }
+      </ol>
+    </nav>
     <h1
       class:list={[
         "font-heading-2 text-[64px] max-sm:text-h2 2xl:text-h1 lg:w-[70%] reveal-text",

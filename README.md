@@ -56,4 +56,4 @@ src/
 
 Fundado en 1971 en la Universidad de Chile, el **Ballet Folklórico Antumapu** es una de las instituciones artísticas más representativas del folklore chileno. A través de la danza y la música, rescata, difunde y mantiene vivas las tradiciones de los diversos pueblos y regiones de Chile, logrando un reconocimiento tanto a nivel nacional como internacional. Este sitio web busca plasmar su trayectoria histórica y su vasto legado cultural de una manera interactiva y adaptada a los estándares de la web moderna. 
 
-24/07/2026
+27/07/2026

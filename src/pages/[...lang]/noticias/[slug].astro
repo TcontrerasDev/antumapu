@@ -26,6 +26,9 @@ const t = useTranslations(lang);
 const breadcrumbs = getBreadcrumbs(Astro.url.pathname).filter(
   (bc) => bc.name.toLowerCase() !== "en" && bc.name.toLowerCase() !== "es"
 );
+if (breadcrumbs.length > 0 && noticiaMetadata?.title?.rendered) {
+  breadcrumbs[breadcrumbs.length - 1].name = noticiaMetadata.title.rendered;
+}
 
 const bgClass = "bg-navy-950/10";
 const textClass = "bg-navy-800/10";
@@ -52,9 +55,7 @@ const goldClass = "bg-gold-700/20";
               breadcrumbs.map((bc) =>
                 bc.isLast ? (
                   <li class="inline-flex items-center" aria-current="page">
-                    <span class="text-gold-700">
-                      {bc.name}
-                    </span>
+                    <span class="text-gold-700" set:html={bc.name} />
                   </li>
                 ) : (
                   <li class="inline-flex items-center">
@@ -74,7 +75,7 @@ const goldClass = "bg-gold-700/20";
 
         <!-- Título y descripción/extracto renderizados de inmediato (SEO) -->
         <h1
-          class="text-navy-950 text-h2 lg:text-h1 font-heading-2 mt-4"
+          class="text-[#005ba3] text-h2 font-heading-2 mt-4"
           set:html={noticiaMetadata.title.rendered}
         />
         <div

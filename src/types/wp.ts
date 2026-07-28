@@ -79,6 +79,7 @@ export interface WPPage {
   slug: string;
   title: RenderedText;
   content: RenderedText;
+  excerpt: RenderedText;
   acf: PageAcf;
   _embedded?: WordPressEmbedded;
 }
@@ -92,6 +93,7 @@ export interface ObraAcf {
   };
   director: string;
   duracion: string;
+  titulo_info: string;
   descripcion_obra: string;
   video_source?: {
     formatted_value: string;

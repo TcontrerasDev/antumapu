@@ -10,6 +10,7 @@
 - **Package Manager:** pnpm
 - **Smooth Scrolling:** Lenis
 - **Animations:** GSAP
+- **Carousel:** Embla Carousel
 - **Fonts:** Italiana (Headings), Oswald (Subheadings), Fraunces (Body)
 - **Runtime:** Node.js (>=22.12.0)
 

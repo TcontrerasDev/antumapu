@@ -1,18 +1,43 @@
 ---
-// src/components/MobileMenu.astro
+// src/components/common/MobileMenu.astro
 import Logo from "../../assets/logo-light.png";
+import { wpApi } from "../../lib/wp";
+
+export interface MenuItem {
+  title?: string;
+  name?: string;
+  label?: string;
+  url?: string;
+  link?: string;
+  href?: string;
+  target?: string;
+  acf?: { icono?: string };
+}
 
 interface Props {
-  nav?: { title: string; url: string }[];
-  navRrss?: { title: string; url: string; acf?: { icono?: string } }[];
-  navContacto?: { title: string; url: string; acf?: { icono?: string } }[];
+  nav?: MenuItem[];
+  navRrss?: MenuItem[];
+  navContacto?: MenuItem[];
   lang?: string;
 }
 
-const { nav, navRrss = [], navContacto = [], lang = "es" } = Astro.props;
+const { nav: navProp, navRrss: navRrssProp, navContacto: navContactoProp, lang = "es" } = Astro.props;
 
-// Fallback a menú estático si el menú dinámico de WordPress no está disponible
-const fallbackNav = lang === "en" ? [
+// Intentar consumir menús desde WordPress vía wpApi si no se proporcionaron vía props o vienen vacíos
+const fetchedNav: MenuItem[] = (navProp && navProp.length > 0)
+  ? navProp
+  : await wpApi.getNav("menu-primary", lang).catch(() => []);
+
+const fetchedRrss: MenuItem[] = (navRrssProp && navRrssProp.length > 0)
+  ? navRrssProp
+  : await wpApi.getNav("menu-rrss", lang).catch(() => []);
+
+const fetchedContacto: MenuItem[] = (navContactoProp && navContactoProp.length > 0)
+  ? navContactoProp
+  : await wpApi.getNav("menu-contacto", lang).catch(() => []);
+
+// Fallbacks estáticos en caso de que la API de WordPress no responda o devuelva un menú vacío
+const fallbackNav: MenuItem[] = lang === "en" ? [
   { title: "Home", url: "/en" },
   { title: "History", url: "/en/historia" },
   { title: "Repertoire", url: "/en/obras" },
@@ -26,19 +51,30 @@ const fallbackNav = lang === "en" ? [
   { title: "Contacto", url: "#contacto" },
 ];
 
-const fallbackRrss = [
+const fallbackRrss: MenuItem[] = [
   { title: "Facebook", url: "https://www.facebook.com/balletantumapu", acf: { icono: "bi bi-facebook" } },
   { title: "Instagram", url: "https://www.instagram.com/ballet_antumapu", acf: { icono: "bi bi-instagram" } },
   { title: "YouTube", url: "https://www.youtube.com/user/AntumapuChile", acf: { icono: "bi bi-youtube" } }
 ];
 
-const fallbackContacto = [
+const fallbackContacto: MenuItem[] = [
   { title: "Llamar", url: "tel:+56229787500", acf: { icono: "bi bi-telephone" } },
 ];
 
-const menuItems = nav && nav.length > 0 ? nav : fallbackNav;
-const rrRssItems = navRrss && navRrss.length > 0 ? navRrss : fallbackRrss;
-const contactoItems = navContacto && navContacto.length > 0 ? navContacto : fallbackContacto;
+const rawMenuItems: MenuItem[] = fetchedNav.length > 0 ? fetchedNav : fallbackNav;
+const rrRssItems: MenuItem[] = fetchedRrss.length > 0 ? fetchedRrss : fallbackRrss;
+const contactoItems: MenuItem[] = fetchedContacto.length > 0 ? fetchedContacto : fallbackContacto;
+
+// Normalizar campos y aplicar i18n a URLs para navegación en inglés
+const menuItems = rawMenuItems.map((item) => {
+  const title = item.title || item.name || item.label || "";
+  let url = item.url || item.link || item.href || "#";
+  
+  if (lang === "en" && url.startsWith("/") && !url.startsWith("/en")) {
+    url = `/en${url === "/" ? "" : url}`;
+  }
+  return { ...item, title, url };
+});
 
 // Obtener y normalizar la ruta actual para el indicador de página activa
 const currentPath = Astro.url.pathname;
@@ -51,8 +87,8 @@ const normalizedCurrent = normalizePath(currentPath);
 
 const checkActive = (itemUrl: string) => {
   const normalizedItem = normalizePath(itemUrl);
-  if (normalizedItem === "/") {
-    return normalizedCurrent === "/";
+  if (normalizedItem === "/" || normalizedItem === "/en") {
+    return normalizedCurrent === normalizedItem;
   }
   return normalizedCurrent === normalizedItem || normalizedCurrent.startsWith(normalizedItem + "/");
 };
@@ -67,9 +103,7 @@ const checkActive = (itemUrl: string) => {
   data-lenis-prevent
 >
   <!-- Efecto de Brillo Central e Iluminación de Escenario (Spotlights con tonalidades de #e0b24a) -->
-  <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(224,178,74,0.12)_0%,_transparent_70%)] pointer-events-none"></div>
   <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(224,178,74,0.22)_0%,_transparent_40%)] pointer-events-none"></div>
-  <div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_rgba(224,178,74,0.18)_0%,_transparent_60%)] pointer-events-none"></div>
 
   <!-- Logotipo Sutil en la Cabecera (Branding) -->
   <div class="absolute top-4 left-4 sm:top-6 sm:left-6 flex items-center gap-3 pointer-events-none select-none z-20">
@@ -112,12 +146,16 @@ const checkActive = (itemUrl: string) => {
         <nav class="w-full max-w-lg menu-content">
           <ul class="flex flex-col items-center justify-center space-y-3.5 sm:space-y-5">
             {
-              menuItems.map((item) => {
+              menuItems.map((item, index) => {
                 const isActive = checkActive(item.url);
                 return (
-                  <li class="w-full text-center mobile-menu-item">
+                  <li
+                    class="w-full text-center mobile-menu-item"
+                    style={`transition-delay: ${0.1 + index * 0.05}s`}
+                  >
                     <a
                       href={item.url}
+                      target={item.target || undefined}
                       class:list={[
                         "mobile-menu-link block py-2.5 sm:py-3.5 px-6 sm:px-8 w-full font-heading-2 text-2xl sm:text-4xl uppercase tracking-[2px] sm:tracking-[3px] transition-all duration-300 rounded-none hover:bg-white/5 focus:bg-white/5 focus:outline-none active:scale-98",
                         isActive
@@ -142,33 +180,43 @@ const checkActive = (itemUrl: string) => {
 
           <!-- Botones de contacto de fácil acceso táctil -->
           <div class="flex flex-wrap justify-center gap-3 sm:gap-4 mb-5 sm:mb-6">
-            {contactoItems.map(item => (
-              <a
-                href={item.url}
-                class="mobile-contact-link flex items-center gap-2.5 py-2 sm:py-2.5 px-4 sm:px-5 bg-white/5 hover:bg-white/10 active:scale-95 text-[#FCFCFC] hover:text-gold-500 border border-white/10 hover:border-gold-500/30 rounded-none transition-all duration-300 font-heading-2 text-[12px] sm:text-[13px] uppercase tracking-[1px] min-h-[44px] sm:min-h-[48px] cursor-pointer"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {item.acf?.icono && <i class={`${item.acf.icono} text-[15px] sm:text-[16px]`}></i>}
-                <span>{item.title}</span>
-              </a>
-            ))}
+            {contactoItems.map(item => {
+              const title = item.title || item.name || item.label || "";
+              const url = item.url || item.link || item.href || "#";
+              const isExternal = url.startsWith("http");
+              return (
+                <a
+                  href={url}
+                  class="mobile-contact-link flex items-center gap-2.5 py-2 sm:py-2.5 px-4 sm:px-5 bg-white/5 hover:bg-white/10 active:scale-95 text-[#FCFCFC] hover:text-gold-500 border border-white/10 hover:border-gold-500/30 rounded-none transition-all duration-300 font-heading-2 text-[12px] sm:text-[13px] uppercase tracking-[1px] min-h-[44px] sm:min-h-[48px] cursor-pointer"
+                  target={item.target || (isExternal ? "_blank" : undefined)}
+                  rel={isExternal ? "noopener noreferrer" : undefined}
+                >
+                  {item.acf?.icono && <i class={`${item.acf.icono} text-[15px] sm:text-[16px]`}></i>}
+                  <span>{title}</span>
+                </a>
+              );
+            })}
           </div>
 
           <!-- Iconos Redes Sociales -->
           <div class="flex flex-wrap justify-center gap-4 sm:gap-5">
-            {rrRssItems.map(item => (
-              <a
-                href={item.url}
-                class="mobile-contact-link flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 bg-white/5 hover:bg-white/10 active:scale-90 text-[#FCFCFC] hover:text-gold-500 rounded-none border border-white/10 transition-all duration-300 cursor-pointer"
-                target="_blank"
-                rel="noopener noreferrer"
-                title={item.title}
-                aria-label={`Visitar nuestro ${item.title}`}
-              >
-                {item.acf?.icono && <i class={`${item.acf.icono} text-[16px] sm:text-[18px]`}></i>}
-              </a>
-            ))}
+            {rrRssItems.map(item => {
+              const title = item.title || item.name || item.label || "";
+              const url = item.url || item.link || item.href || "#";
+              const isExternal = url.startsWith("http");
+              return (
+                <a
+                  href={url}
+                  class="mobile-contact-link flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 bg-white/5 hover:bg-white/10 active:scale-90 text-[#FCFCFC] hover:text-gold-500 rounded-none border border-white/10 transition-all duration-300 cursor-pointer"
+                  target={item.target || (isExternal ? "_blank" : undefined)}
+                  rel={isExternal ? "noopener noreferrer" : undefined}
+                  title={title}
+                  aria-label={`Visitar nuestro ${title}`}
+                >
+                  {item.acf?.icono && <i class={`${item.acf.icono} text-[16px] sm:text-[18px]`}></i>}
+                </a>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -200,18 +248,17 @@ const checkActive = (itemUrl: string) => {
     opacity: 1;
   }
 
-  /* Animación escalonada (Staggered) para los enlaces */
+  /* Animación escalonada (Staggered) para los enlaces de navegación */
   #mobile-overlay-menu .mobile-menu-item {
     transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease;
     transform: translateY(40px);
     opacity: 0;
   }
 
-  #mobile-overlay-menu.is-open .mobile-menu-item:nth-child(1) { transition-delay: 0.1s; transform: translateY(0); opacity: 1; }
-  #mobile-overlay-menu.is-open .mobile-menu-item:nth-child(2) { transition-delay: 0.15s; transform: translateY(0); opacity: 1; }
-  #mobile-overlay-menu.is-open .mobile-menu-item:nth-child(3) { transition-delay: 0.2s; transform: translateY(0); opacity: 1; }
-  #mobile-overlay-menu.is-open .mobile-menu-item:nth-child(4) { transition-delay: 0.25s; transform: translateY(0); opacity: 1; }
-  #mobile-overlay-menu.is-open .mobile-menu-item:nth-child(5) { transition-delay: 0.3s; transform: translateY(0); opacity: 1; }
+  #mobile-overlay-menu.is-open .mobile-menu-item {
+    transform: translateY(0);
+    opacity: 1;
+  }
 
   /* Animación final escalonada para la base del menú */
   #mobile-overlay-menu .mobile-menu-footer {
@@ -352,8 +399,8 @@ const checkActive = (itemUrl: string) => {
     // Escuchar cambios de resolución
     if (mediaQuery.addEventListener) {
       mediaQuery.addEventListener('change', handleResize);
-    } else {
-      mediaQuery.addListener(handleResize);
+    } else if ('addListener' in mediaQuery) {
+      (mediaQuery as any).addListener(handleResize);
     }
   }
 

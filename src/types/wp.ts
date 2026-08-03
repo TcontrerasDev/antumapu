@@ -155,3 +155,18 @@ export interface WPNoticia {
   acf?: NoticiaAcf;
   _embedded?: WordPressEmbedded;
 }
+
+// ----------------------------------------------------
+// RESEÑA TYPE
+// ----------------------------------------------------
+export interface WPResena {
+  id: number;
+  slug: string;
+  link: string;
+  title: RenderedText;
+  content: RenderedText;
+  excerpt: RenderedText;
+  _embedded?: WordPressEmbedded;
+}
+
+

@@ -1,0 +1,281 @@
+---
+import CardResena from "../../ui/CardResena.astro";
+import avatar1 from "../../../assets/resenas/avatar-1.jpg";
+import avatar2 from "../../../assets/resenas/avatar-2.jpg";
+import avatar3 from "../../../assets/resenas/avatar-3.jpg";
+import avatar4 from "../../../assets/resenas/avatar-4.jpg";
+import { wpApi } from "../../../lib/wp";
+import type { WPResena } from "../../../types/wp";
+
+interface Props {
+  title?: string;
+  bajada?: string;
+  theme?: "dark" | "light";
+  lang?: string;
+}
+
+const {
+  title = "Reseñas y Reconocimientos",
+  bajada = "",
+  theme = "light",
+  lang = "es",
+} = Astro.props;
+
+const staticResenas = [
+  {
+    id: 1,
+    imagen: avatar1,
+    titulo: "Carlos Mendoza",
+    excerpt: "Director de Festival CIOFF Chile",
+    content:
+      "Antumapu logra transmitir la fuerza del folclore nacional con una calidad escénica incomparable. Cada presentación es un homenaje vivo a nuestras tradiciones.",
+  },
+  {
+    id: 2,
+    imagen: avatar2,
+    titulo: "Elena Rostova",
+    excerpt: "Crítica de Danza & Artes Escénicas",
+    content:
+      "El rigor técnico de sus bailarines y la emotividad de su música en vivo elevan la danza folclórica a los más altos estándares internacionales.",
+  },
+  {
+    id: 3,
+    imagen: avatar3,
+    titulo: "Roberto Araya",
+    excerpt: "Gestor Cultural Teatro Municipal",
+    content:
+      "Una puesta en escena vibrante y conmovedora. Antumapu no solo preserva el patrimonio chileno, sino que lo reinventa para emocionar a nuevas generaciones.",
+  },
+  {
+    id: 4,
+    imagen: avatar4,
+    titulo: "Dra. Sofía Valenzuela",
+    excerpt: "Investigadora en Patrimonio Intangible",
+    content:
+      "La investigación detrás de cada obra es impecable. Antumapu rescata las raíces profundas del folclore latinoamericano con autenticidad y elegancia.",
+  },
+];
+
+let resenas: Array<{
+  id: number | string;
+  imagen: ImageMetadata | string;
+  titulo: string;
+  excerpt: string;
+  content: string;
+}> = staticResenas;
+
+try {
+  const wpResenas = await wpApi.getResenas(lang);
+  if (wpResenas && wpResenas.length > 0) {
+    resenas = wpResenas.map((item: WPResena, idx: number) => {
+      const fallbackAvatar = [avatar1, avatar2, avatar3, avatar4][idx % 4];
+      const imgUrl = item._embedded?.["wp:featuredmedia"]?.[0]?.source_url;
+      return {
+        id: item.id,
+        imagen: imgUrl || fallbackAvatar,
+        titulo: item.title?.rendered || "",
+        excerpt: item.excerpt?.rendered || "",
+        content: item.content?.rendered || "",
+      };
+    });
+  }
+} catch (error) {
+  console.error("Error reseñas", error);
+}
+---
+
+<section
+  class:list={[
+    "padding-section relative overflow-hidden shadow-none",
+    theme === "dark" ? "bg-navy-950 text-sand-100" : "bg-sand-100 text-navy-950",
+  ]}
+>
+  <div class="wrapper">
+    <!-- Header de la sección con título y botones de navegación del carrusel -->
+    <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div class="flex flex-col gap-4 max-w-2xl">
+        <h2
+          class:list={[
+            "h2-heading reveal-text",
+            theme === "dark" ? "text-white" : "text-navy-950",
+          ]}
+        >
+          {title}
+        </h2>
+        {
+          bajada && (
+            <p
+              class:list={[
+                "reveal-text text-base leading-relaxed font-body",
+                theme === "dark" ? "text-white-soft" : "text-navy-800",
+              ]}
+            >
+              {bajada}
+            </p>
+          )
+        }
+      </div>
+
+      <!-- Botones de navegación Embla Carousel -->
+      <div class="flex items-center gap-3 shrink-0 max-sm:hidden">
+        <button
+          type="button"
+          id="resenas-prev-btn"
+          class="w-12 h-12 rounded-full border border-gold-500/40 flex items-center justify-center text-gold-500 hover:bg-gold-500 hover:text-navy-950 active:scale-95 transition-all duration-200 cursor-pointer"
+          aria-label="Reseña anterior"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-6 h-6 stroke-current"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M15 18l-6-6 6-6"></path>
+          </svg>
+        </button>
+        <button
+          type="button"
+          id="resenas-next-btn"
+          class="w-12 h-12 rounded-full border border-gold-500/40 flex items-center justify-center text-gold-500 hover:bg-gold-500 hover:text-navy-950 active:scale-95 transition-all duration-200 cursor-pointer"
+          aria-label="Siguiente reseña"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-6 h-6 stroke-current"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M9 18l6-6-6-6"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Embla Carousel Viewport de 1 reseña a la vez (full width) -->
+    <div class="relative mt-20">
+      <div class="embla overflow-hidden" id="resenas-embla-viewport">
+        <div class="embla__container flex py-4">
+          {
+            resenas.map((item) => (
+              <div
+                class="embla__slide flex-[0_0_100%] min-w-full shrink-0 grow-0 flex flex-col"
+              >
+                <CardResena
+                  imagen={item.imagen}
+                  titulo={item.titulo}
+                  excerpt={item.excerpt}
+                  content={item.content}
+                  theme={theme}
+                />
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+      <!-- Barra de Carga (Línea de Progreso) -->
+      <div class="w-full h-1  bg-navy-800/10 dark:bg-gold-500/10 rounded-full overflow-hidden">
+        <div
+          id="resenas-progress-bar"
+          class="h-full bg-gold-500 w-0 transition-none"
+        ></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import EmblaCarousel from "embla-carousel";
+
+  function setupResenasCarousel() {
+    const viewportNode = document.querySelector<HTMLElement>(
+      "#resenas-embla-viewport"
+    );
+    const prevBtn = document.querySelector<HTMLButtonElement>(
+      "#resenas-prev-btn"
+    );
+    const nextBtn = document.querySelector<HTMLButtonElement>(
+      "#resenas-next-btn"
+    );
+    const progressBar = document.querySelector<HTMLElement>(
+      "#resenas-progress-bar"
+    );
+
+    if (!viewportNode) return;
+
+    const emblaApi = EmblaCarousel(viewportNode, {
+      loop: true,
+      align: "start",
+      slidesToScroll: 1,
+    });
+
+    const DURATION = 6000; // 6 segundos por reseña
+    let startTime: number | null = null;
+    let animationFrameId: number | null = null;
+
+    const resetTimer = () => {
+      startTime = performance.now();
+      if (progressBar) {
+        progressBar.style.width = "0%";
+      }
+    };
+
+    const animateProgress = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const progress = Math.min(100, (elapsed / DURATION) * 100);
+
+      if (progressBar) {
+        progressBar.style.width = `${progress}%`;
+      }
+
+      if (elapsed >= DURATION) {
+        emblaApi.scrollNext();
+        resetTimer();
+      }
+
+      animationFrameId = requestAnimationFrame(animateProgress);
+    };
+
+    // Iniciar animación
+    resetTimer();
+    animationFrameId = requestAnimationFrame(animateProgress);
+
+    // Reiniciar barra al interactuar manualmente (scroll horizontal o navegación)
+    emblaApi.on("select", resetTimer);
+    emblaApi.on("pointerDown", resetTimer);
+
+    if (prevBtn) {
+      prevBtn.addEventListener("click", () => {
+        emblaApi.scrollPrev();
+        resetTimer();
+      });
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener("click", () => {
+        emblaApi.scrollNext();
+        resetTimer();
+      });
+    }
+
+    emblaApi.on("destroy", () => {
+      if (animationFrameId !== null) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupResenasCarousel);
+  } else {
+    setupResenasCarousel();
+  }
+
+  document.addEventListener("astro:page-load", setupResenasCarousel);
+</script>

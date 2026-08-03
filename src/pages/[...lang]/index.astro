@@ -17,6 +17,7 @@ import ActividadesList from "../../components/features/home/ActividadesList.astr
 import ActividadesSkeleton from "../../components/ui/ActividadesSkeleton.astro";
 import Repertorio from "../../components/features/home/Repertorio.astro";
 import Noticias from "../../components/features/noticias/Noticias.astro";
+import Resenas from "../../components/features/home/Resenas.astro";
 import Footer from "../../components/common/Footer.astro";
 import { wpApi } from "../../lib/wp";
 
@@ -39,6 +40,8 @@ if (!page) {
       linkBtn2={page.acf.botones?.pagina_2 || ""}
       imgBack={page._embedded?.["wp:featuredmedia"]?.[0]?.source_url || ""}
     />
+
+    <Resenas lang={lang} />
 
     <Actividades
       title={page.acf.titulo_presentaciones || ""}

@@ -1,4 +1,4 @@
-import type { WPPage, WPObra, WPActividad, WPNoticia } from "../types/wp";
+import type { WPPage, WPObra, WPActividad, WPNoticia, WPResena } from "../types/wp";
 
 const WP_DOMAIN = import.meta.env.WP_DOMAIN;
 
@@ -138,5 +138,9 @@ export const wpApi = {
   getNoticiaMetadataBySlug: async (slug: string, lang?: string): Promise<Pick<WPNoticia, "title" | "excerpt"> | null> => {
     const data = await wpFetch(`noticias?slug=${encodeURIComponent(slug)}&_fields=title,excerpt`, lang);
     return data?.[0] || null;
+  },
+
+  getResenas: async (lang?: string): Promise<WPResena[]> => {
+    return wpFetch("resena?_embed", lang);
   },
 };

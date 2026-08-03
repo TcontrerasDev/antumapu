@@ -1,9 +1,5 @@
 ---
 import CardResena from "../../ui/CardResena.astro";
-import avatar1 from "../../../assets/resenas/avatar-1.jpg";
-import avatar2 from "../../../assets/resenas/avatar-2.jpg";
-import avatar3 from "../../../assets/resenas/avatar-3.jpg";
-import avatar4 from "../../../assets/resenas/avatar-4.jpg";
 import { wpApi } from "../../../lib/wp";
 import type { WPResena } from "../../../types/wp";
 
@@ -21,58 +17,22 @@ const {
   lang = "es",
 } = Astro.props;
 
-const staticResenas = [
-  {
-    id: 1,
-    imagen: avatar1,
-    titulo: "Carlos Mendoza",
-    excerpt: "Director de Festival CIOFF Chile",
-    content:
-      "Antumapu logra transmitir la fuerza del folclore nacional con una calidad escénica incomparable. Cada presentación es un homenaje vivo a nuestras tradiciones.",
-  },
-  {
-    id: 2,
-    imagen: avatar2,
-    titulo: "Elena Rostova",
-    excerpt: "Crítica de Danza & Artes Escénicas",
-    content:
-      "El rigor técnico de sus bailarines y la emotividad de su música en vivo elevan la danza folclórica a los más altos estándares internacionales.",
-  },
-  {
-    id: 3,
-    imagen: avatar3,
-    titulo: "Roberto Araya",
-    excerpt: "Gestor Cultural Teatro Municipal",
-    content:
-      "Una puesta en escena vibrante y conmovedora. Antumapu no solo preserva el patrimonio chileno, sino que lo reinventa para emocionar a nuevas generaciones.",
-  },
-  {
-    id: 4,
-    imagen: avatar4,
-    titulo: "Dra. Sofía Valenzuela",
-    excerpt: "Investigadora en Patrimonio Intangible",
-    content:
-      "La investigación detrás de cada obra es impecable. Antumapu rescata las raíces profundas del folclore latinoamericano con autenticidad y elegancia.",
-  },
-];
-
 let resenas: Array<{
   id: number | string;
-  imagen: ImageMetadata | string;
+  imagen?: ImageMetadata | string | null;
   titulo: string;
   excerpt: string;
   content: string;
-}> = staticResenas;
+}> = [];
 
 try {
   const wpResenas = await wpApi.getResenas(lang);
   if (wpResenas && wpResenas.length > 0) {
-    resenas = wpResenas.map((item: WPResena, idx: number) => {
-      const fallbackAvatar = [avatar1, avatar2, avatar3, avatar4][idx % 4];
+    resenas = wpResenas.map((item: WPResena) => {
       const imgUrl = item._embedded?.["wp:featuredmedia"]?.[0]?.source_url;
       return {
         id: item.id,
-        imagen: imgUrl || fallbackAvatar,
+        imagen: imgUrl || null,
         titulo: item.title?.rendered || "",
         excerpt: item.excerpt?.rendered || "",
         content: item.content?.rendered || "",
@@ -84,12 +44,14 @@ try {
 }
 ---
 
-<section
-  class:list={[
-    "padding-section relative overflow-hidden shadow-none",
-    theme === "dark" ? "bg-navy-950 text-sand-100" : "bg-sand-100 text-navy-950",
-  ]}
->
+{
+  resenas.length > 0 && (
+    <section
+      class:list={[
+        "padding-section relative overflow-hidden shadow-none",
+        theme === "dark" ? "bg-navy-950 text-sand-100" : "bg-sand-100 text-navy-950",
+      ]}
+    >
   <div class="wrapper">
     <!-- Header de la sección con título y botones de navegación del carrusel -->
     <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -189,6 +151,8 @@ try {
     </div>
   </div>
 </section>
+)
+}
 
 <script>
   import EmblaCarousel from "embla-carousel";

@@ -36,7 +36,7 @@ const mes = dateParts.find(p => !/\d/.test(p)) || '';
 
     <div class="info-details">
       <div class="flex flex-col justify-center">
-        <p class="lugar">{lugar}</p>
+        <p class="lugar uppercase">{lugar}</p>
         <span class="direccion" set:html={direccion}></span>
       </div>
       <div class="flex justify-center gap-5">

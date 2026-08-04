@@ -12,15 +12,6 @@ interface Props {
 const { url, numeracion, ano, titulo, description, classList, class_list } = Astro.props;
 const classes = classList || class_list || [];
 const isCuadroTematico = classes.includes("etiqueta-cuadro-tematico");
-
-// Separar el título: primera palabra y el resto
-const words = titulo.trim().split(/\s+/);
-const firstWord = words[0];
-const restOfTitle = words.slice(1).join(' ');
-
-// Extraer solo el año: busca cualquier grupo de 4 números seguidos
-const yearMatch = ano.match(/\d{4}/);
-const yearOnly = yearMatch ? yearMatch[0] : ano;
 ---
 
 <article>
@@ -37,10 +28,8 @@ const yearOnly = yearMatch ? yearMatch[0] : ano;
             </span>
           )
         }
-        <h3 class="flex flex-col justify-center">
-          <span class="iniTitulo block" set:html={firstWord}></span>
-          <span class="termTitulo block" set:html={restOfTitle}></span>
-        </h3>
+        <h2 class="flex flex-col justify-center iniTitulo" set:html={titulo}>
+        </h2>
       </div>
     </div>
 
@@ -73,7 +62,7 @@ const yearOnly = yearMatch ? yearMatch[0] : ano;
   @reference "../../styles/global.css";
 
   .card-presentacion {
-    @apply grid grid-cols-12 p-4 border-b-[.1px] border-t-[.1px] border-gold-500/20 gap-5 transition-all duration-300;
+    @apply grid grid-cols-12 p-4 border-b-[.1px] border-t-[.1px] border-gold-500/20 gap-5 transition-all duration-300 min-h-30;
   
   }
 
@@ -90,25 +79,22 @@ const yearOnly = yearMatch ? yearMatch[0] : ano;
   }
 
   .info-details {
-    @apply col-span-12 md:col-span-6 lg:col-span-7 flex justify-between items-center w-full gap-10 lg:gap-16;
+    @apply col-span-12 pb-3 md:pb-0 md:col-span-6 lg:col-span-7 flex justify-between items-center w-full gap-10 lg:gap-16;
   }
 
   /* Estilos de Tipografía */
   .ano {
-    @apply text-base text-gold-500 font-heading-2! transition-colors duration-300;
+    @apply text-base text-white font-heading-2! transition-colors duration-300;
   }
 
   .tag-cuadro-tematico {
-    @apply inline-block w-fit mb-1 px-2 py-0.5 text-[11px] font-heading-2 font-semibold uppercase tracking-wider text-gold-500 bg-navy-950/60 border border-gold-500/30 rounded transition-colors duration-300;
+    @apply inline-block w-fit mb-1 px-2 py-0.5 text-[11px] font-heading-2 font-semibold uppercase tracking-wider text-white bg-navy-950/60 border border-gold-500/30 rounded transition-colors duration-300;
   }
 
   .iniTitulo {
-    @apply text-h2 text-white font-semibold transition-colors duration-300;
+    @apply text-[2rem] text-gold-500 font-semibold transition-colors duration-300;
   }
 
-  .termTitulo {
-    @apply text-base text-gold-500 font-body italic transition-colors duration-300;
-  }
 
   .description {
     @apply text-base text-white transition-colors duration-300;

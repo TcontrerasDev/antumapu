@@ -1,7 +1,9 @@
 ---
 import CardNoticia from "../../ui/CardNoticia.astro";
 import CardDestacada from "../../ui/CardNoticiaDestacada.astro";
+import EmptyState from "../../ui/EmptyState.astro";
 import { wpApi } from "../../../lib/wp";
+import { useTranslations } from "../../../lib/i18n";
 
 interface Props {
   theme?: "light" | "dark";
@@ -9,6 +11,7 @@ interface Props {
 }
 
 const { theme = "light", lang = "es" } = Astro.props;
+const t = useTranslations(lang);
 
 const noticias = await wpApi.getNoticias(lang);
 
@@ -19,51 +22,67 @@ const formatDate = (dateString: string) => {
   const year = date.getFullYear();
   return `${day}/${month}/${year}`;
 };
+
+const worksUrl = lang === "es" ? "/obras" : "/en/obras";
 ---
 
-<div class="grid gap-5 lg:grid-cols-12 items-baseline pb-8">
-  {noticias.map((noticia, index) => {
-    if (index === 0) {
-      return (
-        <CardDestacada
-          url={lang === "es" ? `/noticias/${noticia.slug}` : `/en/noticias/${noticia.slug}`}
-          imgSrc={noticia._embedded?.["wp:featuredmedia"]?.[0]?.source_url || ""}
-          fecha={formatDate(noticia.date)}
-          titulo={noticia.title.rendered}
-          descripcion={noticia.excerpt.rendered}
-          theme={theme}
-        />
-      );
-    }
-  })}
-  {noticias.map((noticia, index) => {
-    if (index === 1) {
-      return (
-        <CardNoticia
-          url={lang === "es" ? `/noticias/${noticia.slug}` : `/en/noticias/${noticia.slug}`}
-          imgSrc={noticia._embedded?.["wp:featuredmedia"]?.[0]?.source_url || ""}
-          fecha={formatDate(noticia.date)}
-          titulo={noticia.title.rendered}
-          descripcion={noticia.excerpt.rendered}
-          theme={theme}
-        />
-      );
-    }
-  })}
-</div>
-<div class="grid gap-5 lg:grid-cols-12">
-  {noticias.map((noticia, index) => {
-    if (index !== 0 && index !== 1) {
-      return (
-        <CardNoticia
-          url={lang === "es" ? `/noticias/${noticia.slug}` : `/en/noticias/${noticia.slug}`}
-          imgSrc={noticia._embedded?.["wp:featuredmedia"]?.[0]?.source_url || ""}
-          fecha={formatDate(noticia.date)}
-          titulo={noticia.title.rendered}
-          descripcion={noticia.excerpt.rendered}
-          theme={theme}
-        />
-      );
-    }
-  })}
-</div>
+{
+  !noticias || noticias.length === 0 ? (
+    <EmptyState
+      title={t("no_noticias_titulo")}
+      description={t("no_noticias_descripcion")}
+      actionText={t("explorar_repertorio")}
+      actionHref={worksUrl}
+      theme={theme}
+    />
+  ) : (
+    <>
+      <div class="grid gap-5 lg:grid-cols-12 items-baseline pb-8">
+        {noticias.map((noticia, index) => {
+          if (index === 0) {
+            return (
+              <CardDestacada
+                url={lang === "es" ? `/noticias/${noticia.slug}` : `/en/noticias/${noticia.slug}`}
+                imgSrc={noticia._embedded?.["wp:featuredmedia"]?.[0]?.source_url || ""}
+                fecha={formatDate(noticia.date)}
+                titulo={noticia.title.rendered}
+                descripcion={noticia.excerpt.rendered}
+                theme={theme}
+              />
+            );
+          }
+        })}
+        {noticias.map((noticia, index) => {
+          if (index === 1) {
+            return (
+              <CardNoticia
+                url={lang === "es" ? `/noticias/${noticia.slug}` : `/en/noticias/${noticia.slug}`}
+                imgSrc={noticia._embedded?.["wp:featuredmedia"]?.[0]?.source_url || ""}
+                fecha={formatDate(noticia.date)}
+                titulo={noticia.title.rendered}
+                descripcion={noticia.excerpt.rendered}
+                theme={theme}
+              />
+            );
+          }
+        })}
+      </div>
+      <div class="grid gap-5 lg:grid-cols-12">
+        {noticias.map((noticia, index) => {
+          if (index !== 0 && index !== 1) {
+            return (
+              <CardNoticia
+                url={lang === "es" ? `/noticias/${noticia.slug}` : `/en/noticias/${noticia.slug}`}
+                imgSrc={noticia._embedded?.["wp:featuredmedia"]?.[0]?.source_url || ""}
+                fecha={formatDate(noticia.date)}
+                titulo={noticia.title.rendered}
+                descripcion={noticia.excerpt.rendered}
+                theme={theme}
+              />
+            );
+          }
+        })}
+      </div>
+    </>
+  )
+}

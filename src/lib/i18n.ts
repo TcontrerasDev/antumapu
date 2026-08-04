@@ -20,6 +20,9 @@ const translations: Record<string, Record<string, string>> = {
     "contacto": "Contacto",
     "navegacion": "Navegación",
     "meta_description": "Sitio oficial del Conjunto Folklórico Antumapu de la Universidad de Chile. Conoce nuestra historia, repertorio de obras, noticias y próximas presentaciones.",
+    "no_noticias_titulo": "No hay noticias por el momento",
+    "no_noticias_descripcion": "Actualmente no existen artículos o publicaciones recientes. Te invitamos a explorar nuestras obras o volver más adelante.",
+    "explorar_repertorio": "Explorar Obras",
   },
   en: {
     "director": "Artistic & Choreographic Director",
@@ -40,6 +43,9 @@ const translations: Record<string, Record<string, string>> = {
     "contacto": "Contact",
     "navegacion": "Navigation",
     "meta_description": "Official website of the Antumapu Folkloric Group of the University of Chile. Discover our history, repertoire of works, news, and upcoming performances.",
+    "no_noticias_titulo": "No news available at the moment",
+    "no_noticias_descripcion": "There are currently no recent articles or publications. We invite you to explore our repertoire or check back later.",
+    "explorar_repertorio": "Explore Repertoire",
   }
 };
 

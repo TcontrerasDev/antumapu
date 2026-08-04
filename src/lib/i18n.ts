@@ -23,6 +23,7 @@ const translations: Record<string, Record<string, string>> = {
     "no_noticias_titulo": "No hay noticias por el momento",
     "no_noticias_descripcion": "Actualmente no existen artículos o publicaciones recientes. Te invitamos a explorar nuestras obras o volver más adelante.",
     "explorar_repertorio": "Explorar Obras",
+    "reconocimientos": "Reconocimientos",
   },
   en: {
     "director": "Artistic & Choreographic Director",
@@ -46,6 +47,7 @@ const translations: Record<string, Record<string, string>> = {
     "no_noticias_titulo": "No news available at the moment",
     "no_noticias_descripcion": "There are currently no recent articles or publications. We invite you to explore our repertoire or check back later.",
     "explorar_repertorio": "Explore Repertoire",
+    "reconocimientos": "Awards & Recognitions",
   }
 };
 

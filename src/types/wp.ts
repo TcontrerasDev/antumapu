@@ -107,6 +107,19 @@ export interface ObraAcf {
       alt?: string;
     }>;
   };
+  reconocimiento_source?: {
+    label?: string;
+    type?: string;
+    formatted_value?: Array<{
+      premio: string;
+    }>;
+  };
+  "icono-trofeo"?: string;
+  "icono-trofeo_source"?: {
+    label?: string;
+    type?: string;
+    formatted_value?: string;
+  };
 }
 
 export interface WPObra {

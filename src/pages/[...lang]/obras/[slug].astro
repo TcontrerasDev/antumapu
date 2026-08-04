@@ -39,6 +39,7 @@ const repertorio: { nombre: string }[] = (obra.acf.repertorio || []).filter(
 );
 
 const galeria = obra.acf.img_galeria_source?.formatted_value || [];
+const reconocimientos = obra.acf.reconocimiento_source?.formatted_value || [];
 
 ---
 
@@ -59,6 +60,16 @@ const galeria = obra.acf.img_galeria_source?.formatted_value || [];
           <dt class="text-[14px] tracking-[15%] text-gold-500 font-heading-2 uppercase">{t("duracion")}</dt>
           <dd class="text-[20px] mt-4 text-white font-body">{obra.acf.duracion}</dd>
         </div>
+        {
+          reconocimientos.length > 0 && (
+            <div>
+              <dt class="text-[14px] tracking-[15%] text-gold-500 font-heading-2 uppercase">{t("reconocimientos")}</dt>
+              {reconocimientos.map((item) => (
+                <dd class="text-[20px] mt-4 text-white font-body">{item.premio}</dd>
+              ))}
+            </div>
+          )
+        }
       </dl>
     </Hero>
     <section class="bg-sand-100 padding-section">

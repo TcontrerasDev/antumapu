@@ -6,9 +6,12 @@ interface Props {
     descripcion: string;
     classList?: string[];
     class_list?: string[];
+    iconoTrofeo?: string;
+    icono_trofeo?: string;
 }
 
 const { url, imgSrc, titulo, descripcion, classList, class_list } = Astro.props;
+const iconoTrofeo = Astro.props.iconoTrofeo || Astro.props.icono_trofeo;
 const classes = classList || class_list || [];
 const isCuadroTematico = classes.includes("etiqueta-cuadro-tematico");
 ---
@@ -35,8 +38,11 @@ const isCuadroTematico = classes.includes("etiqueta-cuadro-tematico");
               </span>
             )
           }
-          <h2 class="uppercase text-white text-2xl pb-2" set:html={titulo}>
-          </h2>
+          <div class="flex items-end gap-2 pb-2">
+            <h2 class="uppercase text-white text-2xl" set:html={titulo}>
+            </h2>
+            {iconoTrofeo && <i class={`${iconoTrofeo} text-gold-500 text-[1rem] shrink-0`} aria-hidden="true"></i>}
+          </div>
         </div>
         <div class="backdrop-brightness-30 p-4 flex flex-col gap-4">
           <div class="text-base text-white-soft" set:html={descripcion}>

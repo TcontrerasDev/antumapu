@@ -7,9 +7,12 @@ interface Props {
   description: string;
   classList?: string[];
   class_list?: string[];
+  iconoTrofeo?: string;
+  icono_trofeo?: string;
 }
 
 const { url, numeracion, ano, titulo, description, classList, class_list } = Astro.props;
+const iconoTrofeo = Astro.props.iconoTrofeo || Astro.props.icono_trofeo;
 const classes = classList || class_list || [];
 const isCuadroTematico = classes.includes("etiqueta-cuadro-tematico");
 ---
@@ -28,8 +31,11 @@ const isCuadroTematico = classes.includes("etiqueta-cuadro-tematico");
             </span>
           )
         }
-        <h2 class="flex flex-col justify-center iniTitulo" set:html={titulo}>
-        </h2>
+        <div class="flex items-end gap-2">
+          <h2 class="iniTitulo" set:html={titulo}>
+          </h2>
+          {iconoTrofeo && <i class={`${iconoTrofeo} icono-trofeo pb-1.25`} aria-hidden="true"></i>}
+        </div>
       </div>
     </div>
 
@@ -95,6 +101,9 @@ const isCuadroTematico = classes.includes("etiqueta-cuadro-tematico");
     @apply text-[2rem] text-gold-500 font-semibold transition-colors duration-300;
   }
 
+  .icono-trofeo {
+    @apply text-[1rem] text-gold-500 transition-colors duration-300 shrink-0;
+  }
 
   .description {
     @apply text-base text-white transition-colors duration-300;
@@ -105,6 +114,7 @@ const isCuadroTematico = classes.includes("etiqueta-cuadro-tematico");
 
   /* Efectos al hacer Hover en la Card */
   .card-presentacion:hover .iniTitulo,
+  .card-presentacion:hover .icono-trofeo,
   .card-presentacion:hover .description {
     @apply text-navy-950;
   }
@@ -123,6 +133,7 @@ const isCuadroTematico = classes.includes("etiqueta-cuadro-tematico");
   }
 
   .card-presentacion:focus .iniTitulo,
+  .card-presentacion:focus .icono-trofeo,
   .card-presentacion:focus .description {
     @apply text-navy-950;
   }

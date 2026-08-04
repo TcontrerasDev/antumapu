@@ -40,6 +40,7 @@ const obras = await wpApi.getObras(lang);
             ano={obra.acf.fecha_estreno_source?.formatted_value || ""}
             titulo={obra.title.rendered}
             description={obra.excerpt.rendered}
+            classList={obra.class_list}
           />
         ))
       }

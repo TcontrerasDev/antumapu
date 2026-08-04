@@ -5,9 +5,13 @@ interface Props {
   ano: string;
   titulo: string;
   description: string;
+  classList?: string[];
+  class_list?: string[];
 }
 
-const { url, numeracion, ano, titulo, description } = Astro.props;
+const { url, numeracion, ano, titulo, description, classList, class_list } = Astro.props;
+const classes = classList || class_list || [];
+const isCuadroTematico = classes.includes("etiqueta-cuadro-tematico");
 
 // Separar el título: primera palabra y el resto
 const words = titulo.trim().split(/\s+/);
@@ -25,10 +29,19 @@ const yearOnly = yearMatch ? yearMatch[0] : ano;
       <div class="flex flex-col justify-center">
         <p class="ano">{numeracion}</p>
       </div>
-      <h3 class="flex flex-col justify-center">
-        <span class="iniTitulo block" set:html={firstWord}></span>
-        <span class="termTitulo block" set:html={restOfTitle}></span>
-      </h3>
+      <div class="flex flex-col justify-center">
+        {
+          isCuadroTematico && (
+            <span class="tag-cuadro-tematico">
+              Cuadro Temático
+            </span>
+          )
+        }
+        <h3 class="flex flex-col justify-center">
+          <span class="iniTitulo block" set:html={firstWord}></span>
+          <span class="termTitulo block" set:html={restOfTitle}></span>
+        </h3>
+      </div>
     </div>
 
     <div class="info-details">
@@ -85,6 +98,10 @@ const yearOnly = yearMatch ? yearMatch[0] : ano;
     @apply text-base text-gold-500 font-heading-2! transition-colors duration-300;
   }
 
+  .tag-cuadro-tematico {
+    @apply inline-block w-fit mb-1 px-2 py-0.5 text-[11px] font-heading-2 font-semibold uppercase tracking-wider text-gold-500 bg-navy-950/60 border border-gold-500/30 rounded transition-colors duration-300;
+  }
+
   .iniTitulo {
     @apply text-h2 text-white font-semibold transition-colors duration-300;
   }
@@ -112,6 +129,9 @@ const yearOnly = yearMatch ? yearMatch[0] : ano;
   .card-presentacion:hover .ano {
     @apply text-navy-800!;
   }
+  .card-presentacion:hover .tag-cuadro-tematico {
+    @apply text-navy-950 bg-gold-500/20 border-gold-700/40;
+  }
   .card-presentacion:hover .arrow-icon {
     @apply stroke-gold-700 rotate-[-30deg];
   }
@@ -126,6 +146,9 @@ const yearOnly = yearMatch ? yearMatch[0] : ano;
   }
   .card-presentacion:focus .ano {
     @apply text-navy-800!;
+  }
+  .card-presentacion:focus .tag-cuadro-tematico {
+    @apply text-navy-950 bg-gold-500/20 border-gold-700/40;
   }
   .card-presentacion:focus .arrow-icon {
     @apply stroke-gold-700 rotate-[-30deg];

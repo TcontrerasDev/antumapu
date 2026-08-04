@@ -117,6 +117,7 @@ export interface WPObra {
   excerpt: RenderedText;
   acf: ObraAcf;
   _embedded?: WordPressEmbedded;
+  class_list?: string[];
 }
 
 // ----------------------------------------------------

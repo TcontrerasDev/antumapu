@@ -32,6 +32,7 @@ const obras = await wpApi.getObras(lang);
             imgSrc={obra._embedded?.["wp:featuredmedia"]?.[0]?.source_url || ""}
             titulo={obra.title.rendered}
             descripcion={obra.excerpt.rendered}
+            classList={obra.class_list}
           />
         </div>
       ))}

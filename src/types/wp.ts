@@ -101,6 +101,12 @@ export interface ObraAcf {
   repertorio?: Array<{
     nombre: string;
   }>;
+  img_galeria_source?: {
+    formatted_value?: Array<{
+      url: string;
+      alt?: string;
+    }>;
+  };
 }
 
 export interface WPObra {

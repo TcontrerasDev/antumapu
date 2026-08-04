@@ -11,6 +11,7 @@
 - **Smooth Scrolling:** Lenis
 - **Animations:** GSAP
 - **Carousel:** Embla Carousel
+- **Gallery / Lightbox:** Lightgallery (v2.x)
 - **Fonts:** Italiana (Headings), Oswald (Subheadings), Fraunces (Body)
 - **Runtime:** Node.js (>=22.12.0)
 
@@ -30,7 +31,7 @@ The project follows an organized Astro directory layout split by scope:
             - `Footer.astro`: Main page footer.
             - `ColFooter.astro`: Subcomponents for the footer columns.
         - `features/`: Feature-specific sections divided by logical page/context:
-            - `home/`: Components for the home page (`HeroIndex.astro`, `Historia.astro`, `Actividades.astro`, `Repertorio.astro`, `ActividadesList.astro`).
+            - `home/`: Components for the home page (`HeroIndex.astro`, `Resenas.astro`, `Historia.astro`, `Actividades.astro`, `Repertorio.astro`, `ActividadesList.astro`).
             - `historia/`: Components specifically for the "Historia" page (`Section.astro`, `GridSection.astro`, `FeatureSplit.astro`, `Conclusion.astro`).
             - `obras/`: Components for the "Obras" page (`RepObras.astro`, `descripcion.astro`).
             - `actividades/`: Components for the "Actividades" page (`GridActividades.astro`).
@@ -40,6 +41,7 @@ The project follows an organized Astro directory layout split by scope:
             - `CardNoticia.astro` / `CardNoticiaDestacada.astro`: News card elements.
             - `CardObra.astro` / `Cardrep.astro`: Work/Repertoire card elements.
             - `CardActividad.astro` / `CardActividadCol.astro`: Presentation card elements.
+            - `CardResena.astro`: Reviews / Testimonials card element.
             - `CardInfo.astro`: Simple content container cards.
             - `ActividadesSkeleton.astro` / `NoticiasSkeleton.astro`: Tailwind skeleton loading placeholders.
     - `layouts/`: Page layouts (e.g., `Layout.astro` which handles metadata, Lenis smooth scroll, page headers).

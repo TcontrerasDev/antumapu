@@ -141,12 +141,29 @@ try {
         </div>
       </div>
 
-      <!-- Barra de Carga (Línea de Progreso) -->
-      <div class="w-full h-1  bg-navy-800/10 dark:bg-gold-500/10 rounded-full overflow-hidden">
-        <div
-          id="resenas-progress-bar"
-          class="h-full bg-gold-500 w-0 transition-none"
-        ></div>
+      <!-- Barra de Carga (Línea de Progreso) con botón de pausa -->
+      <div class="flex items-center gap-3 mt-6">
+        <div class="flex-1 h-1 bg-navy-800/10 dark:bg-gold-500/10 rounded-full overflow-hidden">
+          <div
+            id="resenas-progress-bar"
+            class="h-full bg-gold-500 w-0 transition-none"
+          ></div>
+        </div>
+        <button
+          type="button"
+          id="resenas-toggle-play-btn"
+          class="p-2 rounded-full text-gold-500 hover:text-gold-400 hover:bg-gold-500/10 active:scale-95 transition-all cursor-pointer flex items-center justify-center shrink-0"
+          aria-label="Pausar avance automático"
+          title="Pausar avance automático"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5 fill-current"
+            viewBox="0 0 24 24"
+          >
+            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path>
+          </svg>
+        </button>
       </div>
     </div>
   </div>
@@ -170,6 +187,9 @@ try {
     const progressBar = document.querySelector<HTMLElement>(
       "#resenas-progress-bar"
     );
+    const togglePlayBtn = document.querySelector<HTMLButtonElement>(
+      "#resenas-toggle-play-btn"
+    );
 
     if (!viewportNode) return;
 
@@ -181,17 +201,45 @@ try {
 
     const DURATION = 6000; // 6 segundos por reseña
     let startTime: number | null = null;
+    let pausedElapsed = 0;
+    let isPaused = false;
     let animationFrameId: number | null = null;
 
+    const updatePauseButtonUI = () => {
+      if (!togglePlayBtn) return;
+      if (isPaused) {
+        togglePlayBtn.setAttribute("aria-label", "Reanudar avance automático");
+        togglePlayBtn.setAttribute("title", "Reanudar avance automático");
+        togglePlayBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+        `;
+      } else {
+        togglePlayBtn.setAttribute("aria-label", "Pausar avance automático");
+        togglePlayBtn.setAttribute("title", "Pausar avance automático");
+        togglePlayBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+          </svg>
+        `;
+      }
+    };
+
     const resetTimer = () => {
-      startTime = performance.now();
+      startTime = null;
+      pausedElapsed = 0;
       if (progressBar) {
         progressBar.style.width = "0%";
       }
     };
 
     const animateProgress = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
+      if (isPaused) return;
+
+      if (startTime === null) {
+        startTime = timestamp - pausedElapsed;
+      }
       const elapsed = timestamp - startTime;
       const progress = Math.min(100, (elapsed / DURATION) * 100);
 
@@ -210,6 +258,26 @@ try {
     // Iniciar animación
     resetTimer();
     animationFrameId = requestAnimationFrame(animateProgress);
+
+    // Toggle Pausa / Play
+    if (togglePlayBtn) {
+      togglePlayBtn.addEventListener("click", () => {
+        isPaused = !isPaused;
+        if (isPaused) {
+          if (animationFrameId !== null) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+          }
+          if (startTime !== null) {
+            pausedElapsed = performance.now() - startTime;
+          }
+        } else {
+          startTime = null;
+          animationFrameId = requestAnimationFrame(animateProgress);
+        }
+        updatePauseButtonUI();
+      });
+    }
 
     // Reiniciar barra al interactuar manualmente (scroll horizontal o navegación)
     emblaApi.on("select", resetTimer);

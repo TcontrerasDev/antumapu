@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "lightgallery/css/lightgallery.css";
 @plugin "@tailwindcss/typography";
 
 @theme {

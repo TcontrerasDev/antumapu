@@ -35,6 +35,9 @@ if (!obra) return Astro.redirect("/404");
 const t = useTranslations(lang);
 
 const repertorio: { nombre: string }[] = obra.acf.repertorio || [];
+
+const galeria = obra.acf.img_galeria_source?.formatted_value || [];
+
 ---
 
 <Layout title={obra.title.rendered} lang={lang}>
@@ -58,7 +61,7 @@ const repertorio: { nombre: string }[] = obra.acf.repertorio || [];
     </Hero>
     <section class="bg-sand-100 padding-section">
       <div class="wrapper">
-        <h2 class="mb-10 text-h3 font-heading-2 text-navy-950">{obra.acf.titulo_info}</h2>
+       {obra.acf.descripcion_obra && ( <h2 class="mb-10 text-h3 font-heading-2 text-navy-950">{obra.acf.titulo_info}</h2>)}
         <div class="grid grid-cols-12">
           <Descripcion
             texto={obra.acf.descripcion_obra}
@@ -83,6 +86,34 @@ const repertorio: { nombre: string }[] = obra.acf.repertorio || [];
             </ul>
           </div>
         </div>
+        {
+          galeria.length > 0 && (
+            <>
+              <div class="mt-20">
+                <h3 class="text-h3 text-navy-950 mb-10">Galería</h3>
+              </div>
+              <div id="galeria-obra" class="columns-1 sm:columns-2 md:columns-3 gap-4 space-y-4">
+                {
+                  galeria.map((img, index) => (
+                    <a 
+                      href={img.url}
+                      data-src={img.url}
+                      data-sub-html={`<h4>${img.alt || obra.title.rendered}</h4>`}
+                      class="galeria-item block break-inside-avoid overflow-hidden group cursor-pointer"
+                    >
+                      <img 
+                        src={img.url}
+                        alt={img.alt || `${obra.title.rendered} - Imagen ${index + 1}`}
+                        class="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                    </a>
+                  ))
+                }
+              </div>
+            </>
+          )
+        }
       </div>
     </section>
   </main>

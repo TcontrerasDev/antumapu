@@ -34,6 +34,7 @@ const obras = await wpApi.getObras(lang);
             descripcion={obra.excerpt.rendered}
             classList={obra.class_list}
             iconoTrofeo={obra.acf?.["icono-trofeo"] || obra.acf?.["icono-trofeo_source"]?.formatted_value}
+            reconocimiento_source={obra.acf?.reconocimiento_source}
           />
         </div>
       ))}

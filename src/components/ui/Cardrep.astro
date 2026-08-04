@@ -9,12 +9,32 @@ interface Props {
   class_list?: string[];
   iconoTrofeo?: string;
   icono_trofeo?: string;
+  hasPremios?: boolean;
+  has_premios?: boolean;
+  reconocimientoSource?: {
+    formatted_value?: Array<{ premio: string }>;
+  };
+  reconocimiento_source?: {
+    formatted_value?: Array<{ premio: string }>;
+  };
 }
 
 const { url, numeracion, ano, titulo, description, classList, class_list } = Astro.props;
 const iconoTrofeo = Astro.props.iconoTrofeo || Astro.props.icono_trofeo;
 const classes = classList || class_list || [];
-const isCuadroTematico = classes.includes("etiqueta-cuadro-tematico");
+const isCuadroTematico = classes.includes("etiqueta-cuadro-tematico")
+const iconClass = iconoTrofeo || "fa-solid fa-trophy";
+
+const reconocimientos =
+  Astro.props.reconocimientoSource?.formatted_value ||
+  Astro.props.reconocimiento_source?.formatted_value;
+
+const hasPremios =
+  Astro.props.hasPremios ??
+  Astro.props.has_premios ??
+  (Array.isArray(reconocimientos) &&
+    reconocimientos.length > 0 &&
+    reconocimientos.some((item) => item?.premio && item.premio.trim() !== ""));
 ---
 
 <article>
@@ -34,7 +54,7 @@ const isCuadroTematico = classes.includes("etiqueta-cuadro-tematico");
         <div class="flex items-end gap-2">
           <h2 class="iniTitulo" set:html={titulo}>
           </h2>
-          {iconoTrofeo && <i class={`${iconoTrofeo} icono-trofeo pb-1.25`} aria-hidden="true"></i>}
+          {hasPremios && <i class={`${iconClass} icono-trofeo pb-1.25`} aria-hidden="true"></i>}
         </div>
       </div>
     </div>

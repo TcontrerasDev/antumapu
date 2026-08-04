@@ -28,9 +28,11 @@ export interface PageAcf {
     titulo_estadistica: string;
     titulo_estadistica_2: string;
     titulo_estadistica_3: string;
+    titulo_estadistica_4: string;
     numero_estadistica: string;
     numero_estadistica_2: string;
     numero_estadistica_3: string;
+    numero_estadistica_4: string;
   };
   botones?: {
     text_boton: string;

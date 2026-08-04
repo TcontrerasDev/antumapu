@@ -12,6 +12,8 @@ interface Props {
   statNumber2: string;
   statText3: string;
   statNumber3: string;
+  statText4: string;
+  statNumber4: string;
 }
 
 const {
@@ -22,9 +24,11 @@ const {
   statText1,
   statText2,
   statText3,
+  statText4,
   statNumber1,
   statNumber2,
   statNumber3,
+  statNumber4,
 } = Astro.props;
 
 const { lang = "es" } = Astro.params;
@@ -50,7 +54,7 @@ const { lang = "es" } = Astro.params;
       <img src={img} alt={alt} class="w-full h-[120%] object-cover parallax-img scale-110" />
     </div>
     <div
-      class="flex flex-col mt-10 justify-center items-center gap-16 md:flex-row border-t border-b border-gold-700 py-22 md:gap-48 lg:col-span-2 reveal-text"
+      class="flex flex-col mt-10 justify-center items-center flex-wrap gap-16 md:flex-row border-t border-b border-gold-700 py-22 md:gap-48 lg:col-span-2 reveal-text"
     >
       <div class="flex flex-col items-center justify-center gap-2">
         <p class="text-gold-500 text-5xl font-heading-2!">{statNumber1}</p>
@@ -74,6 +78,14 @@ const { lang = "es" } = Astro.params;
           class="text-center font-heading-2! uppercase tracking-[1.4px] text-white-soft"
         >
           {statText3}
+        </p>
+      </div>
+      <div class="flex flex-col items-center justify-center gap-2">
+        <p class="text-gold-500 text-5xl font-heading-2!">{statNumber4}</p>
+        <p
+          class="text-center font-heading-2! uppercase tracking-[1.4px] text-white-soft"
+        >
+          {statText4}
         </p>
       </div>
     </div>

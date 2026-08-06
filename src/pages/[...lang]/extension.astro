@@ -1,0 +1,94 @@
+---
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } },
+    { params: { lang: "en" } },
+  ];
+}
+
+const { lang = "es" } = Astro.params;
+
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/common/Header.astro";
+import Hero from "../../components/common/Hero.astro";
+import Footer from "../../components/common/Footer.astro";
+import { wpApi } from "../../lib/wp";
+
+// Obtener datos de la página 'extension' desde WordPress (o fallback)
+const page = await wpApi.getPageBySlug("extension", lang).catch(() => null);
+
+// Obtener las publicaciones de extensión (CPT extension)
+const extensiones = await wpApi.getExtensiones(lang).catch(() => []);
+
+const title = page?.title?.rendered || "Extensión";
+const content = page?.content?.rendered || "";
+
+function injectRevealClass(html: string): string {
+  if (!html) return "";
+  let processed = html;
+  processed = processed.replace(
+    /<(h[1-6]|p)\b([^>]*)/gi,
+    (match, tag, attrs) => {
+      if (/class=["']/i.test(attrs)) {
+        return `<${tag}${attrs.replace(/class=(["'])(.*?)\1/i, 'class=$1$2 reveal-text$1')}`;
+      } else {
+        return `<${tag} class="reveal-text"${attrs}`;
+      }
+    }
+  );
+  return processed;
+}
+---
+
+<Layout title="Extensión" lang={lang}>
+  <Header theme="dark" lang={lang} />
+  <main id="main-content" tabindex="-1" class="focus:outline-none bg-navy-950 text-white min-h-screen pb-20">
+    <!-- Hero con Title y Content de la página -->
+    <Hero
+      title={title}
+      bajada={content}
+      theme="dark"
+    />
+
+    <!-- Sección de Iniciativas y Proyectos de Extensión -->
+    {
+      extensiones && extensiones.length > 0 && (
+        <section class="py-16">
+          <div class="wrapper">
+            <div class="grid grid-cols-12 gap-8">
+              {extensiones.map((ext) => {
+                const extMedia = ext._embedded?.["wp:featuredmedia"]?.[0];
+                const extImg = extMedia?.source_url || extMedia?.link;
+
+                return (
+                  <article class="col-span-12 lg:col-span-6 bg-navy-900/60 border border-white/10 hover:border-gold-500/40 rounded-none overflow-hidden transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between reveal-text">
+                    {extImg && (
+                      <div class="w-full h-80 sm:h-96 overflow-hidden relative shrink-0">
+                        <img
+                          src={extImg}
+                          alt={ext.title?.rendered || ""}
+                          class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                          loading="lazy"
+                        />
+                      </div>
+                    )}
+                    <div class="p-6 sm:p-8 flex flex-col grow">
+                      <h3 class="font-heading-2 text-2xl sm:text-3xl uppercase tracking-[1.5px] text-gold-500 mb-3transition-colors">
+                        {ext.title?.rendered}
+                      </h3>
+                      <div
+                        class="text-white font-body text-base sm:text-lg leading-relaxed line-clamp-4 prose prose-invert mt-10"
+                        set:html={injectRevealClass(ext.content?.rendered || "")}
+                      />
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )
+    }
+  </main>
+  <Footer lang={lang} />
+</Layout>

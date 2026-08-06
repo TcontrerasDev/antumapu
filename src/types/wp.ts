@@ -204,6 +204,35 @@ export interface WPResena {
 }
 
 // ----------------------------------------------------
+// EXTENSION TYPE
+// ----------------------------------------------------
+export interface ExtensionAcf {
+  [key: string]: any;
+}
+
+export interface WPExtension {
+  id: number;
+  slug: string;
+  date: string;
+  date_gmt?: string;
+  guid?: RenderedText;
+  modified?: string;
+  modified_gmt?: string;
+  status?: string;
+  type?: string;
+  link: string;
+  title: RenderedText;
+  content: RenderedText;
+  featured_media?: number;
+  parent?: number;
+  template?: string;
+  meta?: Record<string, any>;
+  class_list?: string[];
+  acf?: ExtensionAcf | any[];
+  _embedded?: WordPressEmbedded;
+}
+
+// ----------------------------------------------------
 // MENU ITEM TYPE
 // ----------------------------------------------------
 export interface MenuItem {
@@ -220,6 +249,7 @@ export interface MenuItem {
   acf?: any;
   children?: MenuItem[];
 }
+
 
 
 

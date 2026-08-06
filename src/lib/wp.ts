@@ -1,4 +1,4 @@
-import type { WPPage, WPObra, WPActividad, WPNoticia, WPResena } from "../types/wp";
+import type { WPPage, WPObra, WPActividad, WPNoticia, WPResena, WPExtension } from "../types/wp";
 
 const WP_DOMAIN = import.meta.env.WP_DOMAIN;
 
@@ -158,4 +158,18 @@ export const wpApi = {
   getResenas: async (lang?: string): Promise<WPResena[]> => {
     return wpFetch("resena?_embed", lang);
   },
+
+  getExtensiones: async (lang?: string, page?: number, perPage?: number): Promise<WPExtension[]> => {
+    if (page !== undefined) {
+      const limit = perPage ?? 10;
+      return wpFetch(`extension?_embed&per_page=${limit}&page=${page}`, lang);
+    }
+    return wpFetchAll("extension?_embed", lang);
+  },
+
+  getExtensionBySlug: async (slug: string, lang?: string): Promise<WPExtension | null> => {
+    const data = await wpFetch(`extension?slug=${encodeURIComponent(slug)}&_embed`, lang);
+    return data?.[0] || null;
+  },
 };
+

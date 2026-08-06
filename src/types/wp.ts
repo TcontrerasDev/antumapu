@@ -5,7 +5,10 @@ export interface RenderedText {
 }
 
 export interface FeaturedMedia {
-  source_url: string;
+  source_url?: string;
+  link?: string;
+  alt_text?: string;
+  media_details?: any;
 }
 
 export interface WordPressEmbedded {
@@ -139,24 +142,33 @@ export interface WPObra {
 // ACTIVIDAD TYPE
 // ----------------------------------------------------
 export interface ActividadAcf {
-  url: string;
+  url?: string;
   fecha?: string;
-  fecha_source: {
+  fecha_source?: {
     formatted_value: string;
   };
-  obra: string;
-  lugar: string;
-  direccion: string;
-  hora_source: {
+  obra?: string;
+  lugar?: string;
+  direccion?: string;
+  hora_source?: {
     formatted_value: string;
   };
+  hora?: string;
+  link_compra?: string;
+  comprar_entrada?: string;
+  entradas?: string;
+  descripcion?: string;
+  [key: string]: any;
 }
 
 export interface WPActividad {
   id: number;
   slug: string;
   title: RenderedText;
+  content?: RenderedText;
+  excerpt?: RenderedText;
   acf: ActividadAcf;
+  _embedded?: WordPressEmbedded;
   class_list?: string[];
 }
 

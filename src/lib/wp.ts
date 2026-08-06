@@ -112,14 +112,29 @@ export const wpApi = {
 
   getActividades: async (lang?: string, page?: number, perPage?: number): Promise<WPActividad[]> => {
     const data = page !== undefined
-      ? await wpFetch(`presentaciones?per_page=${perPage ?? 10}&page=${page}`, lang)
-      : await wpFetchAll("presentaciones", lang);
+      ? await wpFetch(`presentaciones?_embed&per_page=${perPage ?? 10}&page=${page}`, lang)
+      : await wpFetchAll("presentaciones?_embed", lang);
 
     return data.sort((a: WPActividad, b: WPActividad) => {
       const fechaA = a.acf?.fecha || "";
       const fechaB = b.acf?.fecha || "";
       return fechaA.localeCompare(fechaB);
     });
+  },
+
+  getActividadBySlug: async (slug: string, lang?: string): Promise<WPActividad | null> => {
+    const data = await wpFetch(`presentaciones?slug=${encodeURIComponent(slug)}&_embed`, lang);
+    return data?.[0] || null;
+  },
+
+  getActividadesBySlug: async (slug: string, lang?: string): Promise<WPActividad | null> => {
+    const data = await wpFetch(`presentaciones?slug=${encodeURIComponent(slug)}&_embed`, lang);
+    return data?.[0] || null;
+  },
+
+  getActividadMetadataBySlug: async (slug: string, lang?: string): Promise<Pick<WPActividad, "title" | "acf"> | null> => {
+    const data = await wpFetch(`presentaciones?slug=${encodeURIComponent(slug)}&_fields=title,acf`, lang);
+    return data?.[0] || null;
   },
 
   getNoticias: async (lang?: string, page?: number, perPage?: number): Promise<WPNoticia[]> => {

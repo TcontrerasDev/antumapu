@@ -104,13 +104,14 @@ const dataActividades = await wpApi.getActividades(lang);
           
           return (
             <CardActividadCol
-              url={actividad.acf.url}
-              fecha={actividad.acf.fecha_source.formatted_value}
+              slug={actividad.slug}
+              url={actividad.acf?.url}
+              fecha={actividad.acf?.fecha_source?.formatted_value || actividad.acf?.fecha || ""}
               titulo={actividad.title.rendered}
-              obra={actividad.acf.obra}
-              lugar={actividad.acf.lugar}
-              direccion={actividad.acf.direccion}
-              hora={actividad.acf.hora_source.formatted_value}
+              obra={actividad.acf?.obra || ""}
+              lugar={actividad.acf?.lugar || ""}
+              direccion={actividad.acf?.direccion || ""}
+              hora={actividad.acf?.hora_source?.formatted_value || actividad.acf?.hora || ""}
               fechaFull={fechaFullVal}
               tipo={tipoClass}
             />

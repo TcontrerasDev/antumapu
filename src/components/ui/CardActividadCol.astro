@@ -1,6 +1,7 @@
 ---
 interface Props {
-  url: string;
+  url?: string;
+  slug?: string;
   fecha: string;
   titulo: string;
   obra: string;
@@ -11,11 +12,60 @@ interface Props {
   tipo?: string;
 }
 
-const { url, fecha, titulo, obra, lugar, direccion, hora, fechaFull, tipo } = Astro.props;
+const { url, slug, fecha, titulo, obra, lugar, direccion, hora, fechaFull, tipo } = Astro.props;
 
 const { lang = "es" } = Astro.params;
+const langPrefix = lang && lang !== "es" ? `/${lang}` : "";
+
+const href = slug
+  ? `${langPrefix}/actividades/${slug}`
+  : url && url !== "#"
+  ? url
+  : `${langPrefix}/actividades`;
+
+const isExternal = href.startsWith("http");
 const cleanTitulo = titulo.replace(/<[^>]*>/g, "");
-const labelText = lang === "en" ? `${cleanTitulo} (opens in a new tab)` : `${cleanTitulo} (abre en una nueva pestaña)`;
+const labelText = isExternal
+  ? (lang === "en" ? `${cleanTitulo} (opens in a new tab)` : `${cleanTitulo} (abre en una nueva pestaña)`)
+  : cleanTitulo;
+const formatObras = (rawObra?: any): string => {
+  if (!rawObra) return "";
+
+  if (typeof rawObra === "string") {
+    const clean = rawObra
+      .replace(/<br\s*\/?>/gi, ", ")
+      .replace(/<\/p>\s*<p>/gi, ", ")
+      .replace(/<[^>]*>/g, "");
+    const obras = clean
+      .split(/[,;\/\n\r]+/)
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
+    return obras.join(" - ");
+  }
+
+  if (Array.isArray(rawObra)) {
+    const items = rawObra
+      .map((item) => {
+        if (typeof item === "string") return item;
+        if (item && typeof item === "object") {
+          return item.post_title || item.title || item.name || item.label || item.value || "";
+        }
+        return String(item || "");
+      })
+      .map((s) => String(s).replace(/<[^>]*>/g, "").trim())
+      .filter((s) => s.length > 0);
+    return items.join(" - ");
+  }
+
+  if (typeof rawObra === "object") {
+    const title = rawObra.post_title || rawObra.title || rawObra.name || rawObra.label || rawObra.value || "";
+    return typeof title === "string" ? title : "";
+  }
+
+  return String(rawObra);
+};
+
+const obraFormatted = formatObras(obra);
 
 // Separar fecha
 const dateParts = fecha.split(" ");
@@ -29,15 +79,15 @@ const mesLabel = dateParts.find((p) => !/\d/.test(p)) || "";
   data-tipo={tipo}
 >
   <a
-    href={url}
-    target="_blank"
-    rel="noopener noreferrer"
+    href={href}
+    target={isExternal ? "_blank" : undefined}
+    rel={isExternal ? "noopener noreferrer" : undefined}
     aria-label={labelText}
     class="relative p-5 flex flex-col gap-5 group hover:bg-navy-950 focus:bg-navy-950 transition-all ease-in"
   >
     <div class="flex flex-col">
       <span
-        class="text-[64px] text-navy-950 font-heading-2 group-hover:text-white group-focus:text-white transition-colors ease-in"
+        class="text-[64px] text-navy-950 font-heading-1 group-hover:text-white group-focus:text-white transition-colors ease-in"
         >{dia}</span
       >
       <span
@@ -52,7 +102,7 @@ const mesLabel = dateParts.find((p) => !/\d/.test(p)) || "";
       />
       <p
         class="text-base text-navy-800 italic group-hover:text-gold-500 group-focus:text-gold-500"
-        set:html={obra}
+        set:html={obraFormatted}
       />
     </div>
     <div class="flex flex-col gap-2">

@@ -1,6 +1,7 @@
 ---
 import CardActividad from "../../ui/CardActividad.astro";
 import { wpApi } from "../../../lib/wp";
+import type { WPActividad } from "../../../types/wp";
 
 interface Props {
   lang?: string;
@@ -8,29 +9,20 @@ interface Props {
 
 const { lang = "es" } = Astro.props;
 
-const dataActividades: {
-  title: { rendered: string };
-  acf: {
-    url: string;
-    fecha_source: { formatted_value: string };
-    obra: string;
-    lugar: string;
-    direccion: string;
-    hora_source: { formatted_value: string };
-  };
-}[] = await wpApi.getActividades(lang);
+const dataActividades: WPActividad[] = await wpApi.getActividades(lang);
 ---
 
 {
   dataActividades.map((actividad) => (
     <CardActividad
-      url={actividad.acf.url}
-      fecha={actividad.acf.fecha_source.formatted_value}
+      slug={actividad.slug}
+      url={actividad.acf?.url}
+      fecha={actividad.acf?.fecha_source?.formatted_value || actividad.acf?.fecha || ""}
       titulo={actividad.title.rendered}
-      obra={actividad.acf.obra}
-      lugar={actividad.acf.lugar}
-      direccion={actividad.acf.direccion}
-      hora={actividad.acf.hora_source.formatted_value}
+      obra={actividad.acf?.obra || ""}
+      lugar={actividad.acf?.lugar || ""}
+      direccion={actividad.acf?.direccion || ""}
+      hora={actividad.acf?.hora_source?.formatted_value || actividad.acf?.hora || ""}
     />
   ))
 }

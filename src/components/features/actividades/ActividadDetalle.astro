@@ -1,0 +1,205 @@
+---
+import { wpApi } from "../../../lib/wp";
+import type { WPActividad } from "../../../types/wp";
+
+interface Props {
+  slug: string;
+  lang?: string;
+}
+
+const { slug, lang = "es" } = Astro.props;
+
+let actividad: WPActividad | null = null;
+try {
+  actividad = await wpApi.getActividadBySlug(slug, lang);
+} catch (error) {
+  console.error("Failed to load actividad detail:", error);
+}
+
+// Extraer medios destacados de _embedded
+const featuredMedia = actividad?._embedded?.["wp:featuredmedia"]?.[0];
+const imageUrl = featuredMedia?.source_url || featuredMedia?.link || "";
+const imageAlt = featuredMedia?.alt_text || actividad?.title.rendered.replace(/<[^>]*>/g, "") || "Actividad Antumapu";
+
+// Extraer campos ACF
+const rawFecha = actividad?.acf?.fecha_source?.formatted_value || actividad?.acf?.fecha || "";
+
+const formatFecha = (str: string) => {
+  if (!str) return "";
+  return str.replace(/\b([a-zA-ZáéíóúñÁÉÍÓÚÑ]+)\b/g, (word) => {
+    const lower = word.toLowerCase();
+    if (lower === "de" || lower === "del" || lower === "of") {
+      return lower;
+    }
+    return word.charAt(0).toUpperCase() + word.slice(1);
+  });
+};
+
+const formatObras = (rawObra?: any): string => {
+  if (!rawObra) return "";
+
+  if (typeof rawObra === "string") {
+    const clean = rawObra
+      .replace(/<br\s*\/?>/gi, ", ")
+      .replace(/<\/p>\s*<p>/gi, ", ")
+      .replace(/<[^>]*>/g, "");
+    const obras = clean
+      .split(/[,;\/\n\r]+/)
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
+    return obras.join(" - ");
+  }
+
+  if (Array.isArray(rawObra)) {
+    const items = rawObra
+      .map((item) => {
+        if (typeof item === "string") return item;
+        if (item && typeof item === "object") {
+          return item.post_title || item.title || item.name || item.label || item.value || "";
+        }
+        return String(item || "");
+      })
+      .map((s) => String(s).replace(/<[^>]*>/g, "").trim())
+      .filter((s) => s.length > 0);
+    return items.join(" - ");
+  }
+
+  if (typeof rawObra === "object") {
+    const title = rawObra.post_title || rawObra.title || rawObra.name || rawObra.label || rawObra.value || "";
+    return typeof title === "string" ? title : "";
+  }
+
+  return String(rawObra);
+};
+
+const fecha = formatFecha(rawFecha);
+const hora = actividad?.acf?.hora_source?.formatted_value || actividad?.acf?.hora || "";
+const lugar = actividad?.acf?.lugar || "";
+const direccion = actividad?.acf?.direccion || "";
+const obra = formatObras(actividad?.acf?.obra);
+const linkCompra = actividad?.acf?.link_compra || actividad?.acf?.comprar_entrada || actividad?.acf?.entradas || actividad?.acf?.url || "";
+
+const hasLinkCompra = Boolean(linkCompra && linkCompra !== "#" && linkCompra.startsWith("http"));
+---
+
+{
+  actividad ? (
+    <div class="flex flex-col gap-10 pt-8 pb-16">
+      {/* Recuadro Destacado de Detalles (Fecha, Hora, Lugar, Dirección) */}
+      <section class="bg-white border-2 border-navy-950 p-6 md:p-8 rounded-sm shadow-md grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-2 h-full bg-gold-700"></div>
+
+        {/* Fecha */}
+        <div class="flex flex-col justify-center border-b sm:border-b-0 sm:border-r border-navy-950/15 pb-4 sm:pb-0 pr-4">
+          <span class="text-xs uppercase tracking-widest text-gold-700 font-heading-2 font-bold mb-1">
+            {lang === "en" ? "Date" : "Fecha"}
+          </span>
+          <span class="text-[20px] text-navy-800 font-body leading-snug">
+            {fecha || (lang === "en" ? "To be confirmed" : "Por confirmar")}
+          </span>
+        </div>
+
+        {/* Hora */}
+        <div class="flex flex-col justify-center border-b sm:border-b-0 lg:border-r border-navy-950/15 pb-4 sm:pb-0 pr-4">
+          <span class="text-xs uppercase tracking-widest text-gold-700 font-heading-2 font-bold mb-1">
+            {lang === "en" ? "Time" : "Hora"}
+          </span>
+          <span class="text-[20px] text-navy-800 font-body leading-snug">
+            {hora || (lang === "en" ? "To be confirmed" : "Por confirmar")}
+          </span>
+        </div>
+
+        {/* Lugar */}
+        <div class="flex flex-col justify-center border-b sm:border-b-0 sm:border-r border-navy-950/15 pb-4 sm:pb-0 pr-4">
+          <span class="text-xs uppercase tracking-widest text-gold-700 font-heading-2 font-bold mb-1">
+            {lang === "en" ? "Venue" : "Lugar"}
+          </span>
+          <span class="text-[20px] text-navy-800 font-body leading-snug">
+            {lugar || (lang === "en" ? "To be confirmed" : "Por confirmar")}
+          </span>
+        </div>
+
+        {/* Dirección */}
+        <div class="flex flex-col justify-center">
+          <span class="text-xs uppercase tracking-widest text-gold-700 font-heading-2 font-bold mb-1">
+            {lang === "en" ? "Address" : "Dirección"}
+          </span>
+          <span class="text-base text-navy-800 font-body leading-snug" set:html={direccion || (lang === "en" ? "To be confirmed" : "Por confirmar")} />
+        </div>
+      </section>
+
+      {/* Grid Principal: Imagen + Contenido & Entradas */}
+      <section class="grid grid-cols-12 gap-8 lg:gap-12 items-start">
+        {/* Imagen de la Actividad (respetando UX al máximo con max-h y object-cover) */}
+        {imageUrl && (
+          <div class="col-span-full lg:col-span-6 order-1">
+            <div class="relative overflow-hidden rounded-sm border border-navy-950/20 shadow-md group">
+              <img
+                src={imageUrl}
+                alt={imageAlt}
+                class="w-full max-h-[480px] object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                loading="eager"
+              />
+              <div class="absolute inset-0 ring-1 ring-inset ring-black/10 pointer-events-none"></div>
+            </div>
+          </div>
+        )}
+
+        {/* Descripción y Botón Comprar Entrada */}
+        <div class={`col-span-full ${imageUrl ? "lg:col-span-6" : "lg:col-span-12"} flex flex-col gap-6 order-2`}>
+          {obra && (
+            <div class="inline-block bg-navy-950/5 border-l-4 border-gold-700 px-4 py-2">
+              <span class="text-xs uppercase tracking-wider font-heading-2 text-gold-700 font-bold block">
+                {lang === "en" ? "Repertoire / Work" : "Obra en Repertorio"}
+              </span>
+              <span class="text-[20px] text-navy-950 font-body italic" set:html={obra} />
+            </div>
+          )}
+
+          {/* Descripción del evento (HTML renderizado o ACF descripcion) */}
+          <div class="prose prose-navy max-w-none [&_p]:text-navy-950 [&_p]:text-[18px] [&_p]:leading-relaxed [&_p]:mb-4 font-body">
+            {actividad.content?.rendered ? (
+              <div set:html={actividad.content.rendered} />
+            ) : actividad.acf?.descripcion ? (
+              <div set:html={actividad.acf.descripcion} />
+            ) : (
+              <p class="italic text-navy-800/80">
+                {lang === "en"
+                  ? "Join us for this presentation by Bafoem - Antumapu Folkloric Ballet."
+                  : "Acompáñanos en esta presentación del Ballet Folklórico Antumapu."}
+              </p>
+            )}
+          </div>
+
+          {/* Enlace para comprar entrada (si existe) */}
+          {hasLinkCompra && (
+            <div class="pt-4">
+              <a
+                href={linkCompra}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center justify-center gap-3 px-8 py-4 bg-gold-700 hover:bg-gold-500 text-navy-950 font-heading-2 text-[18px] uppercase tracking-wider font-bold transition-all duration-300 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-gold-500 rounded-sm group"
+              >
+                <span>{lang === "en" ? "Get Tickets" : "Comprar Entrada"}</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-5 h-5 transition-transform group-hover:translate-x-1"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </a>
+            </div>
+          )}
+        </div>
+      </section>
+    </div>
+  ) : (
+    <script is:inline>
+      window.location.href = "/404";
+    </script>
+  )
+}

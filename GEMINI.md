@@ -21,7 +21,7 @@
 The project follows an organized Astro directory layout split by scope:
 
 - `src/`: Core source code.
-    - `assets/`: Static assets like images (`bg-image.png`, `logo-light.png`, `chiliche.webp`, `img-historia.png`).
+    - `assets/`: Static assets like images (`bg-image.png`, `logo-light.png`, `logo-uchile.png`, `chiliche.webp`, `img-historia.png`).
     - `components/`: Reusable Astro components organized into three main directories:
         - `common/`: Site-wide navigation and layout wrappers.
             - `Header.astro`: Base header wrapper.
@@ -34,9 +34,9 @@ The project follows an organized Astro directory layout split by scope:
             - `home/`: Components for the home page (`HeroIndex.astro`, `Resenas.astro`, `Historia.astro`, `Actividades.astro`, `Repertorio.astro`, `ActividadesList.astro`).
             - `historia/`: Components specifically for the "Historia" page (`Section.astro`, `GridSection.astro`, `FeatureSplit.astro`, `Conclusion.astro`).
             - `obras/`: Components for the "Obras" page (`RepObras.astro`, `descripcion.astro`).
-            - `actividades/`: Components for the "Actividades" page (`GridActividades.astro`).
+            - `actividades/`: Components for the "Actividades" page (`GridActividades.astro`, `ActividadDetalle.astro`).
             - `noticias/`: Components for the news pages (`Noticias.astro`, `NoticiasList.astro`, `NoticiaDetalle.astro`).
-        - `ui/`: Global, reusable visual primitives, buttons, cards, and skeleton loaders.
+        - `ui/`: Global, reusable visual primitives, buttons, cards, skeleton loaders, and empty state containers.
             - `ButtonBg.astro` / `ButtonTransparent.astro`: Primary and secondary buttons.
             - `CardNoticia.astro` / `CardNoticiaDestacada.astro`: News card elements.
             - `CardObra.astro` / `Cardrep.astro`: Work/Repertoire card elements.
@@ -44,6 +44,7 @@ The project follows an organized Astro directory layout split by scope:
             - `CardResena.astro`: Reviews / Testimonials card element.
             - `CardInfo.astro`: Simple content container cards.
             - `ActividadesSkeleton.astro` / `NoticiasSkeleton.astro`: Tailwind skeleton loading placeholders.
+            - `EmptyState.astro`: Visual feedback component for empty data queries.
     - `layouts/`: Page layouts (e.g., `Layout.astro` which handles metadata, Lenis smooth scroll, page headers).
     - `lib/`: Utility functions, API clients, and translations:
         - `utils.ts`: General helper functions.
@@ -61,7 +62,11 @@ The project follows an organized Astro directory layout split by scope:
             - `obras.astro`: Repertoire/Works page.
             - `obras/[slug].astro`: Dynamic route for individual work details.
             - `actividades.astro`: Activities listing page.
-    - `scripts/`: Client-side scripts (e.g., `smoothScroll.js`).
+            - `actividades/[slug].astro`: Dynamic route for individual activity details.
+    - `scripts/`: Client-side scripts:
+        - `smoothScroll.js`: Lenis smooth scrolling configuration.
+        - `gallery.js`: Lightgallery image gallery initialization.
+        - `header.js`: Dynamic navigation header scroll behavior.
     - `styles/`: Global CSS files (`global.css`).
 - `public/`: Static files served directly.
 - `astro.config.mjs`: Astro configuration, Vercel adapter, static output, multi-locale i18n settings, and Tailwind v4 Vite plugin setup.
@@ -105,7 +110,7 @@ pnpm astro [command]
 ### Component Organization
 - Place reusable components in `src/components/`.
 - Organize components based on their role:
-    - **`src/components/ui/`** for visual primitives, cards, buttons, and skeletons.
+    - **`src/components/ui/`** for visual primitives, cards, buttons, skeletons, and empty states.
     - **`src/components/features/`** for complex, feature-specific parts of a page.
     - **`src/components/common/`** for global layouts, headers, and navigation menus.
 - Follow the naming convention `ComponentName.astro`.
@@ -145,8 +150,15 @@ pnpm astro [command]
 - `src/pages/[...lang]/historia.astro`: The history page.
 - `src/pages/[...lang]/direccion.astro`: The direction page.
 - `src/pages/[...lang]/noticias.astro`: The news page.
+- `src/pages/[...lang]/noticias/[slug].astro`: Individual news article detail page.
 - `src/pages/[...lang]/obras.astro`: The works (repertoire) page.
+- `src/pages/[...lang]/obras/[slug].astro`: Individual work detail page.
 - `src/pages/[...lang]/actividades.astro`: The activities page.
+- `src/pages/[...lang]/actividades/[slug].astro`: Individual activity detail page.
+- `src/components/ui/EmptyState.astro`: Fallback component for zero-data states.
+- `src/scripts/gallery.js`: Lightgallery image gallery initialization.
+- `src/scripts/header.js`: Dynamic navigation header controller.
+- `src/scripts/smoothScroll.js`: Lenis smooth scroll setup.
 - `src/lib/wp.ts`: WordPress API client.
 - `src/lib/i18n.ts`: Static translations dictionary and helper.
 - `src/types/wp.ts`: Typings for WordPress and ACF entities.

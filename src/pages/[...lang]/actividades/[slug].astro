@@ -1,0 +1,117 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import Header from "../../../components/common/Header.astro";
+import Footer from "../../../components/common/Footer.astro";
+import ActividadDetalle from "../../../components/features/actividades/ActividadDetalle.astro";
+import { wpApi } from "../../../lib/wp";
+import { getBreadcrumbs } from "../../../lib/utils";
+import { useTranslations } from "../../../lib/i18n";
+
+export const prerender = false;
+
+const { lang = "es", slug } = Astro.params;
+if (!slug) return Astro.redirect("/404");
+
+// Obtención rápida de metadatos de la actividad para SEO y cabecera
+let actividadMetadata = null;
+try {
+  actividadMetadata = await wpApi.getActividadMetadataBySlug(slug, lang);
+} catch (error) {
+  console.error("Error fetching actividad metadata:", error);
+}
+if (!actividadMetadata) return Astro.redirect("/404");
+
+const t = useTranslations(lang);
+
+const breadcrumbs = getBreadcrumbs(Astro.url.pathname).filter(
+  (bc) => bc.name.toLowerCase() !== "en" && bc.name.toLowerCase() !== "es"
+);
+if (breadcrumbs.length > 0 && actividadMetadata?.title?.rendered) {
+  breadcrumbs[breadcrumbs.length - 1].name = actividadMetadata.title.rendered;
+}
+
+const bgClass = "bg-navy-950/10";
+const textClass = "bg-navy-800/10";
+const goldClass = "bg-gold-700/20";
+---
+
+<Layout title={actividadMetadata.title.rendered.replace(/<[^>]*>/g, "")} lang={lang}>
+  <Header theme="light" lang={lang} />
+  <main id="main-content" tabindex="-1" class="bg-sand-100 pt-30 pb-20 focus:outline-none">
+    <div class="wrapper">
+    <!-- Migas de pan renderizadas de inmediato -->
+    <nav aria-label={lang === "en" ? "Breadcrumbs" : "Migas de pan"} class="text-gold-500 font-heading-2 tracking-[1.4px]">
+        <ol class="flex flex-wrap list-none p-0 m-0">
+        <li class="inline-flex items-center">
+            <a
+            href={lang === "es" ? "/" : `/${lang}`}
+            class="text-navy-950 hover:text-gold-700 transition-colors"
+            >{t("inicio")}</a
+            >
+            <span class="mx-1.5 opacity-60 text-navy-950" aria-hidden="true">/</span>
+        </li>
+        <li class="inline-flex items-center">
+            <a
+            href={lang === "es" ? "/actividades" : `/${lang}/actividades`}
+            class="text-navy-950 hover:text-gold-700 transition-colors"
+            >{lang === "en" ? "Activities" : "Actividades"}</a
+            >
+            <span class="mx-1.5 opacity-60 text-navy-950" aria-hidden="true">/</span>
+        </li>
+        <li class="inline-flex items-center" aria-current="page">
+            <span class="text-gold-700 font-semibold" set:html={actividadMetadata.title.rendered} />
+        </li>
+        </ol>
+    </nav>
+
+    <!-- Título principal renderizado de inmediato (SEO) -->
+    <h1
+        class="text-navy-950 text-h2 font-heading-2 font-bold mt-4"
+        set:html={actividadMetadata.title.rendered}
+    />
+
+    <!-- Contenido diferido (Server Island) con Esqueleto de Carga -->
+    <ActividadDetalle slug={slug} lang={lang} server:defer>
+        <div slot="fallback" class="animate-pulse flex flex-col gap-8 w-full pt-8 pb-16">
+        {/* Esqueleto del Recuadro de Info (Fecha, Hora, Lugar, Dirección) */}
+        <div class="bg-white border-2 border-navy-950/20 p-6 md:p-8 rounded-sm grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="flex flex-col gap-2">
+            <div class={`h-3 rounded w-16 ${goldClass}`}></div>
+            <div class={`h-8 rounded w-3/4 ${bgClass}`}></div>
+            </div>
+            <div class="flex flex-col gap-2">
+            <div class={`h-3 rounded w-16 ${goldClass}`}></div>
+            <div class={`h-8 rounded w-2/3 ${bgClass}`}></div>
+            </div>
+            <div class="flex flex-col gap-2">
+            <div class={`h-3 rounded w-16 ${goldClass}`}></div>
+            <div class={`h-8 rounded w-4/5 ${bgClass}`}></div>
+            </div>
+            <div class="flex flex-col gap-2">
+            <div class={`h-3 rounded w-16 ${goldClass}`}></div>
+            <div class={`h-8 rounded w-full ${textClass}`}></div>
+            </div>
+        </div>
+
+        {/* Esqueleto de Imagen y Detalles */}
+        <div class="grid grid-cols-12 gap-8 lg:gap-12">
+            <div class="col-span-full lg:col-span-6">
+            <div class={`h-80 md:h-[400px] rounded-sm w-full ${bgClass}`}></div>
+            </div>
+            <div class="col-span-full lg:col-span-6 flex flex-col gap-6">
+            <div class={`h-12 rounded w-1/2 ${goldClass}`}></div>
+            <div class="flex flex-col gap-3">
+                <div class={`h-4 rounded w-full ${textClass}`}></div>
+                <div class={`h-4 rounded w-full ${textClass}`}></div>
+                <div class={`h-4 rounded w-11/12 ${textClass}`}></div>
+                <div class={`h-4 rounded w-3/4 ${textClass}`}></div>
+            </div>
+            <div class={`h-14 rounded w-48 ${goldClass} mt-4`}></div>
+            </div>
+        </div>
+        </div>
+    </ActividadDetalle>
+    </div>
+  </main>
+  <Footer lang={lang} />
+</Layout>

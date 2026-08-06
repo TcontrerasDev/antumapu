@@ -203,4 +203,23 @@ export interface WPResena {
   _embedded?: WordPressEmbedded;
 }
 
+// ----------------------------------------------------
+// MENU ITEM TYPE
+// ----------------------------------------------------
+export interface MenuItem {
+  id?: number | string;
+  title?: string;
+  name?: string;
+  label?: string;
+  url?: string;
+  link?: string;
+  href?: string;
+  target?: string;
+  order?: number;
+  parent?: number | string;
+  acf?: any;
+  children?: MenuItem[];
+}
+
+
 

@@ -4,6 +4,8 @@ import Logo from "../../assets/logo-light.png";
 import ColFooter from "./ColFooter.astro";
 import { wpApi } from "../../lib/wp";
 import { useTranslations } from "../../lib/i18n";
+import { buildMenuTree } from "../../lib/utils";
+import type { MenuItem } from "../../types/wp";
 
 interface Props {
   lang?: string;
@@ -12,7 +14,7 @@ interface Props {
 const { lang = "es" } = Astro.props;
 const t = useTranslations(lang);
 
-const rawNav: { title: string; url: string }[] =
+const rawNav: MenuItem[] =
   await wpApi.getNav("menu-primary", lang).catch(() => []);
 const navRrss: { title: string; url: string; acf: { icono: string } }[] =
   await wpApi.getNav("menu-rrss", lang).catch(() => []);
@@ -20,14 +22,8 @@ const navContacto: { title: string; url: string; acf: { icono: string } }[] =
   await wpApi.getNav("menu-contacto", lang).catch(() => []);
 const colWidget: { rendered: string } = await wpApi.getWidget("col-footer", lang).catch(() => ({ rendered: "" }));
 
-// Localizar links locales si el idioma actual es inglés
-const nav = rawNav.map(item => {
-  let url = item.url;
-  if (lang === "en" && url.startsWith("/") && !url.startsWith("/en")) {
-    url = `/en${url === "/" ? "" : url}`;
-  }
-  return { ...item, url };
-});
+// Construir árbol jerárquico de navegación
+const navTree = buildMenuTree(rawNav, lang);
 ---
 
 <footer
@@ -42,14 +38,28 @@ const nav = rawNav.map(item => {
     <ColFooter title={t("navegacion")} class="col-span-12 md:col-span-4 lg:col-span-3 lg:justify-center">
       <ul class="flex flex-col gap-3">
         {
-          nav.map((item) => (
-            <li class="flex w-max">
+          navTree.map((item) => (
+            <li class="flex flex-col w-max">
               <a
                 href={item.url}
                 class="text-white-soft font-body text-[20px] hover:text-gold-500 transition-colors ease-in flex items-center gap-2"
               >
                 {item.title}
               </a>
+              {item.children && item.children.length > 0 && (
+                <ul class="flex flex-col gap-1.5 pl-3 mt-1.5 border-l border-gold-500/20">
+                  {item.children.map((child) => (
+                    <li>
+                      <a
+                        href={child.url}
+                        class="text-white-soft/80 font-body text-[16px] hover:text-gold-500 transition-colors ease-in"
+                      >
+                        {child.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </li>
           ))
         }

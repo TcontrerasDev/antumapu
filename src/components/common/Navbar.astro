@@ -2,6 +2,8 @@
 import Logo from "../../assets/logo-light.png";
 import MobileMenu from "./MobileMenu.astro";
 import { wpApi } from "../../lib/wp";
+import { buildMenuTree } from "../../lib/utils";
+import type { MenuItem } from "../../types/wp";
 
 interface Props {
   lang?: string;
@@ -10,18 +12,12 @@ interface Props {
 const { lang = "es" } = Astro.props;
 
 // Recuperar navegación y contactos de WordPress de manera segura
-const rawNav: {title: string, url: string}[] = await wpApi.getNav("menu-primary", lang).catch(() => []);
-const navRrss = await wpApi.getNav("menu-rrss", lang).catch(() => []);
-const navContacto = await wpApi.getNav("menu-contacto", lang).catch(() => []);
+const rawNav: MenuItem[] = await wpApi.getNav("menu-primary", lang).catch(() => []);
+const navRrss: MenuItem[] = await wpApi.getNav("menu-rrss", lang).catch(() => []);
+const navContacto: MenuItem[] = await wpApi.getNav("menu-contacto", lang).catch(() => []);
 
-// Localizar links locales si el idioma actual es inglés
-const nav = rawNav.map(item => {
-  let url = item.url;
-  if (lang === "en" && url.startsWith("/") && !url.startsWith("/en")) {
-    url = `/en${url === "/" ? "" : url}`;
-  }
-  return { ...item, url };
-});
+// Construir árbol jerárquico de navegación respetando parent/children e i18n
+const navTree = buildMenuTree(rawNav, lang);
 
 // Obtener y normalizar la ruta actual para el indicador de página activa
 const currentPath = Astro.url.pathname;
@@ -33,11 +29,20 @@ const normalizePath = (p: string) => {
 const normalizedCurrent = normalizePath(currentPath);
 
 const checkActive = (itemUrl: string) => {
+  if (!itemUrl || itemUrl === "#") return false;
   const normalizedItem = normalizePath(itemUrl);
-  if (normalizedItem === "/") {
-    return normalizedCurrent === "/";
+  if (normalizedItem === "/" || normalizedItem === "/en") {
+    return normalizedCurrent === normalizedItem;
   }
   return normalizedCurrent === normalizedItem || normalizedCurrent.startsWith(normalizedItem + "/");
+};
+
+const isParentActive = (item: MenuItem): boolean => {
+  if (checkActive(item.url || "")) return true;
+  if (item.children && item.children.length > 0) {
+    return item.children.some((child) => isParentActive(child));
+  }
+  return false;
 };
 ---
 
@@ -75,17 +80,76 @@ const checkActive = (itemUrl: string) => {
       </svg>
     </button>
     
-    <!-- Menú de Escritorio con Indicador de Página Activa -->
-    <ul
-      class="hidden xl:flex gap-8 items-center font-heading-2"
-    >
-      {nav.map((item) => {
-        const isActive = checkActive(item.url);
+    <!-- Menú de Escritorio con Submenús Desplegables -->
+    <ul class="hidden xl:flex gap-8 items-center font-heading-2">
+      {navTree.map((item) => {
+        const hasChildren = item.children && item.children.length > 0;
+        const isActive = isParentActive(item);
+
+        if (hasChildren) {
+          return (
+            <li class="relative group py-2">
+              <a
+                href={item.url}
+                class:list={[
+                  "uppercase text-[16px] tracking-[1.4px] transition-colors duration-300 inline-flex items-center gap-1.5 cursor-pointer py-1",
+                  isActive
+                    ? "text-gold-500 font-bold"
+                    : "text-white-soft group-hover:text-gold-500 group-focus-within:text-gold-500"
+                ]}
+                aria-haspopup="true"
+                aria-expanded="false"
+                aria-current={isActive ? "page" : undefined}
+              >
+                <span>{item.title}</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-4 h-4 transition-transform duration-300 group-hover:rotate-180 text-gold-500/80 group-hover:text-gold-500"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </a>
+
+              {/* Submenú Desplegable Teatral */}
+              <div class="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-300 ease-out z-50 transform translate-y-2 group-hover:translate-y-0 group-focus-within:translate-y-0 pointer-events-none group-hover:pointer-events-auto group-focus-within:pointer-events-auto">
+                <ul class="min-w-[240px] bg-navy-950/95 backdrop-blur-xl border border-gold-500/30 rounded-none shadow-[0_12px_40px_rgba(0,0,0,0.7)] py-2 overflow-hidden flex flex-col divide-y divide-white/5">
+                  {item.children!.map((child) => {
+                    const isChildActive = checkActive(child.url || "");
+                    return (
+                      <li>
+                        <a
+                          href={child.url}
+                          target={child.target || undefined}
+                          class:list={[
+                            "block px-5 py-3 text-[14px] uppercase tracking-[1.2px] transition-all duration-200 hover:bg-white/5 hover:pl-6",
+                            isChildActive
+                              ? "text-gold-500 font-bold bg-white/5"
+                              : "text-white-soft hover:text-gold-500"
+                          ]}
+                          aria-current={isChildActive ? "page" : undefined}
+                        >
+                          {child.title}
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            </li>
+          );
+        }
+
         return (
-          <li>
+          <li class="py-2">
             <a 
               class:list={[
-                "uppercase text-[16px] tracking-[1.4px] transition-colors duration-300",
+                "uppercase text-[16px] tracking-[1.4px] transition-colors duration-300 py-1",
                 isActive 
                   ? "text-gold-500 font-bold" 
                   : "text-white-soft hover:text-gold-500"
@@ -103,4 +167,5 @@ const checkActive = (itemUrl: string) => {
 </nav>
 
 <!-- Menú Desplegable en Pantalla Completa con Datos de WordPress -->
-<MobileMenu nav={nav} navRrss={navRrss} navContacto={navContacto} lang={lang} />
+<MobileMenu nav={rawNav} navRrss={navRrss} navContacto={navContacto} lang={lang} />
+

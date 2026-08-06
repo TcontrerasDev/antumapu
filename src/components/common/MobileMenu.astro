@@ -2,17 +2,8 @@
 // src/components/common/MobileMenu.astro
 import Logo from "../../assets/logo-light.png";
 import { wpApi } from "../../lib/wp";
-
-export interface MenuItem {
-  title?: string;
-  name?: string;
-  label?: string;
-  url?: string;
-  link?: string;
-  href?: string;
-  target?: string;
-  acf?: { icono?: string };
-}
+import { buildMenuTree } from "../../lib/utils";
+import type { MenuItem } from "../../types/wp";
 
 interface Props {
   nav?: MenuItem[];
@@ -38,17 +29,15 @@ const fetchedContacto: MenuItem[] = (navContactoProp && navContactoProp.length >
 
 // Fallbacks estáticos en caso de que la API de WordPress no responda o devuelva un menú vacío
 const fallbackNav: MenuItem[] = lang === "en" ? [
-  { title: "Home", url: "/en" },
-  { title: "History", url: "/en/historia" },
-  { title: "Repertoire", url: "/en/obras" },
-  { title: "Activities", url: "/en/actividades" },
-  { title: "Contact", url: "#contacto" },
+  { id: 1, title: "Home", url: "/en", parent: "0" },
+  { id: 2, title: "History", url: "/en/historia", parent: "0" },
+  { id: 3, title: "Repertoire", url: "/en/obras", parent: "0" },
+  { id: 4, title: "Activities", url: "/en/actividades", parent: "0" },
 ] : [
-  { title: "Inicio", url: "/" },
-  { title: "Historia", url: "/historia" },
-  { title: "Repertorio", url: "/obras" },
-  { title: "Actividades", url: "/actividades" },
-  { title: "Contacto", url: "#contacto" },
+  { id: 1, title: "Inicio", url: "/", parent: "0" },
+  { id: 2, title: "Historia", url: "/historia", parent: "0" },
+  { id: 3, title: "Repertorio", url: "/obras", parent: "0" },
+  { id: 4, title: "Actividades", url: "/actividades", parent: "0" },
 ];
 
 const fallbackRrss: MenuItem[] = [
@@ -65,32 +54,33 @@ const rawMenuItems: MenuItem[] = fetchedNav.length > 0 ? fetchedNav : fallbackNa
 const rrRssItems: MenuItem[] = fetchedRrss.length > 0 ? fetchedRrss : fallbackRrss;
 const contactoItems: MenuItem[] = fetchedContacto.length > 0 ? fetchedContacto : fallbackContacto;
 
-// Normalizar campos y aplicar i18n a URLs para navegación en inglés
-const menuItems = rawMenuItems.map((item) => {
-  const title = item.title || item.name || item.label || "";
-  let url = item.url || item.link || item.href || "#";
-  
-  if (lang === "en" && url.startsWith("/") && !url.startsWith("/en")) {
-    url = `/en${url === "/" ? "" : url}`;
-  }
-  return { ...item, title, url };
-});
+// Construir árbol jerárquico de navegación
+const menuItems = buildMenuTree(rawMenuItems, lang);
 
 // Obtener y normalizar la ruta actual para el indicador de página activa
 const currentPath = Astro.url.pathname;
 const normalizePath = (p: string) => {
   if (!p) return "";
-  let path = p.replace(/\/$/, ""); // eliminar barra diagonal final
+  let path = p.replace(/\/$/, "");
   return path === "" ? "/" : path;
 };
 const normalizedCurrent = normalizePath(currentPath);
 
 const checkActive = (itemUrl: string) => {
+  if (!itemUrl || itemUrl === "#") return false;
   const normalizedItem = normalizePath(itemUrl);
   if (normalizedItem === "/" || normalizedItem === "/en") {
     return normalizedCurrent === normalizedItem;
   }
   return normalizedCurrent === normalizedItem || normalizedCurrent.startsWith(normalizedItem + "/");
+};
+
+const isParentActive = (item: MenuItem): boolean => {
+  if (checkActive(item.url || "")) return true;
+  if (item.children && item.children.length > 0) {
+    return item.children.some((child) => isParentActive(child));
+  }
+  return false;
 };
 ---
 
@@ -147,7 +137,77 @@ const checkActive = (itemUrl: string) => {
           <ul class="flex flex-col items-center justify-center space-y-3.5 sm:space-y-5">
             {
               menuItems.map((item, index) => {
-                const isActive = checkActive(item.url);
+                const hasChildren = item.children && item.children.length > 0;
+                const isActive = isParentActive(item);
+
+                if (hasChildren) {
+                  return (
+                    <li
+                      class="w-full text-center mobile-menu-item flex flex-col items-center"
+                      style={`transition-delay: ${0.1 + index * 0.05}s`}
+                    >
+                      <div class="flex items-center justify-center gap-2 w-full">
+                        <a
+                          href={item.url}
+                          target={item.target || undefined}
+                          class:list={[
+                            "mobile-menu-link block py-2.5 sm:py-3.5 pl-6 sm:pl-8 pr-2 font-heading-2 text-2xl sm:text-4xl uppercase tracking-[2px] sm:tracking-[3px] transition-all duration-300 hover:bg-white/5 focus:bg-white/5 focus:outline-none active:scale-98",
+                            isActive
+                              ? "text-gold-500 font-bold"
+                              : "text-[#FCFCFC] hover:text-gold-500 focus:text-gold-500"
+                          ]}
+                          aria-current={isActive ? "page" : undefined}
+                        >
+                          {item.title}
+                        </a>
+                        <button
+                          type="button"
+                          class="mobile-submenu-toggle p-2 text-gold-500 hover:text-white transition-transform duration-300 cursor-pointer"
+                          aria-expanded="false"
+                          aria-label={`Desplegar submenú para ${item.title}`}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="w-6 h-6 sm:w-7 sm:h-7 transition-transform duration-300 chevron-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M6 9l6 6 6-6" />
+                          </svg>
+                        </button>
+                      </div>
+
+                      {/* Submenú Desplegable Móvil */}
+                      <ul class="mobile-submenu hidden flex-col items-center gap-2 mt-2 py-3 px-4 w-full max-w-sm bg-white/5 border-l-2 border-gold-500/40 rounded-none transition-all duration-300">
+                        {item.children!.map((child) => {
+                          const isChildActive = checkActive(child.url || "");
+                          return (
+                            <li class="w-full text-center">
+                              <a
+                                href={child.url}
+                                target={child.target || undefined}
+                                class:list={[
+                                  "mobile-menu-link block py-2 px-4 font-heading-2 text-lg sm:text-xl uppercase tracking-[1.5px] transition-all duration-200 hover:text-gold-500",
+                                  isChildActive
+                                    ? "text-gold-500 font-bold"
+                                    : "text-white-soft hover:text-gold-500"
+                                ]}
+                                aria-current={isChildActive ? "page" : undefined}
+                              >
+                                {child.title}
+                              </a>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </li>
+                  );
+                }
+
                 return (
                   <li
                     class="w-full text-center mobile-menu-item"
@@ -290,7 +350,7 @@ const checkActive = (itemUrl: string) => {
 
     if (!trigger || !menu || !closeBtn) return;
 
-    // Función de vibración háptica ligera para dispositivos táctiles (15ms es muy suave y profesional)
+    // Función de vibración háptica ligera para dispositivos táctiles (15ms)
     function triggerHaptic() {
       if (typeof window !== 'undefined' && window.navigator && window.navigator.vibrate) {
         window.navigator.vibrate(15);
@@ -335,6 +395,33 @@ const checkActive = (itemUrl: string) => {
       document.removeEventListener('keydown', handleKeyDown);
     }
 
+    // Toggle de Submenús en Móvil
+    const submenuToggles = document.querySelectorAll('.mobile-submenu-toggle');
+    submenuToggles.forEach((toggleBtn) => {
+      toggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        triggerHaptic();
+        const parentLi = toggleBtn.closest('.mobile-menu-item');
+        const submenu = parentLi?.querySelector('.mobile-submenu');
+        const chevron = toggleBtn.querySelector('.chevron-icon') as HTMLElement;
+
+        if (submenu) {
+          const isOpen = !submenu.classList.contains('hidden');
+          if (isOpen) {
+            submenu.classList.add('hidden');
+            submenu.classList.remove('flex');
+            toggleBtn.setAttribute('aria-expanded', 'false');
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+          } else {
+            submenu.classList.remove('hidden');
+            submenu.classList.add('flex');
+            toggleBtn.setAttribute('aria-expanded', 'true');
+            if (chevron) chevron.style.transform = 'rotate(180deg)';
+          }
+        }
+      });
+    });
+
     // Controlar el foco del teclado (Focus Trap) y tecla Escape
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === 'Escape') {
@@ -375,7 +462,17 @@ const checkActive = (itemUrl: string) => {
 
     // Cerrar al hacer clic en un enlace y vibrar
     links.forEach(link => {
-      link.addEventListener('click', () => {
+      link.addEventListener('click', (e) => {
+        const href = link.getAttribute('href');
+        if (href === '#') {
+          const parentLi = link.closest('.mobile-menu-item');
+          const toggleBtn = parentLi?.querySelector('.mobile-submenu-toggle') as HTMLElement;
+          if (toggleBtn) {
+            e.preventDefault();
+            toggleBtn.click();
+            return;
+          }
+        }
         triggerHaptic();
         closeMenu();
       });
@@ -409,3 +506,4 @@ const checkActive = (itemUrl: string) => {
     initMobileMenu();
   });
 </script>
+

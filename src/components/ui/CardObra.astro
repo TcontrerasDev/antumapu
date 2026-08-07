@@ -3,7 +3,7 @@ interface Props {
     url: URL | string;
     imgSrc: string;
     titulo: string;
-    descripcion: string;
+    descripcion?: string;
     classList?: string[];
     class_list?: string[];
     iconoTrofeo?: string;
@@ -18,7 +18,7 @@ interface Props {
     };
 }
 
-const { url, imgSrc, titulo, descripcion, classList, class_list } = Astro.props;
+const { url, imgSrc, titulo, classList, class_list } = Astro.props;
 const iconoTrofeo = Astro.props.iconoTrofeo || Astro.props.icono_trofeo;
 const classes = classList || class_list || [];
 const isCuadroTematico = classes.includes("etiqueta-cuadro-tematico");
@@ -37,58 +37,36 @@ const hasPremios =
 const iconClass = iconoTrofeo || "fa-solid fa-trophy";
 ---
 
-<article class="h-130 border border-amber-50 rounded hover:border-gold-500 focus:border-gold-500 transition-all">
+<article class="h-120 md:h-120 border border-gold-500/20 rounded-xl overflow-hidden group hover:border-gold-500/60 transition-colors duration-300 relative bg-navy-900">
   <a
     href={url}
-    class="group bg-hero-gradient flex h-full w-full rounded overflow-hidden"
+    class="block h-full w-full relative overflow-hidden"
   >
-    <figure class="relative h-full w-full">
-      <img
-        src={imgSrc}
-        alt={titulo}
-        class="w-full h-full object-cover rounded opacity-50"
-      />
+    <figure class="relative h-full w-full overflow-hidden">
+      <!-- Layer Parallax -->
+      <div class="embla__parallax__layer relative w-full h-full">
+        <img
+          src={imgSrc}
+          alt={titulo}
+          class="embla__parallax__img absolute top-0 left-1/2 -translate-x-1/2 w-[140%] h-full max-w-none object-cover opacity-60 transition-opacity duration-300 group-hover:opacity-75"
+        />
+      </div>
+      <div class="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-950/40 to-transparent pointer-events-none"></div>
+
       <figcaption
-        class="absolute bottom-0 left-0 w-full xl:translate-y-[calc(100%-80px)] group-hover:translate-y-0 transition-transform duration-500 ease-in-out group-focus:translate-y-0"
+        class="absolute bottom-0 left-0 w-full p-6 flex flex-col items-start gap-2 z-10"
       >
-        <div class="px-4 pt-4 flex flex-col items-start gap-1.5 pb-8">
-          {
-            isCuadroTematico && (
-              <span class="inline-block px-2.5 py-0.5 text-xs font-heading-2 font-semibold uppercase tracking-wider text-gold-500 bg-navy-950/80 border border-gold-500/40 rounded absolute -top-2">
-                Cuadro Temático
-              </span>
-            )
-          }
-          <div class="flex items-end gap-2 pb-2">
-            <h2 class="uppercase text-white text-2xl" set:html={titulo}>
-            </h2>
-            {hasPremios && <i class={`${iconClass} text-gold-500 text-[1rem] shrink-0`} aria-hidden="true"></i>}
-          </div>
-        </div>
-        <div class="backdrop-brightness-30 p-4 flex flex-col gap-4">
-          <div class="text-base text-white-soft" set:html={descripcion}>
-          </div>
-          <span
-            class="text-gold-500 uppercase font-heading-2 flex gap-1 items-center font-semibold tracking-[1.4px]"
-            aria-hidden="true"
-            >Leer más
-            <svg
-              class="w-5 stroke-gold-500"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="arrow-icon"
-            >
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-              <path d="M5 12l14 0"></path>
-              <path d="M13 18l6 -6"></path>
-              <path d="M13 6l6 6"></path>
-            </svg>
-          </span>
-          <span class="sr-only">Leer más sobre {titulo}</span>
+        {
+          isCuadroTematico && (
+            <span class="inline-block px-2.5 py-1 text-[0.7rem] font-heading-2 font-bold uppercase tracking-wider text-gold-500 bg-navy-950/90 border border-gold-500/40 rounded shadow-sm">
+              Cuadro Temático
+            </span>
+          )
+        }
+        <div class="flex items-end gap-2">
+          <h3 class="uppercase text-white font-heading-2 text-xl md:text-2xl font-bold leading-tight" set:html={titulo}>
+          </h3>
+          {hasPremios && <i class={`${iconClass} text-gold-500 text-base shrink-0 mb-1`} aria-hidden="true"></i>}
         </div>
       </figcaption>
     </figure>

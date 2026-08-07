@@ -1,7 +1,6 @@
 ---
 import CardObra from "../../ui/CardObra.astro";
 import { wpApi } from "../../../lib/wp";
-import { useTranslations } from "../../../lib/i18n";
 
 interface Props {
   title: string;
@@ -10,134 +9,231 @@ interface Props {
 }
 
 const { title, bajada, lang = "es" } = Astro.props;
-const t = useTranslations(lang);
 
 const obras = await wpApi.getObras(lang);
 ---
 
-<section class="bg-navy-950 padding-section">
+<section class="bg-navy-950 padding-section overflow-hidden">
   <div class="wrapper">
-    <div class="mb-8 flex flex-col gap-4">
-      <h2 class="text-white h2-heading reveal-text">{title}</h2>
-      <p class="text-white-soft max-w-2xl reveal-text">{bajada}</p>
+    <div class="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+      <div class="flex flex-col gap-4 max-w-2xl">
+        <h2 class="text-white h2-heading reveal-text">{title}</h2>
+        <p class="text-white-soft max-w-2xl reveal-text">{bajada}</p>
+      </div>
+
+      <!-- Botones de navegación Embla -->
+      <div class="flex items-center gap-3 shrink-0">
+        <button
+          type="button"
+          id="repertorio-prev-btn"
+          class="w-11 h-11 rounded-full border border-gold-500/40 flex items-center justify-center text-gold-500 hover:bg-gold-500 hover:text-navy-950 active:scale-95 transition-all duration-200 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+          aria-label="Obra anterior"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5 stroke-current"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M15 18l-6-6 6-6"></path>
+          </svg>
+        </button>
+        <button
+          type="button"
+          id="repertorio-next-btn"
+          class="w-11 h-11 rounded-full border border-gold-500/40 flex items-center justify-center text-gold-500 hover:bg-gold-500 hover:text-navy-950 active:scale-95 transition-all duration-200 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+          aria-label="Siguiente obra"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5 stroke-current"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M9 18l6-6-6-6"></path>
+          </svg>
+        </button>
+      </div>
     </div>
-    <div 
-      class="flex overflow-x-auto gap-5 snap-x snap-mandatory pb-4 custom-scrollbar"
+
+    <!-- Viewport de Embla Carousel adaptado al estilo Centrado -->
+    <div
+      class="embla overflow-hidden select-none cursor-grab active:cursor-grabbing py-2"
+      id="repertorio-embla-viewport"
       data-lenis-prevent
     >
-      {obras.map((obra) => (
-        <div class="w-full shrink-0 md:w-[calc(50%-10px)] lg:w-[calc(33.333%-14px)] xl:w-[calc(25%-15px)] snap-start">
-          <CardObra
-            url={lang === "es" ? `/obras/${obra.slug}` : `/en/obras/${obra.slug}`}
-            imgSrc={obra._embedded?.["wp:featuredmedia"]?.[0]?.source_url || ""}
-            titulo={obra.title.rendered}
-            descripcion={obra.excerpt.rendered}
-            classList={obra.class_list}
-            iconoTrofeo={obra.acf?.["icono-trofeo"] || obra.acf?.["icono-trofeo_source"]?.formatted_value}
-            reconocimiento_source={obra.acf?.reconocimiento_source}
-          />
-        </div>
-      ))}
-    </div>
-    
-    <div class="mt-4 flex justify-end lg:hidden">
-      <button 
-        type="button" 
-        class="flex items-center gap-2 text-gold-500 animate-pulse scroll-indicator cursor-pointer hover:text-gold-400 active:scale-95 transition-all duration-200 select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 rounded p-1"
-        aria-label="Deslizar repertorio"
-      >
-        <span class="text-sm font-heading-2 uppercase tracking-widest">{t("desliza")}</span>
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-bounce-x">
-          <path d="M5 12h14"></path>
-          <path d="m12 5 7 7-7 7"></path>
-        </svg>
-      </button>
+      <div class="embla__container flex -ml-5">
+        {
+          obras.map((obra) => (
+            <div class="embla__slide flex-[0_0_85%] sm:flex-[0_0_75%] md:flex-[0_0_65%] min-w-0 shrink-0 pl-5">
+              <CardObra
+                url={lang === "es" ? `/obras/${obra.slug}` : `/en/obras/${obra.slug}`}
+                imgSrc={obra._embedded?.["wp:featuredmedia"]?.[0]?.source_url || ""}
+                titulo={obra.title.rendered}
+                descripcion={obra.excerpt.rendered}
+                classList={obra.class_list}
+                iconoTrofeo={obra.acf?.["icono-trofeo"] || obra.acf?.["icono-trofeo_source"]?.formatted_value}
+                reconocimiento_source={obra.acf?.reconocimiento_source}
+              />
+            </div>
+          ))
+        }
+      </div>
     </div>
   </div>
 </section>
 
 <script>
-  const slider = document.querySelector('.custom-scrollbar') as HTMLElement;
-  const indicator = document.querySelector('.scroll-indicator') as HTMLElement;
+  import EmblaCarousel, { type EmblaCarouselType } from "embla-carousel";
 
-  if (slider) {
-    // Manejo del indicador
-    if (indicator) {
-      slider.addEventListener('scroll', () => {
-        if (slider.scrollLeft > 20) {
-          indicator.classList.add('opacity-0', 'transition-opacity', 'duration-500');
-          setTimeout(() => indicator.remove(), 500);
-        }
-      }, { once: true });
+  function setupRepertorioCarousel() {
+    const viewportNode = document.querySelector<HTMLElement>("#repertorio-embla-viewport");
+    const prevBtn = document.querySelector<HTMLButtonElement>("#repertorio-prev-btn");
+    const nextBtn = document.querySelector<HTMLButtonElement>("#repertorio-next-btn");
 
-      // Hacer que al hacer clic se desplace hacia la derecha por una obra
-      indicator.addEventListener('click', () => {
-        const firstCard = slider.querySelector('.snap-start') as HTMLElement;
-        const scrollAmount = firstCard ? firstCard.offsetWidth + 20 : slider.clientWidth;
-        slider.scrollBy({
-          left: scrollAmount,
-          behavior: 'smooth'
+    if (!viewportNode) return;
+
+    const emblaApi = EmblaCarousel(viewportNode, {
+      loop: true,
+      align: "center",
+      startIndex: 0,
+      dragFree: false,
+      duration: 30,
+    });
+
+    const TWEEN_FACTOR_BASE = 0.2;
+    let tweenFactor = 0;
+    let tweenNodes: HTMLElement[] = [];
+
+    const setTweenNodes = (api: EmblaCarouselType) => {
+      tweenNodes = api.slideNodes().map((slideNode) => {
+        return slideNode.querySelector<HTMLElement>(".embla__parallax__layer")!;
+      });
+    };
+
+    const setTweenFactor = (api: EmblaCarouselType) => {
+      tweenFactor = TWEEN_FACTOR_BASE * api.scrollSnapList().length;
+    };
+
+    const tweenParallax = (api: EmblaCarouselType) => {
+      const engine = api.internalEngine();
+      const scrollProgress = api.scrollProgress();
+
+      api.scrollSnapList().forEach((scrollSnap, snapIndex) => {
+        let diffToTarget = scrollSnap - scrollProgress;
+        const slidesInSnap = engine.slideRegistry[snapIndex];
+
+        if (!slidesInSnap) return;
+
+        slidesInSnap.forEach((slideIndex) => {
+          if (engine.options.loop) {
+            engine.slideLooper.loopPoints.forEach((loopItem) => {
+              const target = loopItem.target();
+
+              if (slideIndex === loopItem.index && target !== 0) {
+                const sign = Math.sign(target);
+
+                if (sign === -1) {
+                  diffToTarget = scrollSnap - (1 + scrollProgress);
+                }
+                if (sign === 1) {
+                  diffToTarget = scrollSnap - (scrollProgress - 1);
+                }
+              }
+            });
+          }
+
+          const translate = diffToTarget * (-1 * tweenFactor) * 100;
+          const tweenNode = tweenNodes[slideIndex];
+          if (tweenNode) {
+            tweenNode.style.transform = `translate3d(${translate}%, 0, 0)`;
+          }
         });
       });
+    };
+
+    emblaApi
+      .on("init", setTweenNodes)
+      .on("init", setTweenFactor)
+      .on("init", tweenParallax)
+      .on("reInit", setTweenNodes)
+      .on("reInit", setTweenFactor)
+      .on("reInit", tweenParallax)
+      .on("scroll", tweenParallax);
+
+    const reInitCarousel = () => {
+      emblaApi.reInit();
+      setTweenNodes(emblaApi);
+      setTweenFactor(emblaApi);
+      tweenParallax(emblaApi);
+    };
+
+    // Forzar recalculo y centrado automático cuando se asiente el layout inicial
+    requestAnimationFrame(reInitCarousel);
+    setTimeout(reInitCarousel, 100);
+    setTimeout(reInitCarousel, 300);
+
+    if (typeof ResizeObserver !== "undefined") {
+      const observer = new ResizeObserver(() => {
+        reInitCarousel();
+      });
+      observer.observe(viewportNode);
     }
 
-    // Lógica de Scroll: SHIFT para horizontal, sin SHIFT para vertical (Lenis)
-    slider.addEventListener('wheel', (e) => {
-      if (e.shiftKey) {
-        // Si presiona SHIFT, forzamos el scroll horizontal y evitamos el vertical
-        e.preventDefault();
-        slider.setAttribute('data-lenis-prevent', '');
-        
-        // Usamos scrollBy para mayor compatibilidad
-        // Cuando SHIFT está presionado, algunos navegadores pasan el valor en deltaX y otros en deltaY
-        const scrollAmount = e.deltaY || e.deltaX;
-        
-        slider.scrollBy({
-          left: scrollAmount,
-          behavior: 'smooth'
-        });
-      } else {
-        // Si NO presiona SHIFT, quitamos la prevención para que Lenis haga el scroll vertical de la página
-        slider.removeAttribute('data-lenis-prevent');
+    // Lógica de Avance Automático (Autoplay)
+    const AUTOPLAY_DELAY = 3000; // Avanza cada 3 segundos
+    let autoplayTimer: number | null = null;
+
+    const startAutoplay = () => {
+      stopAutoplay();
+      autoplayTimer = window.setInterval(() => {
+        emblaApi.scrollNext();
+      }, AUTOPLAY_DELAY);
+    };
+
+    const stopAutoplay = () => {
+      if (autoplayTimer !== null) {
+        clearInterval(autoplayTimer);
+        autoplayTimer = null;
       }
-    }, { passive: false });
+    };
 
-    // Asegurarnos de restaurar el atributo al salir para evitar conflictos
-    slider.addEventListener('mouseleave', () => {
-      slider.setAttribute('data-lenis-prevent', '');
-    });
+    // Iniciar avance automático
+    startAutoplay();
+
+    // Pausar mientras el usuario tiene el cursor sobre el carrusel
+    viewportNode.addEventListener("mouseenter", stopAutoplay);
+    viewportNode.addEventListener("mouseleave", startAutoplay);
+
+    // Reiniciar temporizador al interactuar manualmente (arrastre o clic en botones)
+    emblaApi.on("pointerDown", stopAutoplay);
+    emblaApi.on("pointerUp", startAutoplay);
+
+    if (prevBtn) {
+      prevBtn.addEventListener("click", () => {
+        emblaApi.scrollPrev();
+        startAutoplay();
+      });
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener("click", () => {
+        emblaApi.scrollNext();
+        startAutoplay();
+      });
+    }
   }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupRepertorioCarousel);
+  } else {
+    setupRepertorioCarousel();
+  }
+
+  document.addEventListener("astro:page-load", setupRepertorioCarousel);
 </script>
-
-<style>
-  @keyframes bounce-x {
-    0%, 100% { transform: translateX(0); }
-    50% { transform: translateX(5px); }
-  }
-  .animate-bounce-x {
-    animation: bounce-x 1s infinite;
-  }
-  /* Personalización de la barra de desplazamiento */
-  .custom-scrollbar {
-    scrollbar-color: #cda14d transparent; /* Firefox: thumb / track */
-    scrollbar-width: thin;
-  }
-
-  /* Chrome, Edge, y Safari */
-  .custom-scrollbar::-webkit-scrollbar {
-    height: 8px;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #cda14d; /* gold-500 */
-    border-radius: 20px;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: #b38a3d; /* Un tono un poco más oscuro para el hover */
-  }
-</style>

@@ -88,11 +88,11 @@ const isParentActive = (item: MenuItem): boolean => {
 
         if (hasChildren) {
           return (
-            <li class="relative group py-2">
+            <li class="relative group py-2 desktop-dropdown-item">
               <a
                 href={item.url}
                 class:list={[
-                  "uppercase text-[16px] tracking-[1.4px] transition-colors duration-300 inline-flex items-center gap-1.5 cursor-pointer py-1",
+                  "desktop-dropdown-toggle uppercase text-[16px] tracking-[1.4px] transition-colors duration-300 inline-flex items-center gap-1.5 cursor-pointer py-1",
                   isActive
                     ? "text-gold-500 font-bold"
                     : "text-white-soft group-hover:text-gold-500 group-focus-within:text-gold-500"
@@ -104,7 +104,7 @@ const isParentActive = (item: MenuItem): boolean => {
                 <span>{item.title}</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="w-4 h-4 transition-transform duration-300 group-hover:rotate-180 text-gold-500/80 group-hover:text-gold-500"
+                  class="w-4 h-4 transition-transform duration-300 group-hover:rotate-180 group-[.is-open]:rotate-180 text-gold-500/80 group-hover:text-gold-500"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -117,7 +117,7 @@ const isParentActive = (item: MenuItem): boolean => {
               </a>
 
               {/* Submenú Desplegable Teatral */}
-              <div class="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-300 ease-out z-50 transform translate-y-2 group-hover:translate-y-0 group-focus-within:translate-y-0 pointer-events-none group-hover:pointer-events-auto group-focus-within:pointer-events-auto">
+              <div class="desktop-dropdown-menu absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible group-[.is-open]:opacity-100 group-[.is-open]:visible transition-all duration-300 ease-out z-50 transform translate-y-2 group-hover:translate-y-0 group-focus-within:translate-y-0 group-[.is-open]:translate-y-0 pointer-events-none group-hover:pointer-events-auto group-focus-within:pointer-events-auto group-[.is-open]:pointer-events-auto">
                 <ul class="min-w-[240px] bg-navy-950/95 backdrop-blur-xl border border-gold-500/30 rounded-none shadow-[0_12px_40px_rgba(0,0,0,0.7)] py-2 overflow-hidden flex flex-col divide-y divide-white/5">
                   {item.children!.map((child) => {
                     const isChildActive = checkActive(child.url || "");
@@ -168,4 +168,61 @@ const isParentActive = (item: MenuItem): boolean => {
 
 <!-- Menú Desplegable en Pantalla Completa con Datos de WordPress -->
 <MobileMenu nav={rawNav} navRrss={navRrss} navContacto={navContacto} lang={lang} />
+
+<script>
+  function initDesktopDropdowns() {
+    const dropdownItems = document.querySelectorAll('.desktop-dropdown-item');
+
+    dropdownItems.forEach((item) => {
+      const toggle = item.querySelector('.desktop-dropdown-toggle');
+      if (!toggle) return;
+
+      if ((toggle as HTMLElement).dataset.dropdownBound === 'true') return;
+      (toggle as HTMLElement).dataset.dropdownBound = 'true';
+
+      toggle.addEventListener('click', (e) => {
+        const isOpen = item.classList.contains('is-open');
+
+        // Cerrar los otros submenús abiertos
+        dropdownItems.forEach((other) => {
+          if (other !== item) {
+            other.classList.remove('is-open');
+            other.querySelector('.desktop-dropdown-toggle')?.setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        // Si estaba cerrado, abrirlo y prevenir navegación inmediata en táctil/primer clic
+        if (!isOpen) {
+          e.preventDefault();
+          item.classList.add('is-open');
+          toggle.setAttribute('aria-expanded', 'true');
+        } else {
+          if (toggle.getAttribute('href') === '#') {
+            e.preventDefault();
+            item.classList.remove('is-open');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        }
+      });
+    });
+
+    // Cerrar al hacer clic fuera del menú
+    document.addEventListener('click', (e) => {
+      const target = e.target as Node;
+      dropdownItems.forEach((item) => {
+        if (!item.contains(target)) {
+          item.classList.remove('is-open');
+          item.querySelector('.desktop-dropdown-toggle')?.setAttribute('aria-expanded', 'false');
+        }
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', initDesktopDropdowns);
+  if (document.readyState !== 'loading') {
+    initDesktopDropdowns();
+  } else {
+    document.addEventListener('DOMContentLoaded', initDesktopDropdowns);
+  }
+</script>
 

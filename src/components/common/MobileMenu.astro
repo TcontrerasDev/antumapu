@@ -349,6 +349,8 @@ const isParentActive = (item: MenuItem): boolean => {
     const contactLinks = document.querySelectorAll('.mobile-contact-link');
 
     if (!trigger || !menu || !closeBtn) return;
+    if ((trigger as HTMLElement).dataset.menuInitialized === 'true') return;
+    (trigger as HTMLElement).dataset.menuInitialized = 'true';
 
     // Función de vibración háptica ligera para dispositivos táctiles (15ms)
     function triggerHaptic() {
@@ -393,6 +395,14 @@ const isParentActive = (item: MenuItem): boolean => {
 
       // Remover controles de teclado
       document.removeEventListener('keydown', handleKeyDown);
+    }
+
+    function toggleMenu() {
+      if (menu?.classList.contains('is-open')) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
     }
 
     // Toggle de Submenús en Móvil
@@ -452,7 +462,7 @@ const isParentActive = (item: MenuItem): boolean => {
     // Eventos con vibración háptica integrada
     trigger.addEventListener('click', () => {
       triggerHaptic();
-      openMenu();
+      toggleMenu();
     });
 
     closeBtn.addEventListener('click', () => {
@@ -505,5 +515,12 @@ const isParentActive = (item: MenuItem): boolean => {
   document.addEventListener('astro:page-load', () => {
     initMobileMenu();
   });
+  if (document.readyState !== 'loading') {
+    initMobileMenu();
+  } else {
+    document.addEventListener('DOMContentLoaded', () => {
+      initMobileMenu();
+    });
+  }
 </script>
 

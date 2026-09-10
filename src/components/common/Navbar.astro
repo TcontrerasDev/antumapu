@@ -49,7 +49,7 @@ const isParentActive = (item: MenuItem): boolean => {
 <nav class="w-full flex justify-center">
   <div class="wrapper flex justify-between py-4 items-center">
     <a href={lang === "en" ? "/en" : "/"} class="w-32" aria-label={lang === "en" ? "Home - Antumapu Folkloric Ballet" : "Inicio - Ballet Folklórico Antumapu"}>
-      <img src={Logo.src} alt="" class="w-full" />
+      <img src={Logo.src} alt={lang === "en" ? "Antumapu Folkloric Ballet Logo" : "Logo Ballet Folklórico Antumapu"} class="w-full" />
     </a>
     
     <!-- Disparador Hamburguesa Grande e Interactivo (Accesible) -->

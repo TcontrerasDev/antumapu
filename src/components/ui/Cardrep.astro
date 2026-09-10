@@ -19,7 +19,7 @@ interface Props {
   };
 }
 
-const { url, numeracion, ano, titulo, description, classList, class_list } = Astro.props;
+const { url, numeracion, titulo, description, classList, class_list } = Astro.props;
 const iconoTrofeo = Astro.props.iconoTrofeo || Astro.props.icono_trofeo;
 const classes = classList || class_list || [];
 const isCuadroTematico = classes.includes("etiqueta-cuadro-tematico")

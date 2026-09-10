@@ -1,6 +1,4 @@
 ---
-import { Image } from "astro:assets";
-import Logo from "../../assets/logo-light.png";
 import ColFooter from "./ColFooter.astro";
 import { wpApi } from "../../lib/wp";
 import { useTranslations } from "../../lib/i18n";
@@ -109,7 +107,7 @@ const navTree = buildMenuTree(rawNav, lang);
             </li>
           ))
         }
-        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d208.0726271030105!2d-70.6060662!3d-33.4450848!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9662cf0078973c5b%3A0x33a6a6b0dffe9b67!2sBallet%20Folkl%C3%B3rico%20Antumapu%20Universidad%20de%20Chile!5e0!3m2!1ses!2scl!4v1785872953840!5m2!1ses!2scl" class="w-full h-70 mt-5" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d208.0726271030105!2d-70.6060662!3d-33.4450848!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9662cf0078973c5b%3A0x33a6a6b0dffe9b67!2sBallet%20Folkl%C3%B3rico%20Antumapu%20Universidad%20de%20Chile!5e0!3m2!1ses!2scl!4v1785872953840!5m2!1ses!2scl" class="w-full h-70 mt-5" title={lang === "en" ? "Antumapu Folkloric Ballet location map" : "Mapa de ubicación del Ballet Folklórico Antumapu"} allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
       </ul>
     </ColFooter>
     

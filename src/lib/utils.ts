@@ -91,28 +91,29 @@ export function buildMenuTree(items: MenuItem[], lang: string = "es"): MenuItem[
 
   const map = new Map<string, MenuItem>();
   clonedItems.forEach((item) => {
-    if (item.id) {
-      map.set(item.id, item);
+    if (item.id !== undefined && item.id !== null) {
+      map.set(String(item.id), item);
     }
   });
 
   const roots: MenuItem[] = [];
 
   clonedItems.forEach((item) => {
-    const parentId = item.parent;
+    const parentId = item.parent !== undefined && item.parent !== null ? String(item.parent) : undefined;
+    const itemIdStr = item.id !== undefined && item.id !== null ? String(item.id) : undefined;
     if (
       parentId &&
       parentId !== "0" &&
       parentId !== "null" &&
       parentId !== "undefined" &&
       map.has(parentId) &&
-      parentId !== item.id
+      parentId !== itemIdStr
     ) {
       const parentNode = map.get(parentId)!;
       if (!parentNode.children) {
         parentNode.children = [];
       }
-      if (!parentNode.children.some((c) => c.id === item.id)) {
+      if (!parentNode.children.some((c) => String(c.id) === itemIdStr)) {
         parentNode.children.push(item);
       }
     } else {

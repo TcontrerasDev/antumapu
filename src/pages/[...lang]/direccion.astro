@@ -23,7 +23,7 @@ function injectRevealClass(html: string): string {
   let processed = html;
   processed = processed.replace(
     /<(h[1-6]|p)\b([^>]*)/gi,
-    (match, tag, attrs) => {
+    (_match, tag, attrs) => {
       if (/class=["']/i.test(attrs)) {
         return `<${tag}${attrs.replace(/class=(["'])(.*?)\1/i, 'class=$1$2 reveal-text$1')}`;
       } else {
@@ -33,7 +33,7 @@ function injectRevealClass(html: string): string {
   );
   processed = processed.replace(
     /<div\b([^>]*)/gi,
-    (match, attrs) => {
+    (_match, attrs) => {
       if (/class=["'][^"']*\bwp-block-column(?:s)?\b[^"']*["']/i.test(attrs)) {
         if (/class=["']/i.test(attrs)) {
           return `<div${attrs.replace(/class=(["'])(.*?)\1/i, 'class=$1$2 reveal-text$1')}`;
@@ -41,7 +41,7 @@ function injectRevealClass(html: string): string {
           return `<div class="reveal-text"${attrs}`;
         }
       }
-      return match;
+      return _match;
     }
   );
   return processed;

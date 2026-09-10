@@ -28,7 +28,7 @@ function injectRevealClass(html: string): string {
   let processed = html;
   processed = processed.replace(
     /<(h[1-6]|p)\b([^>]*)/gi,
-    (match, tag, attrs) => {
+    (_match, tag, attrs) => {
       if (/class=["']/i.test(attrs)) {
         return `<${tag}${attrs.replace(/class=(["'])(.*?)\1/i, 'class=$1$2 reveal-text$1')}`;
       } else {

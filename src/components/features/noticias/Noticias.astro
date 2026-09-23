@@ -52,8 +52,6 @@ const { title, bajada, theme = "light", lang = "es" } = Astro.props;
                 )}
             </div>
         ) : null}
-        <NoticiasList theme={theme} lang={lang} server:defer>
-            <NoticiasSkeleton theme={theme} slot="fallback" />
-        </NoticiasList>
+        <NoticiasList theme={theme} lang={lang} />
     </div>
 </section>

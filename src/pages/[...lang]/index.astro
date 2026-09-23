@@ -47,9 +47,7 @@ if (!page) {
       title={page.acf.titulo_presentaciones || ""}
       bajada={page.acf.bajada_presentaciones || ""}
     >
-      <ActividadesList lang={lang} server:defer>
-        <ActividadesSkeleton slot="fallback" />
-      </ActividadesList>
+      <ActividadesList lang={lang} />
     </Actividades>
 
     <Historia

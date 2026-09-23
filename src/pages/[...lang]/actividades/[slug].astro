@@ -7,7 +7,25 @@ import { wpApi } from "../../../lib/wp";
 import { getBreadcrumbs } from "../../../lib/utils";
 import { useTranslations } from "../../../lib/i18n";
 
-export const prerender = false;
+export async function getStaticPaths() {
+  const locales = ["es", "en"];
+  const paths = [];
+
+  for (const lang of locales) {
+    const slugs = await wpApi.getSlugActividades(lang).catch(() => []);
+    const isDefault = lang === "es";
+    for (const slug of slugs) {
+      paths.push({
+        params: {
+          lang: isDefault ? undefined : lang,
+          slug,
+        },
+      });
+    }
+  }
+
+  return paths;
+}
 
 const { lang = "es", slug } = Astro.params;
 if (!slug) return Astro.redirect("/404");
@@ -70,47 +88,8 @@ const goldClass = "bg-gold-700/20";
         set:html={actividadMetadata.title.rendered}
     />
 
-    <!-- Contenido diferido (Server Island) con Esqueleto de Carga -->
-    <ActividadDetalle slug={slug} lang={lang} server:defer>
-        <div slot="fallback" class="animate-pulse flex flex-col gap-8 w-full pt-8 pb-16">
-        {/* Esqueleto del Recuadro de Info (Fecha, Hora, Lugar, Dirección) */}
-        <div class="bg-white border-2 border-navy-950/20 p-6 md:p-8 rounded-sm grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="flex flex-col gap-2">
-            <div class={`h-3 rounded w-16 ${goldClass}`}></div>
-            <div class={`h-8 rounded w-3/4 ${bgClass}`}></div>
-            </div>
-            <div class="flex flex-col gap-2">
-            <div class={`h-3 rounded w-16 ${goldClass}`}></div>
-            <div class={`h-8 rounded w-2/3 ${bgClass}`}></div>
-            </div>
-            <div class="flex flex-col gap-2">
-            <div class={`h-3 rounded w-16 ${goldClass}`}></div>
-            <div class={`h-8 rounded w-4/5 ${bgClass}`}></div>
-            </div>
-            <div class="flex flex-col gap-2">
-            <div class={`h-3 rounded w-16 ${goldClass}`}></div>
-            <div class={`h-8 rounded w-full ${textClass}`}></div>
-            </div>
-        </div>
-
-        {/* Esqueleto de Imagen y Detalles */}
-        <div class="grid grid-cols-12 gap-8 lg:gap-12">
-            <div class="col-span-full lg:col-span-6">
-            <div class={`h-80 md:h-[400px] rounded-sm w-full ${bgClass}`}></div>
-            </div>
-            <div class="col-span-full lg:col-span-6 flex flex-col gap-6">
-            <div class={`h-12 rounded w-1/2 ${goldClass}`}></div>
-            <div class="flex flex-col gap-3">
-                <div class={`h-4 rounded w-full ${textClass}`}></div>
-                <div class={`h-4 rounded w-full ${textClass}`}></div>
-                <div class={`h-4 rounded w-11/12 ${textClass}`}></div>
-                <div class={`h-4 rounded w-3/4 ${textClass}`}></div>
-            </div>
-            <div class={`h-14 rounded w-48 ${goldClass} mt-4`}></div>
-            </div>
-        </div>
-        </div>
-    </ActividadDetalle>
+    <!-- Contenido renderizado estáticamente -->
+    <ActividadDetalle slug={slug} lang={lang} />
     </div>
   </main>
   <Footer lang={lang} />

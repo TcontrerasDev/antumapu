@@ -137,12 +137,22 @@ export const wpApi = {
     return data?.[0] || null;
   },
 
+  getSlugActividades: async (lang?: string): Promise<string[]> => {
+    const data = await wpFetchAll("presentaciones?_fields=slug", lang);
+    return data.map((actividad: { slug: string }) => actividad.slug);
+  },
+
   getNoticias: async (lang?: string, page?: number, perPage?: number): Promise<WPNoticia[]> => {
     if (page !== undefined) {
       const limit = perPage ?? 10;
       return wpFetch(`noticias?_embed&per_page=${limit}&page=${page}`, lang);
     }
     return wpFetchAll("noticias?_embed", lang);
+  },
+
+  getSlugNoticias: async (lang?: string): Promise<string[]> => {
+    const data = await wpFetchAll("noticias?_fields=slug", lang);
+    return data.map((noticia: { slug: string }) => noticia.slug);
   },
 
   getNoticiaBySlug: async (slug: string, lang?: string): Promise<WPNoticia | null> => {

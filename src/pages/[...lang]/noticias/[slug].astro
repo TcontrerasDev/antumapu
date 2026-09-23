@@ -7,7 +7,25 @@ import { wpApi } from "../../../lib/wp";
 import { getBreadcrumbs } from "../../../lib/utils";
 import { useTranslations } from "../../../lib/i18n";
 
-export const prerender = false;
+export async function getStaticPaths() {
+  const locales = ["es", "en"];
+  const paths = [];
+
+  for (const lang of locales) {
+    const slugs = await wpApi.getSlugNoticias(lang).catch(() => []);
+    const isDefault = lang === "es";
+    for (const slug of slugs) {
+      paths.push({
+        params: {
+          lang: isDefault ? undefined : lang,
+          slug,
+        },
+      });
+    }
+  }
+
+  return paths;
+}
 
 const { lang = "es", slug } = Astro.params;
 if (!slug) return Astro.redirect("/404");
@@ -83,45 +101,8 @@ const goldClass = "bg-gold-700/20";
           set:html={noticiaMetadata.excerpt.rendered}
         />
 
-        <!-- Contenido diferido (Server Island) con Esqueleto en línea -->
-        <NoticiaDetalle slug={slug} lang={lang} server:defer>
-          <div slot="fallback" class="animate-pulse flex flex-col gap-6 w-full pt-15">
-            <div class="grid grid-cols-12 gap-5">
-              {/* Esqueleto del Contenido Principal (col-span-9) */}
-              <div class="col-span-full lg:col-span-9 flex flex-col gap-8">
-                <div class="flex flex-col gap-3">
-                  <div class={`h-4 rounded w-full ${textClass}`}></div>
-                  <div class={`h-4 rounded w-full ${textClass}`}></div>
-                  <div class={`h-4 rounded w-11/12 ${textClass}`}></div>
-                  <div class={`h-4 rounded w-4/5 ${textClass}`}></div>
-                </div>
-                <div class={`h-80 rounded w-full ${bgClass} my-2`}></div>
-                <div class="flex flex-col gap-3">
-                  <div class={`h-4 rounded w-full ${textClass}`}></div>
-                  <div class={`h-4 rounded w-full ${textClass}`}></div>
-                  <div class={`h-4 rounded w-5/6 ${textClass}`}></div>
-                  <div class={`h-4 rounded w-3/4 ${textClass}`}></div>
-                </div>
-              </div>
-
-              {/* Esqueleto de la Barra Lateral (col-span-3) */}
-              <div class="col-span-full lg:col-span-3 flex flex-col gap-5 p-5 h-max bg-navy-950">
-                <div class="flex flex-col gap-4">
-                  <div class={`h-6 rounded w-2/3 ${goldClass}`}></div>
-                  <div class="h-4 rounded w-1/2 bg-white/20"></div>
-                </div>
-                <div class="flex flex-col gap-4">
-                  <div class={`h-6 rounded w-1/2 ${goldClass}`}></div>
-                  <div class="h-4 rounded w-1/3 bg-white/20"></div>
-                </div>
-                <div class="flex gap-2 pt-2">
-                  <div class="h-6 rounded w-16 bg-white/10"></div>
-                  <div class="h-6 rounded w-20 bg-white/10"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </NoticiaDetalle>
+        <!-- Contenido renderizado estáticamente -->
+        <NoticiaDetalle slug={slug} lang={lang} />
       </div>
     </section>
   </main>

@@ -57,14 +57,14 @@ const goldClass = "bg-gold-700/20";
   <Header theme="light" lang={lang} />
   <main id="main-content" tabindex="-1" class="bg-sand-100 pt-30 pb-20 focus:outline-none">
     <section>
-      <div class="wrapper">
+      <div class="wrapper max-w-4xl mx-auto px-4 sm:px-6">
         <!-- Migas de pan renderizadas de inmediato -->
-        <nav aria-label={lang === "en" ? "Breadcrumbs" : "Migas de pan"} class="text-gold-500 font-heading-2 tracking-[1.4px]">
+        <nav aria-label={lang === "en" ? "Breadcrumbs" : "Migas de pan"} class="text-gold-700 font-heading-2 tracking-[1.4px] text-sm uppercase">
           <ol class="flex flex-wrap list-none p-0 m-0">
             <li class="inline-flex items-center">
               <a
                 href={lang === "es" ? "/" : `/${lang}`}
-                class="text-navy-950"
+                class="text-navy-950 hover:underline"
                 >{t("inicio")}</a
               >
               <span class="mx-1.5 opacity-60" aria-hidden="true">/</span>
@@ -79,7 +79,7 @@ const goldClass = "bg-gold-700/20";
                   <li class="inline-flex items-center">
                     <a
                       href={bc.url}
-                      class="text-navy-950"
+                      class="text-navy-950 hover:underline"
                     >
                       {bc.name}
                     </a>
@@ -93,11 +93,11 @@ const goldClass = "bg-gold-700/20";
 
         <!-- Título y descripción/extracto renderizados de inmediato (SEO) -->
         <h1
-          class="text-[#005ba3] text-h2 font-heading-2 mt-4"
+          class="text-[#005ba3] text-3xl sm:text-4xl md:text-5xl font-heading-2 font-bold leading-tight tracking-tight mt-4 mb-4"
           set:html={noticiaMetadata.title.rendered}
         />
         <div
-          class="text-[18px] lg:text-1xl pt-5 text-navy-950 w-full lg:w-3/4"
+          class="text-lg sm:text-xl text-navy-950/90 font-bold [&_p]:font-bold pt-2 pb-6 border-b border-navy-950/20 mb-6 leading-relaxed font-[Arial,sans-serif]"
           set:html={noticiaMetadata.excerpt.rendered}
         />
 

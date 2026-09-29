@@ -18,6 +18,9 @@ try {
 
 const t = useTranslations(lang);
 const tags: { name: string }[] = noticia?._embedded?.["wp:term"]?.[0] || [];
+const featuredMedia = noticia?._embedded?.["wp:featuredmedia"]?.[0];
+const featuredImgUrl = featuredMedia?.source_url;
+const featuredImgAlt = featuredMedia?.alt_text || noticia?.title?.rendered || "";
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -29,36 +32,48 @@ const formatDate = (dateString: string) => {
 ---
 
 {noticia ? (
-  <div class="grid grid-cols-12 gap-5 pt-15">
+  <div class="grid grid-cols-12 gap-8 pt-4 font-['Inter',sans-serif]">
     <div
-      class="col-span-full lg:col-span-9 [&_p]:text-navy-950 [&_p]:text-base [&_p]:py-3 [&_figure]:mb-3"
+      class="col-span-full lg:col-span-8 [&_p]:text-navy-950 [&_p]:text-[17px] sm:[&_p]:text-[18px] [&_p]:leading-[1.75] [&_p]:mb-5 [&_p]:font-['Inter',sans-serif] [&_li]:font-['Inter',sans-serif] [&_h2]:text-2xl [&_h2]:font-heading-2 [&_h2]:text-[#005ba3] [&_h2]:font-bold [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:text-xl [&_h3]:font-heading-2 [&_h3]:text-navy-950 [&_h3]:font-bold [&_h3]:mt-6 [&_h3]:mb-2 [&_figure]:my-6 [&_img]:rounded-md [&_figcaption]:text-xs [&_figcaption]:text-navy-950/70 [&_figcaption]:mt-2 [&_figcaption]:italic [&_blockquote]:border-l-4 [&_blockquote]:border-[#005ba3] [&_blockquote]:pl-4 [&_blockquote]:py-2 [&_blockquote]:my-6 [&_blockquote]:italic [&_blockquote]:text-navy-950/90 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-5 [&_a]:text-[#005ba3] [&_a]:underline"
       set:html={noticia.content.rendered}
     />
-    <div class="col-span-full lg:col-span-3 flex flex-col gap-5 p-5 h-max bg-navy-950 lg:top-22.5">
-      <div class="flex flex-col gap-4">
-        <h3 class="text-[24px] text-gold-500 tracking-[15%]">{t("fecha_publicacion")}</h3>
+    <aside class="col-span-full lg:col-span-4 flex flex-col gap-5 p-5 h-max bg-navy-950 rounded-lg text-white">
+      {featuredImgUrl && (
+        <div class="w-full overflow-hidden rounded-md aspect-video mb-1">
+          <img
+            src={featuredImgUrl}
+            alt={featuredImgAlt}
+            class="w-full h-full object-cover"
+          />
+        </div>
+      )}
+      <div class="flex flex-col gap-2">
+        <h3 class="text-sm font-heading-2 text-gold-500 uppercase tracking-wider">{t("fecha_publicacion")}</h3>
         <p
-          class="text-white text-base"
+          class="text-white text-base font-medium"
           set:html={formatDate(noticia.date)}
         />
       </div>
-      <div class="flex flex-col gap-4">
-        <h3 class="text-[24px] text-gold-500 tracking-[15%]">{t("autor")}</h3>
+      <div class="flex flex-col gap-2">
+        <h3 class="text-sm font-heading-2 text-gold-500 uppercase tracking-wider">{t("autor")}</h3>
         <p
-          class="text-white text-base"
+          class="text-white text-base font-medium"
           set:html={noticia.acf?.autor || "Antumapu"}
         />
       </div>
       {tags.length > 0 && (
-        <div class="flex flex-wrap gap-x-2">
-          {tags.map((tag, index) => (
-              <span class="text-white-soft w-max">
-                  {tag.name}{index < tags.length - 1 ? " / " : ""}
+        <div class="flex flex-col gap-2">
+          <h3 class="text-sm font-heading-2 text-gold-500 uppercase tracking-wider">Tags</h3>
+          <div class="flex flex-wrap gap-2">
+            {tags.map((tag) => (
+              <span class="text-xs text-white-soft bg-navy-900 px-2.5 py-1 rounded">
+                {tag.name}
               </span>
-          ))}
+            ))}
+          </div>
         </div>
       )}
-    </div>
+    </aside>
   </div>
 ) : (
   <script is:inline>
